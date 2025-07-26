@@ -1,0 +1,31 @@
+@layer utilities {
+  .scrollbar {
+    &::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #d3d3d3;
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb:active {
+      background-color: #c7c7c7;
+    }
+  }
+}
+
+* {
+  font-family: "Josefin Sans", sans-serif !important;
+  font-family: "Montserrat", sans-serif !important;
+}
+
+/* Thêm class mới cho MUI background */
+.mui-background {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
+    url("https://lh3.googleusercontent.com/gps-cs-s/AC9h4npSPz-m5_jJxf3j6_0qVdXPKx1qhL0xaLMWZ_DejpNtCKxP3JQLw04deoZX6diypDnsIXiNTSBcPDIK2yOWwKuBBwPbDUYPitlhCLmP9y-PZNFjKejOLqaz1cw-F64AZsAAtDSJYQ=s1360-w1360-h1020-rw");
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
