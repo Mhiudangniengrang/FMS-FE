@@ -20,33 +20,24 @@
     },
     {
       "id": 3,
-      "email": "manager.marketing@company.com",
-      "phone": "+1-555-0003",
-      "password": "manager123",
-      "name": "Michael Brown",
-      "role": "manager",
-      "createdAt": "2024-02-15T10:00:00.000Z"
-    },
-    {
-      "id": 4,
       "email": "emily.davis@company.com",
       "phone": "+1-555-0004",
-      "password": "employee123",
+      "password": "",
       "name": "Emily Davis",
-      "role": "employee",
+      "role": "staff",
       "createdAt": "2024-03-01T11:00:00.000Z"
     },
     {
-      "id": 5,
+      "id": 4,
       "email": "david.wilson@company.com",
       "phone": "+1-555-0005",
-      "password": "employee123",
+      "password": "staff123",
       "name": "David Wilson",
-      "role": "employee",
+      "role": "staff",
       "createdAt": "2024-03-15T12:00:00.000Z"
     },
     {
-      "id": 6,
+      "id": 5,
       "email": "robert.taylor@gmail.com",
       "phone": "+1-555-0006",
       "password": "user123",
@@ -55,7 +46,7 @@
       "createdAt": "2024-05-01T14:00:00.000Z"
     },
     {
-      "id": 7,
+      "id": 6,
       "email": "user@example.com",
       "phone": "+1-555-0007",
       "password": "123456",
@@ -64,22 +55,22 @@
       "createdAt": "2024-05-15T15:00:00.000Z"
     },
     {
-      "id": 9,
+      "id": 7,
       "email": "amanda.garcia@company.com",
       "phone": "+1-555-0009",
       "password": "admin123",
       "name": "Amanda Garcia",
-      "role": "admin",
+      "role": "supervisor",
       "createdAt": "2024-06-15T17:00:00.000Z"
     },
     {
-      "id": 10,
-      "email": "john.cena@gmail.com",
-      "phone": "+1-555-0010",
+      "name": "Michael Bin",
+      "email": "hiu@gmail.com",
+      "phone": "0989001182",
       "password": "123456",
-      "name": "John Cena",
-      "role": "employee",
-      "createdAt": "2025-07-26T10:01:24.080Z"
+      "role": "staff",
+      "createdAt": "2025-07-27T17:21:07.320Z",
+      "id": 8
     }
   ],
   "sessions": []

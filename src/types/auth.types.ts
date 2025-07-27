@@ -1,3 +1,5 @@
+import type { User } from './user.types';
+
 export interface LoginFormData {
   email: string;
   password: string;
@@ -7,6 +9,7 @@ export interface LoginFormData {
 export interface RegisterFormData {
   email: string;
   phone: string;
+  name: string;
   password: string;
   confirmPassword: string;
   agreement?: boolean;
@@ -20,17 +23,9 @@ export interface LoginRequest {
 export interface RegisterRequest {
   email: string;
   phone: string;
+  name: string;
   password: string;
   confirmPassword: string;
-}
-
-export interface User {
-  id: number;
-  email: string;
-  phone: string;
-  name: string;
-  role: string;
-  createdAt: string;
 }
 
 export interface AuthResponse {

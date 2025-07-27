@@ -19,10 +19,9 @@
   font-family: "Montserrat", sans-serif !important;
 }
 
-/* Thêm class mới cho MUI background */
 .mui-background {
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
-    url("https://lh3.googleusercontent.com/gps-cs-s/AC9h4npSPz-m5_jJxf3j6_0qVdXPKx1qhL0xaLMWZ_DejpNtCKxP3JQLw04deoZX6diypDnsIXiNTSBcPDIK2yOWwKuBBwPbDUYPitlhCLmP9y-PZNFjKejOLqaz1cw-F64AZsAAtDSJYQ=s1360-w1360-h1020-rw");
+    url("https://gga.vn/wp-content/uploads/2024/05/quan-ly-co-so-vat-chat-van-phong.jpg");
   background-size: cover;
   background-position: center;
   min-height: 100vh;

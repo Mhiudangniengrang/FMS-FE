@@ -1,31 +1,41 @@
 import DashboardLayout from "../layout/DashboardLayout";
+import React from "react";
 import { Outlet, useRoutes, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
-import type { ReactNode } from "react";
 import { Error404, Loading } from "../components";
-import type { JSX } from "@emotion/react/jsx-runtime";
 import AuthenPage from "../page/AuthenPage";
-import { useAuthStatus } from "../hooks/useAuth";
+import { useUserInfo } from "../hooks/useAuth";
+import UserLayout from "../layout/UserLayout";
+import Cookies from "js-cookie";
 
 export const OverViewPage = lazy(() => import("../page/OverViewPage"));
 export const UserManage = lazy(() => import("../page/UserPage"));
+export const AssetPage = lazy(() => import("../page/AssetPage"));
 
 interface ProtectedRouteProps {
-  children: ReactNode;
+  children: React.ReactNode;
+  allowedRole: string;
+  userRole?: string;
 }
 
 // Component bảo vệ route, chỉ cho phép truy cập khi đã đăng nhập
-const ProtectedRoute = ({ children }: ProtectedRouteProps): JSX.Element => {
-  const { isAuthenticated } = useAuthStatus();
-
-  if (!isAuthenticated) {
+const ProtectedRoute = ({
+  children,
+  allowedRole,
+  userRole,
+}: ProtectedRouteProps): JSX.Element => {
+  if (userRole?.toLowerCase() !== allowedRole.toLowerCase()) {
     return <Navigate to="/" replace />;
   }
-
   return <>{children}</>;
 };
 
 export const Router = (): JSX.Element | null => {
+  // Lấy role từ cookies
+  const userRole = Cookies.get("__role") || "guest";
+
+  console.log("User Role:", userRole);
+
   const routes = useRoutes([
     {
       path: "/",
@@ -35,9 +45,10 @@ export const Router = (): JSX.Element | null => {
       path: "/register",
       element: <AuthenPage />,
     },
+    // Route cho admin
     {
       element: (
-        <ProtectedRoute>
+        <ProtectedRoute allowedRole="admin" userRole={userRole}>
           <DashboardLayout>
             <Suspense fallback={<Loading />}>
               <Outlet />
@@ -53,6 +64,26 @@ export const Router = (): JSX.Element | null => {
         {
           element: <UserManage />,
           path: "/user/view",
+        },
+        { element: <Error404 />, path: "*" },
+      ],
+    },
+    // Route cho user
+    {
+      element: (
+        <ProtectedRoute allowedRole="user" userRole={userRole}>
+          <UserLayout>
+            <Suspense fallback={<Loading />}>
+              <Outlet />
+            </Suspense>
+          </UserLayout>
+        </ProtectedRoute>
+      ),
+      children: [
+        
+        {
+          element: <AssetPage />,
+          path: "/user/assets",
         },
         { element: <Error404 />, path: "*" },
       ],

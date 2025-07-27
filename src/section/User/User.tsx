@@ -65,9 +65,9 @@ const User: React.FC = () => {
             onChange={handleChange}
             aria-label="user management tabs"
           >
-            {/* Tab 1: Internal Management (admin, manager, employee only) */}
+            {/* Tab 1: Internal Management (admin, manager, staff only) */}
             {currentUser?.role &&
-              ["admin", "manager", "employee"].includes(currentUser.role) && (
+              ["admin", "manager", "staff"].includes(currentUser.role) && (
                 <Tab
                   icon={<AdminIcon />}
                   iconPosition="start"
@@ -89,7 +89,7 @@ const User: React.FC = () => {
               label="User List"
               {...a11yProps(
                 currentUser?.role &&
-                  ["admin", "manager", "employee"].includes(currentUser.role)
+                  ["admin", "manager", "staff"].includes(currentUser.role)
                   ? 1
                   : 0
               )}
@@ -105,7 +105,7 @@ const User: React.FC = () => {
 
         {/* Tab Panels */}
         {currentUser?.role &&
-          ["admin", "manager", "employee"].includes(currentUser.role) && (
+          ["admin", "manager", "staff"].includes(currentUser.role) && (
             <TabPanel value={value} index={0}>
               <Internal />
             </TabPanel>
@@ -115,7 +115,7 @@ const User: React.FC = () => {
           value={value}
           index={
             currentUser?.role &&
-            ["admin", "manager", "employee"].includes(currentUser.role)
+            ["admin", "manager", "staff"].includes(currentUser.role)
               ? 1
               : 0
           }

@@ -42,12 +42,101 @@ function getUserByEmail(email) {
   return userdb.users.find((user) => user.email === email);
 }
 
+// Helper function to generate a unique ID
+function generateUniqueId(users) {
+  // Find the maximum ID in the database
+  const maxId = users.reduce((max, user) => {
+    // Convert ID to number if it's a string
+    const userId = typeof user.id === 'string' ? parseInt(user.id, 10) : user.id;
+    return userId > max ? userId : max;
+  }, 0);
+  return maxId + 1;
+}
+
+// Normalize user data to ensure consistent format
+function normalizeUserData(userData) {
+  // Ensure ID is a number
+  if (userData.id) {
+    userData.id = typeof userData.id === 'string' 
+      ? parseInt(userData.id, 10) 
+      : userData.id;
+  }
+  return userData;
+}
+
+// Fix database - normalize all user IDs and remove duplicates
+function fixDatabase() {
+  try {
+    const db = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
+    
+    // Track emails to prevent duplicates
+    const emailMap = new Map();
+    
+    // Normalize all users
+    const normalizedUsers = [];
+    let nextId = 1;
+    
+    db.users.forEach(user => {
+      // Skip if we've already seen this email
+      if (emailMap.has(user.email)) {
+        console.log(`Skipping duplicate user with email: ${user.email}`);
+        return;
+      }
+      
+      // Track this email
+      emailMap.set(user.email, true);
+      
+      // Create normalized user with sequential ID
+      const normalizedUser = {
+        ...user,
+        id: nextId++
+      };
+      
+      normalizedUsers.push(normalizedUser);
+    });
+    
+    // Update database with normalized users
+    db.users = normalizedUsers;
+    fs.writeFileSync("./db.json", JSON.stringify(db, null, 2));
+    console.log("Database fixed: IDs normalized and duplicates removed");
+  } catch (error) {
+    console.error("Error fixing database:", error);
+  }
+}
+
+// Fix the database on startup
+fixDatabase();
+
+// Intercept all POST requests to /users to ensure unique IDs
+server.post("/api/v1/users", (req, res, next) => {
+  try {
+    const userdb = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
+    
+    // Normalize user data
+    normalizeUserData(req.body);
+    
+    // Always generate a new ID regardless of what was sent
+    req.body.id = generateUniqueId(userdb.users);
+    
+    // Add default fields if missing
+    if (!req.body.role) req.body.role = "user";
+    if (!req.body.createdAt) req.body.createdAt = new Date().toISOString();
+    
+    console.log("Intercepted POST to /users. Assigned ID:", req.body.id);
+    
+    next();
+  } catch (error) {
+    console.error("Error in users POST middleware:", error);
+    next();
+  }
+});
+
 // Register endpoint
 server.post("/api/v1/auth/register", (req, res) => {
   console.log("Register endpoint called; request body:");
   console.log(req.body);
 
-  const { email, phone, password, confirmPassword } = req.body;
+  const { email, phone, name, password, confirmPassword } = req.body;
 
   if (!email || !phone || !password || !confirmPassword) {
     const status = 400;
@@ -74,13 +163,13 @@ server.post("/api/v1/auth/register", (req, res) => {
     return;
   }
 
-  // Create new user
+  // Create new user with unique ID
   const newUser = {
-    id: userdb.users.length + 1,
+    id: generateUniqueId(userdb.users),
     email,
     phone,
     password,
-    name: email.split("@")[0],
+    name: name || email.split("@")[0], // Use provided name or generate from email
     role: "user",
     createdAt: new Date().toISOString(),
   };

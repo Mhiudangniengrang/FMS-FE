@@ -8,7 +8,6 @@ import {
   Typography,
   InputAdornment,
   IconButton,
-  Alert,
   CircularProgress,
 } from "@mui/material";
 import {
@@ -49,13 +48,6 @@ const Login: React.FC = () => {
       onSubmit={handleSubmit(onSubmit)}
       sx={loginStyles.formContainer}
     >
-      {loginMutation.error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {(loginMutation.error as any)?.response?.data?.message ||
-            "Login failed. Please try again."}
-        </Alert>
-      )}
-
       <TextField
         fullWidth
         placeholder="Email"

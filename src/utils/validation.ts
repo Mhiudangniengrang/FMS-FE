@@ -6,6 +6,14 @@ export const emailValidation = {
   },
 };
 
+export const nameValidation = {
+  required: "Name is required",
+  minLength: {
+    value: 2,
+    message: "Name must be at least 2 characters",
+  },
+};
+
 export const passwordValidation = {
   required: "Password is required",
   minLength: {

@@ -7,13 +7,13 @@ import {
   getInfoUser as getInfoUserAPI,
 } from "../api/authen";
 import type { RegisterRequest, AuthResponse } from "../types";
+import { showSnackbar } from "../App"; // import hàm showSnackbar
 
 // Query Keys
 const authKeys = {
   all: ["auth"] as const,
   me: () => [...authKeys.all, "me"] as const,
 };
-
 
 // Check có token không (tức thì)
 export const useAuthStatus = () => {
@@ -55,8 +55,21 @@ export const useLogin = () => {
     },
     onSuccess: (data: AuthResponse) => {
       Cookies.set("__token", data.access_token, { expires: 1 });
+      Cookies.set("__role", data.user.role, { expires: 1 });
       queryClient.setQueryData(authKeys.me(), data.user);
-      navigate("/overview");
+      showSnackbar("Login successful!", "success");
+      if (data.user.role === "user") {
+        navigate("/user/assets");
+      } else {
+        navigate("/overview");
+      }
+      // Trả ra kết quả thành công
+      return data;
+    },
+    onError: (error: any) => {
+      showSnackbar(error?.response?.data?.message || "Login failed!", "error");
+      // Trả ra lỗi
+      return error;
     },
   });
 };
@@ -72,9 +85,17 @@ export const useRegister = () => {
       return response.data;
     },
     onSuccess: (data: AuthResponse) => {
-      Cookies.set("__token", data.access_token, { expires: 1 });
+      showSnackbar("Registration successful! Please log in.", "success");
       queryClient.setQueryData(authKeys.me(), data.user);
-      setTimeout(() => navigate("/overview"), 1000);
+      setTimeout(() => navigate("/login"), 1000);
+      return data;
+    },
+    onError: (error: any) => {
+      showSnackbar(
+        error?.response?.data?.message || "Registration failed!",
+        "error"
+      );
+      return error;
     },
   });
 };
@@ -88,6 +109,8 @@ export const useLogout = () => {
     mutationFn: async () => Promise.resolve(),
     onSuccess: () => {
       Cookies.remove("__token");
+      Cookies.remove("__role");
+      showSnackbar("Logout successful!", "success"); // <-- gọi ở đây
       queryClient.clear();
       navigate("/");
     },
