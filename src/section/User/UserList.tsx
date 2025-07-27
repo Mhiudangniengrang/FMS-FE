@@ -9,7 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TablePagination,
+  Pagination,
   TextField,
   InputAdornment,
   Avatar,
@@ -26,33 +26,14 @@ import {
   Delete as DeleteIcon,
 } from "@mui/icons-material";
 import { useUserManagement } from "../../hooks/useUserManagement";
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  role: "administrator" | "manager" | "employee" | "user";
-  createdAt: string;
-}
+import type { User } from "../../types/user.types";
 
 const UserList: React.FC = () => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(1);
+  const limit = 10;
   const [searchTerm, setSearchTerm] = useState("");
 
   const { users, isLoading, deleteUserMutation } = useUserManagement();
-
-  const handleChangePage = (_event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
   const handleDeleteUser = (userId: number) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
@@ -61,20 +42,17 @@ const UserList: React.FC = () => {
   };
 
   // Filter only regular users
-  const regularUsers =
-    users?.filter((user: User) => user.role === "user") || [];
+  const regularUsers = users?.filter((user) => user.role === "user") || [];
 
   const filteredUsers = regularUsers.filter(
-    (user: User) =>
+    (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.phone.includes(searchTerm)
   );
 
-  const paginatedUsers = filteredUsers.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+  // Phân trang trên UI
+  const paginatedUsers = filteredUsers.slice((page - 1) * limit, page * limit);
 
   const getInitials = (name: string) => {
     return name
@@ -142,7 +120,7 @@ const UserList: React.FC = () => {
                 <Box>
                   <Typography variant="h6">
                     {regularUsers.filter(
-                      (u: User) =>
+                      (u) =>
                         new Date(u.createdAt) >
                         new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
                     ).length || 0}
@@ -217,9 +195,9 @@ const UserList: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedUsers.map((user: User, index: number) => (
+              {paginatedUsers.map((user, index) => (
                 <TableRow key={user.id} hover>
-                  <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                  <TableCell>{(page - 1) * limit + index + 1}</TableCell>
                   <TableCell>
                     <Box display="flex" alignItems="center">
                       <Avatar sx={{ mr: 2 }}>{getInitials(user.name)}</Avatar>
@@ -272,23 +250,16 @@ const UserList: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
-        {filteredUsers.length > 0 && (
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            component="div"
-            count={filteredUsers.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            labelRowsPerPage="Rows per page:"
-            labelDisplayedRows={({ from, to, count }) =>
-              `${from}-${to} of ${count !== -1 ? count : `more than ${to}`}`
-            }
-          />
-        )}
       </Paper>
+
+      <Box display="flex" justifyContent="center" alignItems="center" py={2}>
+        <Pagination
+          count={Math.ceil((filteredUsers.length || 0) / limit)}
+          page={page}
+          onChange={(_, value) => setPage(value)}
+          color="primary"
+        />
+      </Box>
     </Box>
   );
 };

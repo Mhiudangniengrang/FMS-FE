@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -6,8 +6,6 @@ import {
   Typography,
   InputAdornment,
   IconButton,
-  Snackbar,
-  Alert,
   CircularProgress,
 } from "@mui/material";
 import {
@@ -16,6 +14,7 @@ import {
   LockOutlined,
   Visibility,
   VisibilityOff,
+  PersonOutline,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -25,52 +24,17 @@ import {
   emailValidation,
   passwordValidation,
   phoneValidation,
+  nameValidation,
   confirmPasswordValidation,
 } from "../../utils";
 import { useRegister } from "../../hooks/useAuth";
-
-interface SnackbarState {
-  open: boolean;
-  message: string;
-  severity: "success" | "error" | "warning" | "info";
-}
 
 const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: "",
-    severity: "success",
-  });
 
   const registerMutation = useRegister();
-
-  // Handle success/error responses
-  useEffect(() => {
-    if (registerMutation.isSuccess) {
-      setSnackbar({
-        open: true,
-        message: "Registration successful!",
-        severity: "success",
-      });
-    }
-
-    if (registerMutation.isError) {
-      setSnackbar({
-        open: true,
-        message:
-          (registerMutation.error as any)?.response?.data?.message ||
-          "Registration failed. Please try again.",
-        severity: "error",
-      });
-    }
-  }, [
-    registerMutation.isSuccess,
-    registerMutation.isError,
-    registerMutation.error,
-  ]);
 
   const {
     register,
@@ -81,6 +45,7 @@ const Register: React.FC = () => {
     defaultValues: {
       email: "",
       phone: "",
+      name: "",
       password: "",
       confirmPassword: "",
       agreement: false,
@@ -93,15 +58,9 @@ const Register: React.FC = () => {
     registerMutation.mutate({
       email: data.email,
       phone: data.phone,
+      name: data.name,
       password: data.password,
       confirmPassword: data.confirmPassword,
-    });
-  };
-
-  const handleCloseSnackbar = (): void => {
-    setSnackbar({
-      ...snackbar,
-      open: false,
     });
   };
 
@@ -154,6 +113,27 @@ const Register: React.FC = () => {
                 sx={registerStyles.inputAdornment}
               >
                 <PhoneOutlined sx={registerStyles.iconColor(!!errors.phone)} />
+              </InputAdornment>
+            ),
+          },
+        }}
+        sx={registerStyles.inputField}
+      />
+
+      <TextField
+        fullWidth
+        placeholder="Full Name"
+        {...register("name", nameValidation)}
+        error={!!errors.name}
+        helperText={errors.name?.message || " "}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment
+                position="start"
+                sx={registerStyles.inputAdornment}
+              >
+                <PersonOutline sx={registerStyles.iconColor(!!errors.name)} />
               </InputAdornment>
             ),
           },
@@ -258,22 +238,6 @@ const Register: React.FC = () => {
           </Link>
         </Typography>
       </Box>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={registerStyles.snackbar}
-          variant="filled"
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

@@ -1,31 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosClient from "../config/axiosClient";
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  role: "administrator" | "manager" | "employee" | "user";
-  createdAt: string;
-}
-
-interface CreateUserData {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-  role: "administrator" | "manager" | "employee" | "user";
-}
-
-interface UpdateUserData {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  password?: string;
-  role: "administrator" | "manager" | "employee" | "user";
-}
+import type { User, CreateUserData, UpdateUserData } from "../types/user.types";
 
 // API functions
 const fetchUsers = async (): Promise<User[]> => {
