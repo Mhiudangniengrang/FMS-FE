@@ -70,7 +70,7 @@ const Internal: React.FC = () => {
   // Filter only internal users (supervisor, manager, staff)
   const internalUsers =
     users?.filter(
-      (u) =>
+      (u: User) =>
         u.role === "manager" || u.role === "supervisor" || u.role === "staff"
     ) || [];
 
@@ -104,7 +104,7 @@ const Internal: React.FC = () => {
   const onSubmit = (data: CreateUserForm) => {
     // Role đã được giới hạn trong form nên không cần kiểm tra nữa
     if (editingUser) {
-      // Update user
+      // Update user - Cập nhật theo API mới
       updateUserMutation.mutate({
         id: editingUser.id,
         ...data,
@@ -175,7 +175,7 @@ const Internal: React.FC = () => {
               sx={{ fontSize: 40, color: "success.main", mb: 1 }}
             />
             <Typography variant="h4" color="success.main">
-              {internalUsers?.filter((u) => u.role === "manager").length ||
+              {internalUsers?.filter((u: User) => u.role === "manager").length ||
                 0}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -187,7 +187,7 @@ const Internal: React.FC = () => {
           <Paper sx={{ p: 3, textAlign: "center" }}>
             <PersonAddIcon sx={{ fontSize: 40, color: "error.main", mb: 1 }} />
             <Typography variant="h4" color="error.main">
-              {internalUsers?.filter((u) => u.role === "supervisor")
+              {internalUsers?.filter((u: User) => u.role === "supervisor")
                 .length || 0}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -199,7 +199,7 @@ const Internal: React.FC = () => {
           <Paper sx={{ p: 3, textAlign: "center" }}>
             <PersonAddIcon sx={{ fontSize: 40, color: "info.main", mb: 1 }} />
             <Typography variant="h4" color="info.main">
-              {internalUsers?.filter((u) => u.role === "staff").length ||
+              {internalUsers?.filter((u: User) => u.role === "staff").length ||
                 0}
             </Typography>
             <Typography variant="body2" color="text.secondary">

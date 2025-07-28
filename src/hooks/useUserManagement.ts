@@ -1,30 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axiosClient from "../config/axiosClient";
-import type { User, CreateUserData, UpdateUserData } from "../types/user.types";
-
-// API functions
-const fetchUsers = async (): Promise<User[]> => {
-  const response = await axiosClient.get("/users");
-  return response.data;
-};
-
-const createUser = async (userData: CreateUserData): Promise<User> => {
-  const response = await axiosClient.post("/users", {
-    ...userData,
-    createdAt: new Date().toISOString(),
-  });
-  return response.data;
-};
-
-const updateUser = async (userData: UpdateUserData): Promise<User> => {
-  const { id, ...updateData } = userData;
-  const response = await axiosClient.patch(`/users/${id}`, updateData);
-  return response.data;
-};
-
-const deleteUser = async (userId: number): Promise<void> => {
-  await axiosClient.delete(`/users/${userId}`);
-};
+import { fetchUsers, createUser, updateUser, deleteUser } from "../api/user";
+import { showSnackbar } from "../App"; // Thêm showSnackbar nếu có
+import type { CreateUserData, UpdateUserData } from "../types/user.types";
 
 export const useUserManagement = () => {
   const queryClient = useQueryClient();
@@ -37,40 +14,70 @@ export const useUserManagement = () => {
     refetch,
   } = useQuery({
     queryKey: ["users"],
-    queryFn: fetchUsers,
+    queryFn: async () => {
+      const response = await fetchUsers();
+      return response.data;
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Create user mutation
   const createUserMutation = useMutation({
-    mutationFn: createUser,
+    mutationFn: async (userData: CreateUserData) => {
+      const response = await createUser(userData);
+      return response.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      showSnackbar && showSnackbar("User created successfully", "success");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Error creating user:", error);
+      showSnackbar &&
+        showSnackbar(
+          error?.response?.data?.message || "Error creating user",
+          "error"
+        );
     },
   });
 
   // Update user mutation
   const updateUserMutation = useMutation({
-    mutationFn: updateUser,
+    mutationFn: async ({ id, ...userData }: UpdateUserData) => {
+      const response = await updateUser(id, userData);
+      return response.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      showSnackbar && showSnackbar("User updated successfully", "success");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Error updating user:", error);
+      showSnackbar &&
+        showSnackbar(
+          error?.response?.data?.message || "Error updating user",
+          "error"
+        );
     },
   });
 
   // Delete user mutation
   const deleteUserMutation = useMutation({
-    mutationFn: deleteUser,
+    mutationFn: async (id: number) => {
+      const response = await deleteUser(id);
+      return response.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      showSnackbar && showSnackbar("User deleted successfully", "success");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Error deleting user:", error);
+      showSnackbar &&
+        showSnackbar(
+          error?.response?.data?.message || "Error deleting user",
+          "error"
+        );
     },
   });
 

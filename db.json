@@ -64,13 +64,13 @@
       "createdAt": "2024-06-15T17:00:00.000Z"
     },
     {
-      "name": "Michael Bin",
+      "id": 8,
       "email": "hiu@gmail.com",
       "phone": "0989001182",
       "password": "123456",
-      "role": "staff",
-      "createdAt": "2025-07-27T17:21:07.320Z",
-      "id": 8
+      "name": "Michael Brown",
+      "role": "user",
+      "createdAt": "2025-07-28T09:41:23.280Z"
     }
   ],
   "sessions": []

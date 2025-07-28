@@ -53,84 +53,6 @@ function generateUniqueId(users) {
   return maxId + 1;
 }
 
-// Normalize user data to ensure consistent format
-function normalizeUserData(userData) {
-  // Ensure ID is a number
-  if (userData.id) {
-    userData.id = typeof userData.id === 'string' 
-      ? parseInt(userData.id, 10) 
-      : userData.id;
-  }
-  return userData;
-}
-
-// Fix database - normalize all user IDs and remove duplicates
-function fixDatabase() {
-  try {
-    const db = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
-    
-    // Track emails to prevent duplicates
-    const emailMap = new Map();
-    
-    // Normalize all users
-    const normalizedUsers = [];
-    let nextId = 1;
-    
-    db.users.forEach(user => {
-      // Skip if we've already seen this email
-      if (emailMap.has(user.email)) {
-        console.log(`Skipping duplicate user with email: ${user.email}`);
-        return;
-      }
-      
-      // Track this email
-      emailMap.set(user.email, true);
-      
-      // Create normalized user with sequential ID
-      const normalizedUser = {
-        ...user,
-        id: nextId++
-      };
-      
-      normalizedUsers.push(normalizedUser);
-    });
-    
-    // Update database with normalized users
-    db.users = normalizedUsers;
-    fs.writeFileSync("./db.json", JSON.stringify(db, null, 2));
-    console.log("Database fixed: IDs normalized and duplicates removed");
-  } catch (error) {
-    console.error("Error fixing database:", error);
-  }
-}
-
-// Fix the database on startup
-fixDatabase();
-
-// Intercept all POST requests to /users to ensure unique IDs
-server.post("/api/v1/users", (req, res, next) => {
-  try {
-    const userdb = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
-    
-    // Normalize user data
-    normalizeUserData(req.body);
-    
-    // Always generate a new ID regardless of what was sent
-    req.body.id = generateUniqueId(userdb.users);
-    
-    // Add default fields if missing
-    if (!req.body.role) req.body.role = "user";
-    if (!req.body.createdAt) req.body.createdAt = new Date().toISOString();
-    
-    console.log("Intercepted POST to /users. Assigned ID:", req.body.id);
-    
-    next();
-  } catch (error) {
-    console.error("Error in users POST middleware:", error);
-    next();
-  }
-});
-
 // Register endpoint
 server.post("/api/v1/auth/register", (req, res) => {
   console.log("Register endpoint called; request body:");
@@ -306,24 +228,17 @@ server.use(/^(?!\/api\/v1\/auth).*$/, (req, res, next) => {
   }
 });
 
-// Use default router for all JSON Server routes (users CRUD sẵn có)
+// Use default router for all JSON Server routes
 server.use("/api/v1", router);
 
 const port = process.env.PORT || 3001;
 server.listen(port, () => {
   console.log(`JSON Server is running on port ${port}`);
-  console.log("🔐 Auth endpoints (custom):");
+  console.log("🔐 Auth endpoints:");
   console.log("POST http://localhost:" + port + "/api/v1/auth/login");
   console.log("POST http://localhost:" + port + "/api/v1/auth/register");
   console.log("GET http://localhost:" + port + "/api/v1/auth/me");
-  console.log("📊 JSON Server CRUD (tự động):");
+  console.log("📊 JSON Server endpoints:");
   console.log("GET http://localhost:" + port + "/api/v1/users");
-  console.log("POST http://localhost:" + port + "/api/v1/users");
-  console.log("PATCH http://localhost:" + port + "/api/v1/users/:id");
-  console.log("PUT http://localhost:" + port + "/api/v1/users/:id");
-  console.log("DELETE http://localhost:" + port + "/api/v1/users/:id");
-  console.log("🔍 JSON Server features:");
-  console.log("Filter: /api/v1/users?role=admin");
-  console.log("Sort: /api/v1/users?_sort=name&_order=asc");
-  console.log("Paginate: /api/v1/users?_page=1&_limit=10");
+  console.log("GET http://localhost:" + port + "/api/v1/assets");
 });

@@ -42,10 +42,10 @@ const UserList: React.FC = () => {
   };
 
   // Filter only regular users
-  const regularUsers = users?.filter((user) => user.role === "user") || [];
+  const regularUsers = users?.filter((user: User) => user.role === "user") || [];
 
   const filteredUsers = regularUsers.filter(
-    (user) =>
+    (user: User) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.phone.includes(searchTerm)
@@ -120,7 +120,7 @@ const UserList: React.FC = () => {
                 <Box>
                   <Typography variant="h6">
                     {regularUsers.filter(
-                      (u) =>
+                      (u: User) =>
                         new Date(u.createdAt) >
                         new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
                     ).length || 0}
@@ -195,7 +195,7 @@ const UserList: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedUsers.map((user, index) => (
+              {paginatedUsers.map((user: User, index: number) => (
                 <TableRow key={user.id} hover>
                   <TableCell>{(page - 1) * limit + index + 1}</TableCell>
                   <TableCell>
