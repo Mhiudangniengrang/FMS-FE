@@ -60,14 +60,19 @@ export const useLogin = () => {
       showSnackbar("Login successful!", "success");
       if (data.user.role === "user") {
         navigate("/user/assets");
+      } else if (data.user.role === "staff") {
+        navigate("/staff/maintenance");
       } else {
         navigate("/overview");
       }
       // Trả ra kết quả thành công
       return data;
     },
-    onError: (error: any) => {
-      showSnackbar(error?.response?.data?.message || "Login failed!", "error");
+    onError: (error: unknown) => {
+      const errorMessage = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { message?: string } } })?.response?.data?.message
+        : "Login failed!";
+      showSnackbar(errorMessage || "Login failed!", "error");
       // Trả ra lỗi
       return error;
     },
@@ -90,11 +95,11 @@ export const useRegister = () => {
       setTimeout(() => navigate("/login"), 1000);
       return data;
     },
-    onError: (error: any) => {
-      showSnackbar(
-        error?.response?.data?.message || "Registration failed!",
-        "error"
-      );
+    onError: (error: unknown) => {
+      const errorMessage = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { message?: string } } })?.response?.data?.message
+        : "Registration failed!";
+      showSnackbar(errorMessage || "Registration failed!", "error");
       return error;
     },
   });

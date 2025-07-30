@@ -4,13 +4,16 @@ import { Outlet, useRoutes, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { Error404, Loading } from "../components";
 import AuthenPage from "../page/AuthenPage";
-import { useUserInfo } from "../hooks/useAuth";
+
 import UserLayout from "../layout/UserLayout";
 import Cookies from "js-cookie";
 
 export const OverViewPage = lazy(() => import("../page/OverViewPage"));
 export const UserManage = lazy(() => import("../page/UserPage"));
 export const AssetPage = lazy(() => import("../page/AssetPage"));
+export const MaintenancePage = lazy(() => import("../page/MaintenancePage"));
+// *** THÊM MỚI: Route cho Admin xem danh sách yêu cầu bảo trì ***
+export const MaintenanceManagementPage = lazy(() => import("../page/MaintenanceManagementPage"));
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -23,14 +26,14 @@ const ProtectedRoute = ({
   children,
   allowedRole,
   userRole,
-}: ProtectedRouteProps): JSX.Element => {
+}: ProtectedRouteProps): React.JSX.Element => {
   if (userRole?.toLowerCase() !== allowedRole.toLowerCase()) {
     return <Navigate to="/" replace />;
   }
   return <>{children}</>;
 };
 
-export const Router = (): JSX.Element | null => {
+export const Router = (): React.JSX.Element | null => {
   // Lấy role từ cookies
   const userRole = Cookies.get("__role") || "guest";
 
@@ -64,6 +67,30 @@ export const Router = (): JSX.Element | null => {
         {
           element: <UserManage />,
           path: "/user/view",
+        },
+        // *** THÊM MỚI: Route cho Admin quản lý bảo trì ***
+        {
+          element: <MaintenanceManagementPage />,
+          path: "/maintenance/management",
+        },
+        { element: <Error404 />, path: "*" },
+      ],
+    },
+    // Route cho staff
+    {
+      element: (
+        <ProtectedRoute allowedRole="staff" userRole={userRole}>
+          <UserLayout>
+            <Suspense fallback={<Loading />}>
+              <Outlet />
+            </Suspense>
+          </UserLayout>
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          element: <MaintenancePage />,
+          path: "/staff/maintenance",
         },
         { element: <Error404 />, path: "*" },
       ],

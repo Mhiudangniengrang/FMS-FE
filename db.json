@@ -20,28 +20,28 @@
     },
     {
       "id": 3,
-      "email": "emily.davis@company.com",
+      "email": "tho@company.com",
       "phone": "+1-555-0004",
-      "password": "",
-      "name": "Emily Davis",
+      "password": "tho123",
+      "name": "Tho",
       "role": "staff",
       "createdAt": "2024-03-01T11:00:00.000Z"
     },
     {
       "id": 4,
-      "email": "david.wilson@company.com",
+      "email": "emp1@company.com",
       "phone": "+1-555-0005",
-      "password": "staff123",
-      "name": "David Wilson",
+      "password": "tho123",
+      "name": "Employee1",
       "role": "staff",
       "createdAt": "2024-03-15T12:00:00.000Z"
     },
     {
       "id": 5,
-      "email": "robert.taylor@gmail.com",
+      "email": "user1@company.com",
       "phone": "+1-555-0006",
-      "password": "user123",
-      "name": "Robert Taylor",
+      "password": "tho123",
+      "name": "user1",
       "role": "user",
       "createdAt": "2024-05-01T14:00:00.000Z"
     },
@@ -73,5 +73,129 @@
       "createdAt": "2025-07-28T09:41:23.280Z"
     }
   ],
-  "sessions": []
+  "sessions": [],
+  "assets": [
+    {
+      "id": 1,
+      "name": "Máy In HP LaserJet",
+      "code": "PR-001",
+      "category": "Office Equipment",
+      "location": "Phòng IT - Tầng 2",
+      "status": "available",
+      "assignedTo": "",
+      "createdAt": "2024-01-10T08:00:00.000Z",
+      "updatedAt": "2024-01-10T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Máy Tính Dell Optiplex",
+      "code": "PC-002",
+      "category": "Computer",
+      "location": "Phòng Kế toán - Tầng 3",
+      "status": "in_use",
+      "assignedTo": "Emily Davis",
+      "createdAt": "2024-01-15T08:00:00.000Z",
+      "updatedAt": "2024-01-15T08:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "name": "Máy Chiếu Epson",
+      "code": "PJ-003",
+      "category": "Presentation",
+      "location": "Phòng Họp A - Tầng 1",
+      "status": "broken",
+      "assignedTo": "",
+      "createdAt": "2024-02-01T08:00:00.000Z",
+      "updatedAt": "2024-02-01T08:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "name": "Máy Fax Canon",
+      "code": "FX-004",
+      "category": "Office Equipment",
+      "location": "Phòng Hành chính - Tầng 1",
+      "status": "maintenance",
+      "assignedTo": "",
+      "createdAt": "2024-02-10T08:00:00.000Z",
+      "updatedAt": "2024-02-10T08:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "name": "Máy Photocopy Xerox",
+      "code": "CP-005",
+      "category": "Office Equipment",
+      "location": "Khu vực chung - Tầng 2",
+      "status": "available",
+      "assignedTo": "",
+      "createdAt": "2024-02-15T08:00:00.000Z",
+      "updatedAt": "2024-02-15T08:00:00.000Z"
+    }
+  ],
+  "maintenance": [
+    {
+      "id": 1,
+      "assetId": 3,
+      "assetName": "Máy Chiếu Epson",
+      "assetCode": "PJ-003",
+      "requestedBy": 4,
+      "requestedByName": "David Wilson",
+      "title": "Máy chiếu không hiển thị hình ảnh",
+      "description": "Máy chiếu khi bật lên chỉ có ánh sáng trắng, không hiển thị được nội dung từ laptop. Đã thử thay cáp HDMI nhưng vẫn không được.",
+      "priority": "high",
+      "status": "approved",
+      "createdAt": "2024-03-20T09:30:00.000Z",
+      "updatedAt": "2025-07-29T10:49:46.458Z",
+      "assignedTo": 3,
+      "assignedToName": "Tho"
+    },
+    {
+      "id": 2,
+      "assetId": 1,
+      "assetName": "Máy In HP LaserJet",
+      "assetCode": "PR-001",
+      "requestedBy": 3,
+      "requestedByName": "Emily Davis",
+      "title": "Máy in bị kẹt giấy thường xuyên",
+      "description": "Máy in bị kẹt giấy mỗi khi in từ 5-10 trang. Cần kiểm tra và bảo dưỡng hệ thống cấp giấy.",
+      "priority": "medium",
+      "status": "approved",
+      "assignedTo": 7,
+      "assignedToName": "Amanda Garcia",
+      "createdAt": "2024-03-18T14:15:00.000Z",
+      "updatedAt": "2024-03-19T08:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "assetId": 4,
+      "assetName": "Máy Fax Canon",
+      "assetCode": "FX-004",
+      "requestedBy": 4,
+      "requestedByName": "David Wilson",
+      "title": "Máy fax không gửi được",
+      "description": "Máy fax không thể gửi tài liệu đi, luôn báo lỗi 'Line Error'. Cần kiểm tra đường dây và cài đặt.",
+      "priority": "urgent",
+      "status": "in_progress",
+      "assignedTo": 7,
+      "assignedToName": "Amanda Garcia",
+      "createdAt": "2024-03-15T11:20:00.000Z",
+      "updatedAt": "2024-03-16T10:30:00.000Z",
+      "notes": "Đã kiểm tra đường dây, cần thay thế board điều khiển"
+    },
+    {
+      "id": 4,
+      "assetId": 3,
+      "assetName": "Máy Chiếu Epson",
+      "assetCode": "PJ-003",
+      "requestedBy": 3,
+      "requestedByName": "Tho",
+      "title": "Máy chiếu bị lỗi cổng HDMI",
+      "description": "Máy chiếu không nhận được đầu ra của cổng HDMI và VGA",
+      "priority": "high",
+      "status": "approved",
+      "createdAt": "2025-07-29T10:46:54.732Z",
+      "updatedAt": "2025-07-29T10:49:39.772Z",
+      "assignedTo": 7,
+      "assignedToName": "Amanda Garcia"
+    }
+  ]
 }

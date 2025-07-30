@@ -35,10 +35,12 @@ import type { MenuItemType, DashboardLayoutProps } from "../types";
 import { createMenuItem } from "../utils";
 import { useUserInfo, useLogout } from "../hooks/useAuth";
 
-// Menu items with enhanced icons and structure
+// Menu items with enhanced icons and structure  
 const items: MenuItemType[] = [
   createMenuItem("Overview", "1", <HomeIcon />, "/overview"),
   createMenuItem("User Management", "2", <PersonAddIcon />, "/user/view"),
+  // *** THÊM MỚI: Menu cho Maintenance Management ***
+  createMenuItem("Maintenance Management", "3", <SettingsIcon />, "/maintenance/management"),
 ];
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {

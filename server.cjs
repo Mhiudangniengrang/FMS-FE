@@ -228,6 +228,154 @@ server.use(/^(?!\/api\/v1\/auth).*$/, (req, res, next) => {
   }
 });
 
+// Assets endpoints
+server.get("/api/v1/assets", (req, res) => {
+  console.log("Get assets endpoint called");
+  
+  const userdb = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
+  res.status(200).json(userdb.assets);
+});
+
+server.get("/api/v1/assets/:id", (req, res) => {
+  console.log("Get asset by ID endpoint called");
+  
+  const assetId = parseInt(req.params.id);
+  const userdb = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
+  const asset = userdb.assets.find(a => a.id === assetId);
+  
+  if (!asset) {
+    res.status(404).json({ message: "Asset not found" });
+    return;
+  }
+  
+  res.status(200).json(asset);
+});
+
+// Maintenance endpoints
+server.get("/api/v1/maintenance", (req, res) => {
+  console.log("Get maintenance requests endpoint called");
+  
+  const userdb = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
+  res.status(200).json(userdb.maintenance);
+});
+
+server.post("/api/v1/maintenance", (req, res) => {
+  console.log("Create maintenance request endpoint called");
+  console.log(req.body);
+  
+  const { assetId, title, description, priority } = req.body;
+  
+  if (!assetId || !title || !description || !priority) {
+    res.status(400).json({ message: "All fields are required" });
+    return;
+  }
+  
+  const userdb = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
+  
+  // Find asset
+  const asset = userdb.assets.find(a => a.id === assetId);
+  if (!asset) {
+    res.status(404).json({ message: "Asset not found" });
+    return;
+  }
+  
+  // Get user from token (simplified)
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    res.status(401).json({ message: "Authorization header required" });
+    return;
+  }
+  
+  const token = authHeader.split(' ')[1];
+  let decoded;
+  try {
+    decoded = verifyToken(token);
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
+    return;
+  }
+  
+  const user = userdb.users.find(u => u.email === decoded.email);
+  if (!user) {
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+  
+  // Create new maintenance request
+  const newRequest = {
+    id: Math.max(...userdb.maintenance.map(m => m.id), 0) + 1,
+    assetId,
+    assetName: asset.name,
+    assetCode: asset.code,
+    requestedBy: user.id,
+    requestedByName: user.name,
+    title,
+    description,
+    priority,
+    status: "pending",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  
+  userdb.maintenance.push(newRequest);
+  fs.writeFileSync("./db.json", JSON.stringify(userdb, null, 2));
+  
+  res.status(201).json(newRequest);
+});
+
+// Update maintenance request (for assignment and status changes)
+server.put("/api/v1/maintenance/:id", (req, res) => {
+  console.log("Update maintenance request endpoint called");
+  console.log(req.body);
+  
+  const requestId = parseInt(req.params.id);
+  const { status, assignedTo, notes } = req.body;
+  
+  const userdb = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
+  
+  // Find the maintenance request
+  const requestIndex = userdb.maintenance.findIndex(m => m.id === requestId);
+  if (requestIndex === -1) {
+    res.status(404).json({ message: "Maintenance request not found" });
+    return;
+  }
+  
+  // Update the request
+  if (status) userdb.maintenance[requestIndex].status = status;
+  if (assignedTo !== undefined) {
+    userdb.maintenance[requestIndex].assignedTo = assignedTo;
+    
+    // Find assigned user name
+    if (assignedTo > 0) {
+      const assignedUser = userdb.users.find(u => u.id === assignedTo);
+      if (assignedUser) {
+        userdb.maintenance[requestIndex].assignedToName = assignedUser.name;
+      }
+    } else {
+      userdb.maintenance[requestIndex].assignedToName = null;
+    }
+  }
+  if (notes) userdb.maintenance[requestIndex].notes = notes;
+  
+  userdb.maintenance[requestIndex].updatedAt = new Date().toISOString();
+  
+  fs.writeFileSync("./db.json", JSON.stringify(userdb, null, 2));
+  
+  res.status(200).json(userdb.maintenance[requestIndex]);
+});
+
+// Get technicians (users with roles that can handle maintenance)
+server.get("/api/v1/users/technicians", (req, res) => {
+  console.log("Get technicians endpoint called");
+  
+  const userdb = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
+  const technicians = userdb.users
+    .filter(user => ['staff', 'supervisor', 'manager'].includes(user.role))
+    .map(user => ({ id: user.id, name: user.name, role: user.role }));
+  
+  res.status(200).json(technicians);
+});
+
 // Use default router for all JSON Server routes
 server.use("/api/v1", router);
 
@@ -241,4 +389,6 @@ server.listen(port, () => {
   console.log("📊 JSON Server endpoints:");
   console.log("GET http://localhost:" + port + "/api/v1/users");
   console.log("GET http://localhost:" + port + "/api/v1/assets");
+  console.log("POST http://localhost:" + port + "/api/v1/maintenance");
+  console.log("PUT http://localhost:" + port + "/api/v1/maintenance/:id");
 });
