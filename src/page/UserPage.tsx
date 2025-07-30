@@ -1,6 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { UserView } from "../section/User/view";
+import { UserView } from "@/section/User/view";
 
 const UserPage: React.FC = () => {
   return (

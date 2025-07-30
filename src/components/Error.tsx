@@ -1,6 +1,6 @@
 import { Button, Typography, Box, Container } from "@mui/material";
 import { Link } from "react-router-dom";
-import ErrorImage from "../assets/error.png";
+import ErrorImage from "@/assets/error.png";
 import React from "react";
 
 function ErrorPage(): React.ReactElement {
@@ -40,7 +40,6 @@ function ErrorPage(): React.ReactElement {
           to="/dashboard"
           variant="contained"
           color="primary"
-          sx={{ mt: 2 }}
         >
           Back home
         </Button>

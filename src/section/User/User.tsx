@@ -5,7 +5,7 @@ import {
   People as PeopleIcon,
 } from "@mui/icons-material";
 import UserList from "./UserList";
-import { useUserInfo } from "../../hooks/useAuth";
+import { useUserInfo } from "@/hooks/useAuth";
 import Internal from "./Internal";
 
 interface TabPanelProps {
@@ -50,7 +50,12 @@ const User: React.FC = () => {
       <Paper elevation={0} sx={{ width: "100%", bgcolor: "background.paper" }}>
         {/* Header */}
         <Box sx={{ p: 3, borderBottom: 1, borderColor: "divider" }}>
-          <Typography variant="h4" component="h1" gutterBottom>
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            sx={{ fontWeight: "bold" }}
+          >
             User Management
           </Typography>
           <Typography variant="body1" color="text.secondary">

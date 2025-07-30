@@ -1,6 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { AssetView } from "../section/Asset/view";
+import { AssetView } from "@/section/Asset/view";
 
 const AssetPage: React.FC = () => {
   return (

@@ -1,5 +1,5 @@
-import axiosClient from "../config/axiosClient";
-import type { User, CreateUserData, UpdateUserData } from "../types/user.types";
+import axiosClient from "@/config/axiosClient";
+import type { CreateUserData, UpdateUserData } from "@/types/user.types";
 
 // API functions
 const fetchUsers = () => {
@@ -7,10 +7,7 @@ const fetchUsers = () => {
 };
 
 const createUser = (userData: CreateUserData) => {
-  return axiosClient.post("/users", {
-    ...userData,
-    createdAt: new Date().toISOString(),
-  });
+  return axiosClient.post("/users", userData);
 };
 
 const updateUser = (id: number, userData: Omit<UpdateUserData, "id">) => {

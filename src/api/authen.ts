@@ -1,5 +1,5 @@
-import axiosClient from "../config/axiosClient";
-import type { RegisterRequest, AuthResponse, User } from "../types";
+import axiosClient from "@/config/axiosClient";
+import type { RegisterRequest, AuthResponse, User } from "@/types";
 
 // API functions
 const login = (email: string, password: string) => {

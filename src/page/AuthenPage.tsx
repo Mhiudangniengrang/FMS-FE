@@ -1,6 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { AuthenView } from "../section/Authen/view";
+import { AuthenView } from "@/section/Authen/view";
 
 const AuthenPage: React.FC = () => {
   return (

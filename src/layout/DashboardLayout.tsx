@@ -29,11 +29,11 @@ import {
   CssBaseline,
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
-import logo from "../assets/unit-corp-logo.webp";
-import { dashboardStyles } from "../styles/dashboard.styles";
-import type { MenuItemType, DashboardLayoutProps } from "../types";
-import { createMenuItem } from "../utils";
-import { useUserInfo, useLogout } from "../hooks/useAuth";
+import logo from "@/assets/unit-corp-logo.webp";
+import { dashboardStyles } from "@/styles/dashboard.styles";
+import type { MenuItemType, DashboardLayoutProps } from "@/types";
+import { createMenuItem } from "@/utils";
+import { useUserInfo, useLogout } from "@/hooks/useAuth";
 
 // Menu items with enhanced icons and structure
 const items: MenuItemType[] = [

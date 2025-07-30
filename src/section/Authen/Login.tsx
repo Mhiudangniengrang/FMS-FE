@@ -18,10 +18,10 @@ import {
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { loginStyles } from "../../styles/login.styles";
-import type { LoginFormData } from "../../types";
-import { emailValidation, passwordValidation } from "../../utils";
-import { useLogin } from "../../hooks/useAuth";
+import { loginStyles } from "@/styles/login.styles";
+import type { LoginFormData } from "@/types";
+import { emailValidation, passwordValidation } from "@/utils";
+import { useLogin } from "@/hooks/useAuth";
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -137,7 +137,7 @@ const Login: React.FC = () => {
           </Link>
         </Typography>
 
-        <Box sx={{ mt: 2, p: 2, bgcolor: "grey.100", borderRadius: 1 }}>
+        {/* <Box sx={{ mt: 2, p: 2, bgcolor: "grey.100", borderRadius: 1 }}>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
             <strong>Test accounts:</strong>
           </Typography>
@@ -147,7 +147,7 @@ const Login: React.FC = () => {
           <Typography variant="body2" color="text.secondary">
             User: user@example.com / 123456
           </Typography>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );

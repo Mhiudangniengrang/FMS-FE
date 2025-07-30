@@ -10,31 +10,28 @@
       "createdAt": "2024-01-15T08:00:00.000Z"
     },
     {
-      "id": 2,
+      "name": "Sarah Johnson",
       "email": "manager.sales@company.com",
       "phone": "+1-555-0002",
-      "password": "manager123",
-      "name": "Sarah Johnson",
+      "password": "",
       "role": "manager",
-      "createdAt": "2024-02-01T09:00:00.000Z"
+      "id": 2
     },
     {
-      "id": 3,
+      "name": "Emily Davis",
       "email": "emily.davis@company.com",
       "phone": "+1-555-0004",
       "password": "",
-      "name": "Emily Davis",
-      "role": "staff",
-      "createdAt": "2024-03-01T11:00:00.000Z"
+      "role": "supervisor",
+      "id": 3
     },
     {
-      "id": 4,
+      "name": "David Wilson",
       "email": "david.wilson@company.com",
       "phone": "+1-555-0005",
-      "password": "staff123",
-      "name": "David Wilson",
+      "password": "",
       "role": "staff",
-      "createdAt": "2024-03-15T12:00:00.000Z"
+      "id": 4
     },
     {
       "id": 5,
@@ -71,6 +68,14 @@
       "name": "Michael Brown",
       "role": "user",
       "createdAt": "2025-07-28T09:41:23.280Z"
+    },
+    {
+      "name": "Leanne Graha",
+      "email": "hiu@gmail.com",
+      "phone": "0989001182",
+      "password": "123456",
+      "role": "staff",
+      "id": 9
     }
   ],
   "sessions": []

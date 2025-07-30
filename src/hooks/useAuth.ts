@@ -5,9 +5,9 @@ import {
   login as loginAPI,
   register as registerAPI,
   getInfoUser as getInfoUserAPI,
-} from "../api/authen";
+} from "@/api/authen";
 import type { RegisterRequest, AuthResponse } from "../types";
-import { showSnackbar } from "../App"; // import hàm showSnackbar
+import { showSnackbar } from "@/App"; // import hàm showSnackbar
 
 // Query Keys
 const authKeys = {

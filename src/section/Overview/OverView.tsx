@@ -3,7 +3,7 @@ import React from "react";
 
 const OverView: React.FC = () => {
   return (
-    <Container>
+    <Container maxWidth="xl">
       <h1>Overview Section</h1>
       <p>This is the overview section of the application.</p>
     </Container>

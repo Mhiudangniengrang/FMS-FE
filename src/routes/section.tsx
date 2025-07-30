@@ -2,15 +2,14 @@ import DashboardLayout from "../layout/DashboardLayout";
 import React from "react";
 import { Outlet, useRoutes, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
-import { Error404, Loading } from "../components";
-import AuthenPage from "../page/AuthenPage";
-import { useUserInfo } from "../hooks/useAuth";
-import UserLayout from "../layout/UserLayout";
+import { Error404, Loading } from "@/components";
+import AuthenPage from "@/page/AuthenPage";
+import UserLayout from "@/layout/UserLayout";
 import Cookies from "js-cookie";
 
-export const OverViewPage = lazy(() => import("../page/OverViewPage"));
-export const UserManage = lazy(() => import("../page/UserPage"));
-export const AssetPage = lazy(() => import("../page/AssetPage"));
+export const OverViewPage = lazy(() => import("@/page/OverViewPage"));
+export const UserManage = lazy(() => import("@/page/UserPage"));
+export const AssetPage = lazy(() => import("@/page/AssetPage"));
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -80,7 +79,6 @@ export const Router = (): JSX.Element | null => {
         </ProtectedRoute>
       ),
       children: [
-        
         {
           element: <AssetPage />,
           path: "/user/assets",

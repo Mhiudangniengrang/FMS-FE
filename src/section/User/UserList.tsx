@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -19,42 +19,90 @@ import {
   CardContent,
   IconButton,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import {
   Search as SearchIcon,
   Person as PersonIcon,
   Delete as DeleteIcon,
+  Clear as ClearIcon,
 } from "@mui/icons-material";
-import { useUserManagement } from "../../hooks/useUserManagement";
-import type { User } from "../../types/user.types";
+import { useUserManagement } from "@/hooks/useUserManagement";
+import type { User } from "@/types/user.types";
 
 const UserList: React.FC = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<number | null>(null);
 
   const { users, isLoading, deleteUserMutation } = useUserManagement();
 
-  const handleDeleteUser = (userId: number) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
-      deleteUserMutation.mutate(userId);
+  const handleDeleteClick = (userId: number) => {
+    setUserToDelete(userId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (userToDelete !== null) {
+      deleteUserMutation.mutate(userToDelete);
     }
+    setDeleteDialogOpen(false);
+    setUserToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setUserToDelete(null);
+  };
+
+  // Hàm xóa tìm kiếm
+  const handleClearSearch = () => {
+    setSearchTerm("");
   };
 
   // Filter only regular users
   const regularUsers = users?.filter((user: User) => user.role === "user") || [];
 
-  const filteredUsers = regularUsers.filter(
-    (user: User) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.phone.includes(searchTerm)
-  );
+  // Cải thiện chức năng tìm kiếm với useMemo và xử lý null/undefined
+  const filteredUsers = useMemo(() => {
+    if (!Array.isArray(regularUsers) || regularUsers.length === 0) {
+      return [];
+    }
+    
+    if (!searchTerm.trim()) {
+      return regularUsers;
+    }
+    
+    const query = searchTerm.toLowerCase().trim();
+    return regularUsers.filter((user: User) => {
+      const name = user.name ? user.name.toLowerCase() : '';
+      const email = user.email ? user.email.toLowerCase() : '';
+      const phone = user.phone ? user.phone : '';
+      
+      return name.includes(query) || 
+             email.includes(query) || 
+             phone.includes(query);
+    });
+  }, [regularUsers, searchTerm]);
 
-  // Phân trang trên UI
-  const paginatedUsers = filteredUsers.slice((page - 1) * limit, page * limit);
+  // Phân trang trên UI với useMemo
+  const paginatedUsers = useMemo(() => {
+    return filteredUsers.slice((page - 1) * limit, page * limit);
+  }, [filteredUsers, page, limit]);
+
+  // Reset page khi thay đổi tìm kiếm
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm]);
 
   const getInitials = (name: string) => {
+    if (!name) return "U";
     return name
       .split(" ")
       .map((n) => n[0])
@@ -121,7 +169,7 @@ const UserList: React.FC = () => {
                   <Typography variant="h6">
                     {regularUsers.filter(
                       (u: User) =>
-                        new Date(u.createdAt) >
+                        u.createdAt && new Date(u.createdAt) >
                         new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
                     ).length || 0}
                   </Typography>
@@ -168,6 +216,19 @@ const UserList: React.FC = () => {
                 <SearchIcon />
               </InputAdornment>
             ),
+            endAdornment: searchTerm ? (
+              <InputAdornment position="end">
+                <Tooltip title="Clear search">
+                  <IconButton
+                    edge="end"
+                    onClick={handleClearSearch}
+                    size="small"
+                  >
+                    <ClearIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </InputAdornment>
+            ) : null,
           }}
           sx={{
             maxWidth: 400,
@@ -209,17 +270,17 @@ const UserList: React.FC = () => {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.phone}</TableCell>
                   <TableCell>
-                    {new Date(user.createdAt).toLocaleDateString("en-US", {
+                    {user.createdAt ? new Date(user.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
-                    })}
+                    }) : "N/A"}
                   </TableCell>
                   <TableCell align="center">
                     <Tooltip title="Xóa người dùng">
                       <IconButton
                         color="error"
-                        onClick={() => handleDeleteUser(user.id)}
+                        onClick={() => handleDeleteClick(user.id)}
                         size="small"
                       >
                         <DeleteIcon />
@@ -252,14 +313,45 @@ const UserList: React.FC = () => {
         </TableContainer>
       </Paper>
 
-      <Box display="flex" justifyContent="center" alignItems="center" py={2}>
-        <Pagination
-          count={Math.ceil((filteredUsers.length || 0) / limit)}
-          page={page}
-          onChange={(_, value) => setPage(value)}
-          color="primary"
-        />
-      </Box>
+      {filteredUsers.length > 0 && (
+        <Box display="flex" justifyContent="space-between" alignItems="center" px={2} py={2}>
+          <Typography variant="body2" color="text.secondary">
+            Showing {paginatedUsers.length} of {filteredUsers.length} results
+          </Typography>
+          <Pagination
+            count={Math.ceil((filteredUsers.length || 0) / limit)}
+            page={page}
+            onChange={(_, value) => setPage(value)}
+            color="primary"
+          />
+        </Box>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this user?</Typography>
+          <Typography variant="caption" color="error">
+            This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button 
+            onClick={handleDeleteConfirm} 
+            variant="contained" 
+            color="error"
+            disabled={deleteUserMutation.isPending}
+          >
+            {deleteUserMutation.isPending ? (
+              <CircularProgress size={20} />
+            ) : (
+              "Delete"
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

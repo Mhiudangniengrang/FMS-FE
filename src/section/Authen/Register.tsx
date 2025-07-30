@@ -18,8 +18,8 @@ import {
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { registerStyles } from "../../styles/register.styles";
-import type { RegisterFormData } from "../../types";
+import { registerStyles } from "@/styles/register.styles";
+import type { RegisterFormData } from "@/types";
 import {
   emailValidation,
   passwordValidation,

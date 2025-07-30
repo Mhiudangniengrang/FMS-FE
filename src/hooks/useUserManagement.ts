@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchUsers, createUser, updateUser, deleteUser } from "../api/user";
-import { showSnackbar } from "../App"; // Thêm showSnackbar nếu có
-import type { CreateUserData, UpdateUserData } from "../types/user.types";
+import { fetchUsers, createUser, updateUser, deleteUser } from "@/api/user";
+import { showSnackbar } from "@/App"; // Thêm showSnackbar nếu có
+import type { CreateUserData, UpdateUserData } from "@/types/user.types";
 
 export const useUserManagement = () => {
   const queryClient = useQueryClient();

@@ -1,4 +1,4 @@
-import type { User } from './user.types';
+import type { User } from "./user.types";
 
 export interface LoginFormData {
   email: string;
@@ -32,4 +32,3 @@ export interface AuthResponse {
   access_token: string;
   user: User;
 }
-
