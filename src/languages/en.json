@@ -86,6 +86,8 @@
     "phoneInvalid": " Phone number must be a valid format",
     "nameMinLength": "Name must be at least 2 characters",
     "passwordsDoNotMatch": "Passwords do not match",
-    "logoutSuccess": "Logout successful!"
+    "logoutSuccess": "Logout successful!",
+    "assetManagement": "Asset Management",
+    "totalInternalAccounts": "Total Internal Accounts"
   }
 }

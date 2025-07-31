@@ -60,11 +60,7 @@ export const useLogin = () => {
       Cookies.set("__role", data.user.role, { expires: 1 });
       queryClient.setQueryData(authKeys.me(), data.user);
       showSnackbar(t("loginSuccess"), "success");
-      if (data.user.role === "user") {
-        navigate("/user/assets");
-      } else {
-        navigate("/overview");
-      }
+      navigate("/overview");
       // Trả ra kết quả thành công
       return data;
     },

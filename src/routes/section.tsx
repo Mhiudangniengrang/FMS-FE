@@ -4,7 +4,6 @@ import { Outlet, useRoutes, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { Error404, Loading } from "@/components";
 import AuthenPage from "@/page/AuthenPage";
-import UserLayout from "@/layout/UserLayout";
 import Cookies from "js-cookie";
 
 export const OverViewPage = lazy(() => import("@/page/OverViewPage"));
@@ -31,9 +30,7 @@ const ProtectedRoute = ({
 
 export const Router = (): JSX.Element | null => {
   // Lấy role từ cookies
-  const userRole = Cookies.get("__role") || "guest";
-
-  console.log("User Role:", userRole);
+  // const userRole = Cookies.get("__role") || "guest";
 
   const routes = useRoutes([
     {
@@ -41,49 +38,27 @@ export const Router = (): JSX.Element | null => {
       element: <AuthenPage />,
     },
     {
-      path: "/register",
-      element: <AuthenPage />,
-    },
-    // Route cho admin
-    {
       element: (
-        <ProtectedRoute allowedRole="admin" userRole={userRole}>
-          <DashboardLayout>
-            <Suspense fallback={<Loading />}>
-              <Outlet />
-            </Suspense>
-          </DashboardLayout>
-        </ProtectedRoute>
+        <DashboardLayout>
+          <Suspense fallback={<Loading />}>
+            <Outlet />
+          </Suspense>
+        </DashboardLayout>
       ),
       children: [
-        {
-          element: <OverViewPage />,
-          path: "/overview",
-        },
-        {
-          element: <UserManage />,
-          path: "/user/view",
-        },
-        { element: <Error404 />, path: "*" },
-      ],
-    },
-    // Route cho user
-    {
-      element: (
-        <ProtectedRoute allowedRole="user" userRole={userRole}>
-          <UserLayout>
-            <Suspense fallback={<Loading />}>
-              <Outlet />
-            </Suspense>
-          </UserLayout>
-        </ProtectedRoute>
-      ),
-      children: [
-        {
-          element: <AssetPage />,
-          path: "/user/assets",
-        },
-        { element: <Error404 />, path: "*" },
+        // Admin routes
+        // {
+        //   element: (
+        //     <ProtectedRoute allowedRole="admin" userRole={userRole}>
+        //       <Outlet />
+        //     </ProtectedRoute>
+        //   ),
+
+        // },
+
+        { element: <OverViewPage />, path: "/overview" },
+        { element: <UserManage />, path: "/user/view" },
+        { element: <AssetPage />, path: "/asset/view" },
       ],
     },
   ]);

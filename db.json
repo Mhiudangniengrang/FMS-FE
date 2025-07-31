@@ -10,49 +10,25 @@
       "createdAt": "2024-01-15T08:00:00.000Z"
     },
     {
-      "name": "Sarah Johnson",
-      "email": "manager.sales@company.com",
-      "phone": "+1-555-0002",
-      "password": "",
-      "role": "manager",
-      "id": 2
-    },
-    {
-      "name": "Emily Davis",
-      "email": "emily.davis@company.com",
-      "phone": "+1-555-0004",
-      "password": "",
-      "role": "supervisor",
-      "id": 3
-    },
-    {
-      "name": "David Wilson",
-      "email": "david.wilson@company.com",
-      "phone": "+1-555-0005",
-      "password": "",
-      "role": "staff",
-      "id": 4
-    },
-    {
-      "id": 5,
+      "id": 2,
       "email": "robert.taylor@gmail.com",
       "phone": "+1-555-0006",
       "password": "user123",
       "name": "Robert Taylor",
-      "role": "user",
+      "role": "staff",
       "createdAt": "2024-05-01T14:00:00.000Z"
     },
     {
-      "id": 6,
+      "id": 3,
       "email": "user@example.com",
       "phone": "+1-555-0007",
       "password": "123456",
       "name": "Jennifer White",
-      "role": "user",
+      "role": "staff",
       "createdAt": "2024-05-15T15:00:00.000Z"
     },
     {
-      "id": 7,
+      "id": 4,
       "email": "amanda.garcia@company.com",
       "phone": "+1-555-0009",
       "password": "admin123",
@@ -61,30 +37,30 @@
       "createdAt": "2024-06-15T17:00:00.000Z"
     },
     {
-      "id": 8,
+      "id": 5,
       "email": "hiu@gmail.com",
       "phone": "0989001182",
       "password": "123456",
       "name": "Michael Brown",
-      "role": "user",
+      "role": "manager",
       "createdAt": "2025-07-28T09:41:23.280Z"
     },
     {
-      "name": "Leanne Graha",
-      "email": "hiu@gmail.com",
-      "phone": "0989001182",
-      "password": "",
-      "role": "manager",
-      "id": 9
-    },
-    {
-      "id": 10,
+      "id": 6,
       "email": "jinakan631@hadvar.com",
       "phone": "0989001182",
       "password": "123456",
       "name": "Michael Jack",
-      "role": "user",
+      "role": "manager",
       "createdAt": "2025-07-31T04:23:29.284Z"
+    },
+    {
+      "name": "Michael Bin",
+      "email": "hiu@gmail.com",
+      "phone": "0989001182",
+      "password": "123456",
+      "role": "supervisor",
+      "id": 7
     }
   ],
   "sessions": []

@@ -7,16 +7,16 @@ import {
   useTheme,
   CssBaseline,
 } from "@mui/material";
-import Register from "../Register";
-import { useLocation } from "react-router-dom";
+// import Register from "../Register";
+// import { useLocation } from "react-router-dom";
 import Login from "../Login";
 import { useTranslation } from "react-i18next";
 
 const AuthenView: React.FC = () => {
-  const location = useLocation();
+  // const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const isRegister: boolean = location.pathname === "/register";
+  // const isRegister: boolean = location.pathname === "/register";
   const { t } = useTranslation();
   return (
     <Box
@@ -46,7 +46,7 @@ const AuthenView: React.FC = () => {
           overflow: "hidden",
           borderRadius: { xs: 2, sm: 3 },
           minHeight: {
-            md: "500px",
+            md: "450px",
           },
           maxHeight: {
             xs: "100%",
@@ -62,7 +62,7 @@ const AuthenView: React.FC = () => {
             justifyContent: "center",
             overflow: "hidden",
             maxHeight: {
-              xs: isRegister ? "calc(100vh - 40px)" : "auto",
+              xs: "auto",
               md: "850px",
             },
           }}
@@ -82,7 +82,7 @@ const AuthenView: React.FC = () => {
                 mb: 0.5,
               }}
             >
-              {isRegister ? t("register") : t("login")}
+              {t("login")}
             </Typography>
             <Typography
               variant="body2"
@@ -92,11 +92,11 @@ const AuthenView: React.FC = () => {
                 fontSize: "0.875rem",
               }}
             >
-              {isRegister ? t("registerDescription") : t("loginDescription")}
+              {t("loginDescription")}
             </Typography>
           </Box>
           <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
-            {isRegister ? <Register /> : <Login />}
+            <Login />
           </Box>
         </Box>
       </Paper>

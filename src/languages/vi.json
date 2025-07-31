@@ -84,6 +84,7 @@
     "phoneInvalid": "Số điện thoại không hợp lệ",
     "nameMinLength": "Tên phải có ít nhất 2 ký tự",
     "passwordsDoNotMatch": "Mật khẩu không khớp",
-    "logoutSuccess": "Đăng xuất thành công!"
+    "logoutSuccess": "Đăng xuất thành công!",
+    "assetManagement": "Quản Lý Tài Sản"
   }
 }

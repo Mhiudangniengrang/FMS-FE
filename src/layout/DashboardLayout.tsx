@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Home as HomeIcon,
   PersonAdd as PersonAddIcon,
+  LaptopMac as LaptopMacIcon,
   Notifications as NotificationsIcon,
   Settings as SettingsIcon,
   Menu as MenuIcon,
@@ -54,6 +55,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <PersonAddIcon />,
       "/user/view"
     ),
+    createMenuItem(t("assetManagement"), "3", <LaptopMacIcon />, "/asset/view"),
   ];
 
   // React Query for user data
