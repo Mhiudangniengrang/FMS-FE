@@ -1,6 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { AssetView } from "../section/Asset/view";
+import AssetManagement from "../section/Asset/Asset";
+
 
 const AssetPage: React.FC = () => {
   return (
@@ -8,7 +9,7 @@ const AssetPage: React.FC = () => {
       <Helmet>
         <title>FMS | Asset Management</title>
       </Helmet>
-      <AssetView />
+      <AssetManagement />
     </>
   );
 };

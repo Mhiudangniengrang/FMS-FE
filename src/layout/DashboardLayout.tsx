@@ -39,8 +39,9 @@ import { useUserInfo, useLogout } from "../hooks/useAuth";
 const items: MenuItemType[] = [
   createMenuItem("Overview", "1", <HomeIcon />, "/overview"),
   createMenuItem("User Management", "2", <PersonAddIcon />, "/user/view"),
+  createMenuItem("Asset Management", "3", <HomeIcon />, "/access"),
 ];
-
+  
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
