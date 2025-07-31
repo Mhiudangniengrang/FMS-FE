@@ -7,6 +7,7 @@ import {
 import UserList from "./UserList";
 import { useUserInfo } from "@/hooks/useAuth";
 import Internal from "./Internal";
+import { useTranslation } from "react-i18next";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -40,6 +41,7 @@ function a11yProps(index: number) {
 const User: React.FC = () => {
   const [value, setValue] = useState(0);
   const { data: currentUser } = useUserInfo();
+  const { t } = useTranslation();
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -56,10 +58,10 @@ const User: React.FC = () => {
             gutterBottom
             sx={{ fontWeight: "bold" }}
           >
-            User Management
+            {t("accountManagement")}
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            User account and permission management system
+            {t("userManagementDescription")}
           </Typography>
         </Box>
 
@@ -76,7 +78,7 @@ const User: React.FC = () => {
                 <Tab
                   icon={<AdminIcon />}
                   iconPosition="start"
-                  label="Internal Management"
+                  label={t("internalAccount")}
                   {...a11yProps(0)}
                   sx={{
                     textTransform: "none",
@@ -91,7 +93,7 @@ const User: React.FC = () => {
             <Tab
               icon={<PeopleIcon />}
               iconPosition="start"
-              label="User List"
+              label={t("userAccount")}
               {...a11yProps(
                 currentUser?.role &&
                   ["admin", "manager", "staff"].includes(currentUser.role)

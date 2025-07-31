@@ -33,10 +33,12 @@ import {
 } from "@mui/icons-material";
 import { useUserManagement } from "@/hooks/useUserManagement";
 import type { User } from "@/types/user.types";
+import { useTranslation } from "react-i18next";
 
 const UserList: React.FC = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
@@ -67,27 +69,28 @@ const UserList: React.FC = () => {
   };
 
   // Filter only regular users
-  const regularUsers = users?.filter((user: User) => user.role === "user") || [];
+  const regularUsers =
+    users?.filter((user: User) => user.role === "user") || [];
 
   // Cải thiện chức năng tìm kiếm với useMemo và xử lý null/undefined
   const filteredUsers = useMemo(() => {
     if (!Array.isArray(regularUsers) || regularUsers.length === 0) {
       return [];
     }
-    
+
     if (!searchTerm.trim()) {
       return regularUsers;
     }
-    
+
     const query = searchTerm.toLowerCase().trim();
     return regularUsers.filter((user: User) => {
-      const name = user.name ? user.name.toLowerCase() : '';
-      const email = user.email ? user.email.toLowerCase() : '';
-      const phone = user.phone ? user.phone : '';
-      
-      return name.includes(query) || 
-             email.includes(query) || 
-             phone.includes(query);
+      const name = user.name ? user.name.toLowerCase() : "";
+      const email = user.email ? user.email.toLowerCase() : "";
+      const phone = user.phone ? user.phone : "";
+
+      return (
+        name.includes(query) || email.includes(query) || phone.includes(query)
+      );
     });
   }, [regularUsers, searchTerm]);
 
@@ -129,10 +132,10 @@ const UserList: React.FC = () => {
       {/* Header */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="h5" gutterBottom>
-          User List
+          {t("userAccounts")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          View information of all users in the system
+          {t("userDecription")}
         </Typography>
       </Box>
 
@@ -150,7 +153,7 @@ const UserList: React.FC = () => {
                     {regularUsers.length || 0}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Total Users
+                    {t("totalUsers")}
                   </Typography>
                 </Box>
               </Box>
@@ -169,12 +172,13 @@ const UserList: React.FC = () => {
                   <Typography variant="h6">
                     {regularUsers.filter(
                       (u: User) =>
-                        u.createdAt && new Date(u.createdAt) >
-                        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+                        u.createdAt &&
+                        new Date(u.createdAt) >
+                          new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
                     ).length || 0}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    New Users (30 days)
+                    {t("newUsers")}
                   </Typography>
                 </Box>
               </Box>
@@ -194,7 +198,7 @@ const UserList: React.FC = () => {
                     {filteredUsers.length || 0}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Search Results
+                    {t("searchResults")}
                   </Typography>
                 </Box>
               </Box>
@@ -207,7 +211,7 @@ const UserList: React.FC = () => {
       <Box sx={{ mb: 3 }}>
         <TextField
           fullWidth
-          placeholder="Search by name, email or phone number..."
+          placeholder={t("searchUsers")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -245,13 +249,13 @@ const UserList: React.FC = () => {
           <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell width="5%">No.</TableCell>
-                <TableCell>User</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Phone Number</TableCell>
-                <TableCell>Join Date</TableCell>
+                <TableCell width="5%">{t("no")}</TableCell>
+                <TableCell>{t("name")}</TableCell>
+                <TableCell>{t("email")}</TableCell>
+                <TableCell>{t("phone")}</TableCell>
+                <TableCell>{t("joinDate")}</TableCell>
                 <TableCell width="10%" align="center">
-                  Actions
+                  {t("actions")}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -270,11 +274,13 @@ const UserList: React.FC = () => {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.phone}</TableCell>
                   <TableCell>
-                    {user.createdAt ? new Date(user.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }) : "N/A"}
+                    {user.createdAt
+                      ? new Date(user.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                      : "N/A"}
                   </TableCell>
                   <TableCell align="center">
                     <Tooltip title="Xóa người dùng">
@@ -314,7 +320,13 @@ const UserList: React.FC = () => {
       </Paper>
 
       {filteredUsers.length > 0 && (
-        <Box display="flex" justifyContent="space-between" alignItems="center" px={2} py={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          px={2}
+          py={2}
+        >
           <Typography variant="body2" color="text.secondary">
             Showing {paginatedUsers.length} of {filteredUsers.length} results
           </Typography>
@@ -329,25 +341,25 @@ const UserList: React.FC = () => {
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>{t("confirmDelete")}</DialogTitle>
         <DialogContent>
-          <Typography>Are you sure you want to delete this user?</Typography>
+          <Typography>{t("deleteDescription")}</Typography>
           <Typography variant="caption" color="error">
-            This action cannot be undone.
+            {t("deleteDescription")}
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteCancel}>Cancel</Button>
-          <Button 
-            onClick={handleDeleteConfirm} 
-            variant="contained" 
+          <Button onClick={handleDeleteCancel}>{t("cancel")}</Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            variant="contained"
             color="error"
             disabled={deleteUserMutation.isPending}
           >
             {deleteUserMutation.isPending ? (
               <CircularProgress size={20} />
             ) : (
-              "Delete"
+              t("delete")
             )}
           </Button>
         </DialogActions>

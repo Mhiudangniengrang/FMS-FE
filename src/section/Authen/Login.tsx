@@ -22,10 +22,10 @@ import { loginStyles } from "@/styles/login.styles";
 import type { LoginFormData } from "@/types";
 import { emailValidation, passwordValidation } from "@/utils";
 import { useLogin } from "@/hooks/useAuth";
-
+import { useTranslation } from "react-i18next";
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
+  const { t } = useTranslation();
   const loginMutation = useLogin();
 
   const {
@@ -50,8 +50,8 @@ const Login: React.FC = () => {
     >
       <TextField
         fullWidth
-        placeholder="Email"
-        {...register("email", emailValidation)}
+        placeholder={t("email")}
+        {...register("email", emailValidation(t))}
         error={!!errors.email}
         helperText={errors.email?.message || " "}
         slotProps={{
@@ -69,8 +69,8 @@ const Login: React.FC = () => {
       <TextField
         fullWidth
         type={showPassword ? "text" : "password"}
-        placeholder="Password"
-        {...register("password", passwordValidation)}
+        placeholder={t("password")}
+        {...register("password", passwordValidation(t))}
         error={!!errors.password}
         helperText={errors.password?.message || " "}
         slotProps={{
@@ -108,12 +108,12 @@ const Login: React.FC = () => {
           }
           label={
             <Typography variant="body2" sx={loginStyles.rememberText}>
-              Remember me
+              {t("rememberMe")}
             </Typography>
           }
         />
         <Link to="#" style={loginStyles.forgotPasswordLink}>
-          Forgot password
+          {t("forgotPassword")}
         </Link>
       </Box>
       <Button
@@ -126,14 +126,14 @@ const Login: React.FC = () => {
         {loginMutation.isPending ? (
           <CircularProgress size={24} color="inherit" />
         ) : (
-          "Login"
+          t("login")
         )}
       </Button>
       <Box sx={loginStyles.registerContainer}>
         <Typography variant="body2" sx={loginStyles.registerText}>
-          Don't have an account?{" "}
+          {t("noAccounts")}{" "}
           <Link to="/register" style={loginStyles.registerLink}>
-            Register here
+            {t("registerHere")}
           </Link>
         </Typography>
 

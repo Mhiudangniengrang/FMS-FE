@@ -42,6 +42,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { useUserManagement } from "@/hooks/useUserManagement";
 import type { CreateUserForm, User } from "@/types/user.types";
+import { useTranslation } from "react-i18next";
 
 const Internal: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -56,6 +57,7 @@ const Internal: React.FC = () => {
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState<string>("all");
+  const { t } = useTranslation();
 
   const {
     users,
@@ -236,10 +238,10 @@ const Internal: React.FC = () => {
       >
         <Box>
           <Typography variant="h5" gutterBottom>
-            Internal Management
+            {t("internalAccount")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Create accounts and assign permissions for internal staff
+            {t("internalAccountDescription")}
           </Typography>
         </Box>
         <Button
@@ -252,7 +254,7 @@ const Internal: React.FC = () => {
             px: 3,
           }}
         >
-          Create Account
+          {t("createNewAccount")}
         </Button>
       </Box>
 
@@ -268,7 +270,7 @@ const Internal: React.FC = () => {
                 .length || 0}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Managers
+              {t("managers")}
             </Typography>
           </Paper>
         </Grid>
@@ -280,7 +282,7 @@ const Internal: React.FC = () => {
                 .length || 0}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Supervisors
+              {t("supervisors")}
             </Typography>
           </Paper>
         </Grid>
@@ -292,7 +294,7 @@ const Internal: React.FC = () => {
                 0}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Staffs
+              {t("staffs")}
             </Typography>
           </Paper>
         </Grid>
@@ -305,7 +307,7 @@ const Internal: React.FC = () => {
               {internalUsers?.length || 0}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Total Internal
+              {t("totalInternalAccounts")}
             </Typography>
           </Paper>
         </Grid>
@@ -314,7 +316,7 @@ const Internal: React.FC = () => {
       {/* Search and Filter */}
       <Box sx={{ mb: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
         <TextField
-          placeholder="Search users..."
+          placeholder={t("searchUsers")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           sx={{ flexGrow: 1, minWidth: "200px" }}
@@ -346,17 +348,17 @@ const Internal: React.FC = () => {
             labelId="role-filter-label"
             value={filterRole}
             onChange={(e) => setFilterRole(e.target.value)}
-            label="Filter by Role"
+            label={t("filterByRole")}
             startAdornment={
               <InputAdornment position="start">
                 <FilterIcon fontSize="small" />
               </InputAdornment>
             }
           >
-            <MenuItem value="all">All Roles</MenuItem>
-            <MenuItem value="manager">Managers</MenuItem>
-            <MenuItem value="supervisor">Supervisors</MenuItem>
-            <MenuItem value="staff">Staff</MenuItem>
+            <MenuItem value="all">{t("allRoles")}</MenuItem>
+            <MenuItem value="manager">{t("managers")}</MenuItem>
+            <MenuItem value="supervisor">{t("supervisors")}</MenuItem>
+            <MenuItem value="staff">{t("staffs")}</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -367,12 +369,12 @@ const Internal: React.FC = () => {
           <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell>No.</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Phone</TableCell>
-                <TableCell>Role</TableCell>
-                <TableCell align="center">Actions</TableCell>
+                <TableCell>{t("no")}</TableCell>
+                <TableCell>{t("name")}</TableCell>
+                <TableCell>{t("email")}</TableCell>
+                <TableCell>{t("phone")}</TableCell>
+                <TableCell>{t("role")}</TableCell>
+                <TableCell align="center">{t("actions")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -387,10 +389,10 @@ const Internal: React.FC = () => {
                       <Chip
                         label={
                           user.role === "supervisor"
-                            ? "Supervisor"
+                            ? t("supervisors")
                             : user.role === "manager"
-                            ? "Manager"
-                            : "Staff"
+                            ? t("managers")
+                            : t("staffs")
                         }
                         color={
                           user.role === "supervisor"
@@ -425,8 +427,8 @@ const Internal: React.FC = () => {
                   <TableCell colSpan={6} align="center">
                     <Typography variant="body1" py={3}>
                       {searchQuery || filterRole !== "all"
-                        ? "No users found matching your search criteria"
-                        : "No users available"}
+                        ? t("noResultsFound")
+                        : t("noUsersAvailable")}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -476,7 +478,7 @@ const Internal: React.FC = () => {
             mb={3}
           >
             <Typography variant="h6">
-              {formMode === "edit" ? "Edit User" : "Create New Account"}
+              {formMode === "edit" ? t("editUser") : t("createNewAccount")}
             </Typography>
             <IconButton onClick={handleClose}>
               <CloseIcon />
@@ -497,11 +499,11 @@ const Internal: React.FC = () => {
                 <Controller
                   name="name"
                   control={control}
-                  rules={{ required: "Name is required" }}
+                  rules={{ required: t("nameIsRequired") }}
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label="Name"
+                      label={t("name")}
                       fullWidth
                       error={!!errors.name}
                       helperText={errors.name?.message}
@@ -516,7 +518,7 @@ const Internal: React.FC = () => {
                   name="email"
                   control={control}
                   rules={{
-                    required: "Email is required",
+                    required: t("emailIsRequired"),
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                       message: "Invalid email format",
@@ -525,7 +527,7 @@ const Internal: React.FC = () => {
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label="Email"
+                      label={t("email")}
                       type="email"
                       fullWidth
                       error={!!errors.email}
@@ -540,11 +542,11 @@ const Internal: React.FC = () => {
                 <Controller
                   name="phone"
                   control={control}
-                  rules={{ required: "Phone number is required" }}
+                  rules={{ required: t("phoneIsRequired") }}
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label="Phone Number"
+                      label={t("phone")}
                       fullWidth
                       error={!!errors.phone}
                       helperText={errors.phone?.message}
@@ -560,11 +562,11 @@ const Internal: React.FC = () => {
                   <Controller
                     name="password"
                     control={control}
-                    rules={{ required: "Password is required" }}
+                    rules={{ required: t("passwordIsRequired") }}
                     render={({ field }) => (
                       <TextField
                         {...field}
-                        label="Password"
+                        label={t("password")}
                         type="password"
                         fullWidth
                         error={!!errors.password}
@@ -600,11 +602,13 @@ const Internal: React.FC = () => {
                   control={control}
                   render={({ field }) => (
                     <FormControl fullWidth sx={{ mb: 2 }}>
-                      <InputLabel>Role</InputLabel>
-                      <Select {...field} label="Role">
-                        <MenuItem value="staff">Staff</MenuItem>
-                        <MenuItem value="manager">Manager</MenuItem>
-                        <MenuItem value="supervisor">Supervisor</MenuItem>
+                      <InputLabel>{t("role")}</InputLabel>
+                      <Select {...field} label={t("role")}>
+                        <MenuItem value="staff">{t("staffs")}</MenuItem>
+                        <MenuItem value="manager">{t("managers")}</MenuItem>
+                        <MenuItem value="supervisor">
+                          {t("supervisors")}
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   )}
@@ -621,7 +625,7 @@ const Internal: React.FC = () => {
               }}
             >
               <Button onClick={handleClose} variant="outlined">
-                CANCEL
+                {t("cancel")}
               </Button>
               <Button
                 type="submit"
@@ -634,9 +638,9 @@ const Internal: React.FC = () => {
                 updateUserMutation.isPending ? (
                   <CircularProgress size={20} />
                 ) : formMode === "edit" ? (
-                  "UPDATE"
+                  t("update")
                 ) : (
-                  "CREATE ACCOUNT"
+                  t("createAccount")
                 )}
               </Button>
             </Box>
@@ -646,15 +650,15 @@ const Internal: React.FC = () => {
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>{t("confirmDelete")}</DialogTitle>
         <DialogContent>
-          <Typography>Are you sure you want to delete this user?</Typography>
+          <Typography>{t("deleteDescription")}</Typography>
           <Typography variant="caption" color="error">
-            This action cannot be undone.
+            {t("deleteDescription")}
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button onClick={handleDeleteCancel}>{t("cancel")}</Button>
           <Button
             onClick={handleDeleteConfirm}
             variant="contained"
@@ -664,7 +668,7 @@ const Internal: React.FC = () => {
             {deleteUserMutation.isPending ? (
               <CircularProgress size={20} />
             ) : (
-              "Delete"
+              t("delete")
             )}
           </Button>
         </DialogActions>

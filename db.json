@@ -73,9 +73,18 @@
       "name": "Leanne Graha",
       "email": "hiu@gmail.com",
       "phone": "0989001182",
-      "password": "123456",
-      "role": "staff",
+      "password": "",
+      "role": "manager",
       "id": 9
+    },
+    {
+      "id": 10,
+      "email": "jinakan631@hadvar.com",
+      "phone": "0989001182",
+      "password": "123456",
+      "name": "Michael Jack",
+      "role": "user",
+      "createdAt": "2025-07-31T04:23:29.284Z"
     }
   ],
   "sessions": []

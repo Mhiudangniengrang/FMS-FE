@@ -1,41 +1,43 @@
-export const emailValidation = {
-  required: "Email is required",
+import type { TFunction } from "i18next";
+
+export const emailValidation = (t: TFunction) => ({
+  required: t("emailRequired"),
   pattern: {
     value: /\S+@\S+\.\S+/,
-    message: "Email is invalid",
+    message: t("emailInvalid"),
   },
-};
+});
 
-export const nameValidation = {
-  required: "Name is required",
+export const nameValidation = (t: TFunction) => ({
+  required: t("nameRequired"),
   minLength: {
     value: 2,
-    message: "Name must be at least 2 characters",
+    message: t("nameMinLength"),
   },
-};
+});
 
-export const passwordValidation = {
-  required: "Password is required",
+export const passwordValidation = (t: TFunction) => ({
+  required: t("passwordRequired"),
   minLength: {
     value: 6,
-    message: "Password must be at least 6 characters",
+    message: t("passwordMinLength"),
   },
-};
+});
 
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /\S+@\S+\.\S+/;
   return emailRegex.test(email);
 };
 
-export const phoneValidation = {
-  required: "Phone number is required",
+export const phoneValidation = (t: TFunction) => ({
+  required: t("phoneRequired"),
   pattern: {
     value: /^[0-9]{10,11}$/,
-    message: "Phone number is invalid",
+    message: t("phoneInvalid"),
   },
-};
+});
 
-export const confirmPasswordValidation = (password: string) => ({
-  required: "Please confirm your password",
-  validate: (value: string) => value === password || "Passwords do not match",
+export const confirmPasswordValidation = (password: string, t: TFunction) => ({
+  required: t("confirmPasswordRequired"),
+  validate: (value: string) => value === password || t("passwordsDoNotMatch"),
 });

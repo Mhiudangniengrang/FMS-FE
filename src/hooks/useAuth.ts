@@ -8,6 +8,7 @@ import {
 } from "@/api/authen";
 import type { RegisterRequest, AuthResponse } from "../types";
 import { showSnackbar } from "@/App"; // import hàm showSnackbar
+import { useTranslation } from "react-i18next";
 
 // Query Keys
 const authKeys = {
@@ -41,6 +42,7 @@ export const useUserInfo = () => {
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: async ({
@@ -57,7 +59,7 @@ export const useLogin = () => {
       Cookies.set("__token", data.access_token, { expires: 1 });
       Cookies.set("__role", data.user.role, { expires: 1 });
       queryClient.setQueryData(authKeys.me(), data.user);
-      showSnackbar("Login successful!", "success");
+      showSnackbar(t("loginSuccess"), "success");
       if (data.user.role === "user") {
         navigate("/user/assets");
       } else {
@@ -67,7 +69,12 @@ export const useLogin = () => {
       return data;
     },
     onError: (error: any) => {
-      showSnackbar(error?.response?.data?.message || "Login failed!", "error");
+      showSnackbar(
+        error?.response?.data?.message
+          ? t(error.response.data.message)
+          : t("loginFailed"),
+        "error"
+      );
       // Trả ra lỗi
       return error;
     },
@@ -78,6 +85,7 @@ export const useLogin = () => {
 export const useRegister = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: async (userData: RegisterRequest) => {
@@ -85,14 +93,16 @@ export const useRegister = () => {
       return response.data;
     },
     onSuccess: (data: AuthResponse) => {
-      showSnackbar("Registration successful! Please log in.", "success");
+      showSnackbar(t("registerSuccess"), "success");
       queryClient.setQueryData(authKeys.me(), data.user);
       setTimeout(() => navigate("/login"), 1000);
       return data;
     },
     onError: (error: any) => {
       showSnackbar(
-        error?.response?.data?.message || "Registration failed!",
+        error?.response?.data?.message
+          ? t(error.response.data.message)
+          : t("registerFailed"),
         "error"
       );
       return error;
@@ -104,13 +114,14 @@ export const useRegister = () => {
 export const useLogout = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: async () => Promise.resolve(),
     onSuccess: () => {
       Cookies.remove("__token");
       Cookies.remove("__role");
-      showSnackbar("Logout successful!", "success"); // <-- gọi ở đây
+      showSnackbar(t("logoutSuccess"), "success");
       queryClient.clear();
       navigate("/");
     },

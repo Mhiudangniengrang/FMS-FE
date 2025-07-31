@@ -8,6 +8,7 @@ import {
   MenuOpen as MenuOpenIcon,
   Logout as LogoutIcon,
 } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 import {
   Box,
   Drawer,
@@ -34,12 +35,7 @@ import { dashboardStyles } from "@/styles/dashboard.styles";
 import type { MenuItemType, DashboardLayoutProps } from "@/types";
 import { createMenuItem } from "@/utils";
 import { useUserInfo, useLogout } from "@/hooks/useAuth";
-
-// Menu items with enhanced icons and structure
-const items: MenuItemType[] = [
-  createMenuItem("Overview", "1", <HomeIcon />, "/overview"),
-  createMenuItem("User Management", "2", <PersonAddIcon />, "/user/view"),
-];
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -47,6 +43,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [anchorElNotification, setAnchorElNotification] =
     useState<null | HTMLElement>(null);
   const location = useLocation();
+  const { t } = useTranslation();
+
+  // Menu items with enhanced icons and structure
+  const items: MenuItemType[] = [
+    createMenuItem(t("overview"), "1", <HomeIcon />, "/overview"),
+    createMenuItem(
+      t("accountManagement"),
+      "2",
+      <PersonAddIcon />,
+      "/user/view"
+    ),
+  ];
 
   // React Query for user data
   const { data: infoUser } = useUserInfo();
@@ -149,7 +157,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   fontSize: "0.7rem",
                 }}
               >
-                Facility Management System
+                {t("facilityManagementSystem")}
               </Typography>
             </Box>
           </Box>
@@ -168,7 +176,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               display: collapsed ? "none" : "block",
             }}
           >
-            Main Menu
+            {t("mainMenu")}
           </Typography>
           <List sx={{ pt: 0.5 }}>
             {items.map((item) => (
@@ -240,6 +248,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
             {/* Right side of header */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <LanguageSwitcher />
               <IconButton
                 color="inherit"
                 onClick={handleOpenNotificationMenu}
@@ -267,10 +276,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   sx={{ p: 2, borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
                 >
                   <Typography variant="subtitle1" fontWeight={600}>
-                    Notifications
+                    {t("notifications")}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    You have 2 unread messages
+                    {t("unreadMessages", { count: 2 })}
                   </Typography>
                 </Box>
                 <MenuItem onClick={handleCloseNotificationMenu} sx={{ py: 2 }}>
@@ -286,13 +295,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         variant="body2"
                         sx={{ fontWeight: 600, color: "text.primary" }}
                       >
-                        Cập nhật hệ thống
+                        {t("systemUpdate")}
                       </Typography>
                       <Typography
                         variant="caption"
                         sx={{ color: "text.disabled" }}
                       >
-                        1 giờ trước
+                        {t("hoursAgo", { count: 1 })}
                       </Typography>
                     </Box>
                     <Typography
@@ -303,7 +312,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         mt: 0.5,
                       }}
                     >
-                      Phiên bản 2.1.0 đã được phát hành
+                      {t("newVersionReleased")}
                     </Typography>
                   </Box>
                 </MenuItem>
@@ -318,7 +327,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     variant="caption"
                     sx={{ color: "#1976d2", cursor: "pointer" }}
                   >
-                    View all notifications
+                    {t("viewAll")}
                   </Typography>
                 </Box>
               </Menu>
@@ -380,7 +389,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <ListItemIcon sx={{ color: "text.secondary" }}>
                     <PersonAddIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText primary="User Profile" />
+                  <ListItemText primary={t("userProfile")} />
                 </MenuItem>
                 <MenuItem
                   onClick={() => handleUserMenuClick("settings")}
@@ -392,7 +401,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <ListItemIcon sx={{ color: "text.secondary" }}>
                     <SettingsIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText primary="Setting" />
+                  <ListItemText primary={t("settings")} />
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem
@@ -406,7 +415,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <ListItemIcon sx={{ color: "#f44336" }}>
                     <LogoutIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText primary="Logout" />
+                  <ListItemText primary={t("logout")} />
                 </MenuItem>
               </Menu>
             </Box>

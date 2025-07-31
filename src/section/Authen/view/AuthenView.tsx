@@ -10,13 +10,14 @@ import {
 import Register from "../Register";
 import { useLocation } from "react-router-dom";
 import Login from "../Login";
+import { useTranslation } from "react-i18next";
 
 const AuthenView: React.FC = () => {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const isRegister: boolean = location.pathname === "/register";
-
+  const { t } = useTranslation();
   return (
     <Box
       className="mui-background"
@@ -81,7 +82,7 @@ const AuthenView: React.FC = () => {
                 mb: 0.5,
               }}
             >
-              {isRegister ? "Register" : "Login"}
+              {isRegister ? t("register") : t("login")}
             </Typography>
             <Typography
               variant="body2"
@@ -91,9 +92,7 @@ const AuthenView: React.FC = () => {
                 fontSize: "0.875rem",
               }}
             >
-              {isRegister
-                ? "Please fill in the information to create an account."
-                : "Please enter your email and password to login."}
+              {isRegister ? t("registerDescription") : t("loginDescription")}
             </Typography>
           </Box>
           <Box sx={{ flexGrow: 1, overflow: "hidden" }}>

@@ -28,12 +28,12 @@ import {
   confirmPasswordValidation,
 } from "../../utils";
 import { useRegister } from "../../hooks/useAuth";
-
+import { useTranslation } from "react-i18next";
 const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-
+  const { t } = useTranslation();
   const registerMutation = useRegister();
 
   const {
@@ -80,8 +80,8 @@ const Register: React.FC = () => {
     >
       <TextField
         fullWidth
-        placeholder="Email"
-        {...register("email", emailValidation)}
+        placeholder={t("email")}
+        {...register("email", emailValidation(t))}
         error={!!errors.email}
         helperText={errors.email?.message || " "}
         slotProps={{
@@ -101,8 +101,8 @@ const Register: React.FC = () => {
 
       <TextField
         fullWidth
-        placeholder="Phone Number"
-        {...register("phone", phoneValidation)}
+        placeholder={t("phone")}
+        {...register("phone", phoneValidation(t))}
         error={!!errors.phone}
         helperText={errors.phone?.message || " "}
         slotProps={{
@@ -122,8 +122,8 @@ const Register: React.FC = () => {
 
       <TextField
         fullWidth
-        placeholder="Full Name"
-        {...register("name", nameValidation)}
+        placeholder={t("name")}
+        {...register("name", nameValidation(t))}
         error={!!errors.name}
         helperText={errors.name?.message || " "}
         slotProps={{
@@ -144,8 +144,8 @@ const Register: React.FC = () => {
       <TextField
         fullWidth
         type={showPassword ? "text" : "password"}
-        placeholder="Password"
-        {...register("password", passwordValidation)}
+        placeholder={t("password")}
+        {...register("password", passwordValidation(t))}
         error={!!errors.password}
         helperText={errors.password?.message || " "}
         slotProps={{
@@ -180,10 +180,10 @@ const Register: React.FC = () => {
       <TextField
         fullWidth
         type={showConfirmPassword ? "text" : "password"}
-        placeholder="Confirm Password"
+        placeholder={t("confirmPassword")}
         {...register(
           "confirmPassword",
-          confirmPasswordValidation(watchPassword)
+          confirmPasswordValidation(watchPassword, t)
         )}
         error={!!errors.confirmPassword}
         helperText={errors.confirmPassword?.message || " "}
@@ -226,15 +226,15 @@ const Register: React.FC = () => {
         {registerMutation.isPending ? (
           <CircularProgress size={24} color="inherit" />
         ) : (
-          "Register"
+          t("register")
         )}
       </Button>
 
       <Box sx={registerStyles.loginContainer}>
         <Typography variant="body2" sx={registerStyles.loginText}>
-          Already have an account?{" "}
+          {t("alreadyHaveAccount")}{" "}
           <Link to="/" style={registerStyles.loginLink}>
-            Login here
+            {t("loginHere")}
           </Link>
         </Typography>
       </Box>

@@ -2,9 +2,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchUsers, createUser, updateUser, deleteUser } from "@/api/user";
 import { showSnackbar } from "@/App"; // Thêm showSnackbar nếu có
 import type { CreateUserData, UpdateUserData } from "@/types/user.types";
+import { useTranslation } from "react-i18next";
 
 export const useUserManagement = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   // Fetch all users
   const {
@@ -29,13 +31,13 @@ export const useUserManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      showSnackbar && showSnackbar("User created successfully", "success");
+      showSnackbar && showSnackbar(t("userCreateSuccess"), "success");
     },
     onError: (error: any) => {
-      console.error("Error creating user:", error);
+      console.error(t("errorCreatingAccount"), error);
       showSnackbar &&
         showSnackbar(
-          error?.response?.data?.message || "Error creating user",
+          error?.response?.data?.message || t("errorCreatingAccount"),
           "error"
         );
     },
@@ -49,13 +51,13 @@ export const useUserManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      showSnackbar && showSnackbar("User updated successfully", "success");
+      showSnackbar && showSnackbar(t("userUpdateSuccess"), "success");
     },
     onError: (error: any) => {
-      console.error("Error updating user:", error);
+      console.error(t("errorUpdatingAccount"), error);
       showSnackbar &&
         showSnackbar(
-          error?.response?.data?.message || "Error updating user",
+          error?.response?.data?.message || t("errorUpdatingAccount"),
           "error"
         );
     },
@@ -69,13 +71,13 @@ export const useUserManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      showSnackbar && showSnackbar("User deleted successfully", "success");
+      showSnackbar && showSnackbar(t("userDeleteSuccess"), "success");
     },
     onError: (error: any) => {
-      console.error("Error deleting user:", error);
+      console.error(t("errorDeletingAccount"), error);
       showSnackbar &&
         showSnackbar(
-          error?.response?.data?.message || "Error deleting user",
+          error?.response?.data?.message || t("errorDeletingAccount"),
           "error"
         );
     },
