@@ -9,6 +9,10 @@ import Cookies from "js-cookie";
 export const OverViewPage = lazy(() => import("@/page/OverViewPage"));
 export const UserManage = lazy(() => import("@/page/UserPage"));
 export const AssetPage = lazy(() => import("@/page/AssetPage"));
+export const MaintenancePage = lazy(() => import("../page/MaintenancePage"));
+export const MaintenanceManagementPage = lazy(
+  () => import("../page/MaintenanceManagementPage")
+);
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -21,16 +25,16 @@ const ProtectedRoute = ({
   children,
   allowedRole,
   userRole,
-}: ProtectedRouteProps): JSX.Element => {
+}: ProtectedRouteProps): React.JSX.Element => {
   if (userRole?.toLowerCase() !== allowedRole.toLowerCase()) {
     return <Navigate to="/" replace />;
   }
   return <>{children}</>;
 };
 
-export const Router = (): JSX.Element | null => {
+export const Router = (): React.JSX.Element | null => {
   // Lấy role từ cookies
-  // const userRole = Cookies.get("__role") || "guest";
+  const userRole = Cookies.get("__role") || "guest";
 
   const routes = useRoutes([
     {
@@ -47,40 +51,37 @@ export const Router = (): JSX.Element | null => {
       ),
       children: [
         // Admin routes
-        // {
-        //   element: (
-        //     <ProtectedRoute allowedRole="admin" userRole={userRole}>
-        //       <Outlet />
-        //     </ProtectedRoute>
-        //   ),
-
-        // },
-
-        { element: <OverViewPage />, path: "/overview" },
-        { element: <UserManage />, path: "/user/view" },
-        { element: <AssetPage />, path: "/asset/view" },
+        {
+          element: (
+            <ProtectedRoute allowedRole="admin" userRole={userRole}>
+              <Outlet />
+            </ProtectedRoute>
+          ),
+          children: [
+            { element: <OverViewPage />, path: "/overview" },
+            { element: <UserManage />, path: "/user/view" },
+            { element: <AssetPage />, path: "/asset/view" },
+            {
+              element: <MaintenanceManagementPage />,
+              path: "/maintenance/management",
+            },
+            { element: <Error404 />, path: "*" },
+          ],
+        },
+        // Staff routes
+        {
+          element: (
+            <ProtectedRoute allowedRole="staff" userRole={userRole}>
+              <Outlet />
+            </ProtectedRoute>
+          ),
+          children: [
+            { element: <MaintenancePage />, path: "/staff/maintenance" },
+            { element: <Error404 />, path: "*" },
+          ],
+        },
       ],
     },
-    // Route cho user
-    // {
-    //   element: (
-    //     <ProtectedRoute allowedRole="user" userRole={userRole}>
-    //       <UserLayout>
-    //         <Suspense fallback={<Loading />}>
-    //           <Outlet />
-    //         </Suspense>
-    //       </UserLayout>
-    //     </ProtectedRoute>
-    //   ),
-    //   children: [
-        
-    //     {
-    //       element: <AssetPage />,
-    //       path: "/user/assets",
-    //     },
-    //     { element: <Error404 />, path: "*" },
-    //   ],
-    // },
   ]);
 
   return routes;

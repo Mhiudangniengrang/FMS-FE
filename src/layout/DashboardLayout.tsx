@@ -37,6 +37,7 @@ import type { MenuItemType, DashboardLayoutProps } from "@/types";
 import { createMenuItem } from "@/utils";
 import { useUserInfo, useLogout } from "@/hooks/useAuth";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Cookies from "js-cookie";
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -45,18 +46,34 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     useState<null | HTMLElement>(null);
   const location = useLocation();
   const { t } = useTranslation();
+  const userRole = Cookies.get("__role") || "guest";
 
   // Menu items with enhanced icons and structure
-  const items: MenuItemType[] = [
-    createMenuItem(t("overview"), "1", <HomeIcon />, "/overview"),
-    createMenuItem(
-      t("accountManagement"),
-      "2",
-      <PersonAddIcon />,
-      "/user/view"
-    ),
-    createMenuItem(t("assetManagement"), "3", <LaptopMacIcon />, "/asset/view"),
-  ];
+  const items: MenuItemType[] = userRole === "staff"
+    ? [
+        createMenuItem(
+          t("staffMaintenance"),
+          "5",
+          <SettingsIcon />,
+          "/staff/maintenance"
+        ),
+      ]
+    : [
+        createMenuItem(t("overview"), "1", <HomeIcon />, "/overview"),
+        createMenuItem(
+          t("accountManagement"),
+          "2",
+          <PersonAddIcon />,
+          "/user/view"
+        ),
+        createMenuItem(t("assetManagement"), "3", <LaptopMacIcon />, "/asset/view"),
+        createMenuItem(
+          "Maintenance Management",
+          "4",
+          <SettingsIcon />,
+          "/maintenance/management"
+        ),
+      ];
 
   // React Query for user data
   const { data: infoUser } = useUserInfo();
