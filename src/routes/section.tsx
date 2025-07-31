@@ -1,5 +1,5 @@
 import DashboardLayout from "../layout/DashboardLayout";
-import React from "react";
+import React, { type JSX } from "react";
 import { Outlet, useRoutes, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { Error404, Loading } from "@/components";
@@ -61,6 +61,26 @@ export const Router = (): JSX.Element | null => {
         { element: <AssetPage />, path: "/asset/view" },
       ],
     },
+    // Route cho user
+    // {
+    //   element: (
+    //     <ProtectedRoute allowedRole="user" userRole={userRole}>
+    //       <UserLayout>
+    //         <Suspense fallback={<Loading />}>
+    //           <Outlet />
+    //         </Suspense>
+    //       </UserLayout>
+    //     </ProtectedRoute>
+    //   ),
+    //   children: [
+        
+    //     {
+    //       element: <AssetPage />,
+    //       path: "/user/assets",
+    //     },
+    //     { element: <Error404 />, path: "*" },
+    //   ],
+    // },
   ]);
 
   return routes;
