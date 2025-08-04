@@ -1,26 +1,39 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchUsers, createUser, updateUser, deleteUser } from "@/api/user";
-import { showSnackbar } from "@/App"; // Thêm showSnackbar nếu có
+import { showSnackbar } from "@/App";
 import type { CreateUserData, UpdateUserData } from "@/types/user.types";
 import { useTranslation } from "react-i18next";
 
 export const useUserManagement = () => {
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 
-  // Fetch all users
   const {
     data: users,
     isLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: ["users"],
+    queryKey: ["users", page, limit],
     queryFn: async () => {
-      const response = await fetchUsers();
+      const response = await fetchUsers({
+        page: page + 1, // json-server bắt đầu từ page 1
+        limit,
+      });
+
+      // json-server trả về x-total-count trong header
+      if (response.headers && response.headers["x-total-count"]) {
+        setTotalCount(Number(response.headers["x-total-count"]));
+      }
+
       return response.data;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0, 
   });
 
   // Create user mutation
@@ -91,5 +104,10 @@ export const useUserManagement = () => {
     createUserMutation,
     updateUserMutation,
     deleteUserMutation,
+    page,
+    setPage,
+    limit,
+    setLimit,
+    totalCount,
   };
 };

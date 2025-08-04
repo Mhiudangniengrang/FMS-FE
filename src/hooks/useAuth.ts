@@ -56,14 +56,24 @@ export const useLogin = () => {
       return response.data;
     },
     onSuccess: (data: AuthResponse) => {
-      Cookies.set("__token", data.access_token, { expires: 1 });
-      Cookies.set("__role", data.user.role, { expires: 1 });
+      // Sửa từ 'token' thành 'access_token' theo server response
+      const { access_token } = data;
+      const role = data.user.role;
+      
+      console.log("Token:", access_token); // Debug
+      console.log("Role:", role); // Debug
+      
+      // Lưu với tên đúng
+      Cookies.set("__role", role, { expires: 1 });
+      Cookies.set("__token", access_token, { expires: 1 }); // Lưu access_token
+      
       queryClient.setQueryData(authKeys.me(), data.user);
       showSnackbar(t("loginSuccess"), "success");
-      if (data.user.role === "staff") {
-        navigate("/staff/maintenance");
-      } else {
+      
+      if (role === "admin" || role === "manager") {
         navigate("/overview");
+      } else if (role === "staff") {
+        navigate("/staff/maintenance");
       }
       return data;
     },
