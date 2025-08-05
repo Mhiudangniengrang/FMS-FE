@@ -26,6 +26,12 @@ import {
   Close as CloseIcon,
 } from "@mui/icons-material";
 import type { Asset } from "../../Asset/types";
+import {
+  useStatusTranslation,
+  useConditionTranslation,
+  statusColors,
+  conditionColors,
+} from "../../Asset/utils/constants";
 
 interface DepartmentSummary {
   department: string;
@@ -65,6 +71,7 @@ const DepartmentDetailDialog: React.FC<DepartmentDetailDialogProps> = ({
         return <InventoryIcon />;
     }
   };
+  const { getStatusText } = useStatusTranslation();
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -190,24 +197,9 @@ const DepartmentDetailDialog: React.FC<DepartmentDetailDialogProps> = ({
                         >
                           <strong>{t("Status")}:</strong>{" "}
                           <Chip
-                            label={asset.status}
+                            label={getStatusText(asset.status)}
                             size="small"
-                            color={
-                              asset.status === "Đang sử dụng" ||
-                              asset.status === "In Use"
-                                ? "success"
-                                : asset.status === "Sẵn sàng" ||
-                                  asset.status === "Available" ||
-                                  asset.status === "Ready"
-                                ? "info"
-                                : asset.status === "Bảo trì" ||
-                                  asset.status === "Maintenance"
-                                ? "warning"
-                                : asset.status === "Hỏng" ||
-                                  asset.status === "Broken"
-                                ? "error"
-                                : "default"
-                            }
+                            color={statusColors[asset.status] || "default"}
                             sx={{ height: 16, fontSize: "0.6rem" }}
                           />
                         </Typography>

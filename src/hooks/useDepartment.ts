@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery} from "@tanstack/react-query";
 import {
   fetchDepartments,
   fetchEmployeesByDepartmentId,
@@ -6,7 +6,6 @@ import {
 } from "@/api/department";
 
 export const useDepartments = () => {
-  const queryClient = useQueryClient();
 
   // Get departments list
   const {

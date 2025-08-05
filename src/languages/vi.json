@@ -197,7 +197,7 @@
     "value": "Giá Trị",
     "status": {
       "available": "Sẵn Sàng",
-      "assigned": "Đã sử dụng",
+      "assigned": "Đang sử dụng",
       "maintenance": "Bảo Trì",
       "repair": "Sửa Chữa",
       "decommissioned": "Ngưng Sử Dụng"
