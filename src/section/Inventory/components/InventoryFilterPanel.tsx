@@ -6,7 +6,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Chip,
   OutlinedInput,
   Grid,
   Button,
@@ -14,7 +13,7 @@ import {
 } from "@mui/material";
 import {
   Category as CategoryIcon,
-  Business as DepartmentIcon, // ✅ Thay LocationIcon thành DepartmentIcon
+  Business as DepartmentIcon,
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
 } from "@mui/icons-material";
@@ -22,13 +21,13 @@ import type { SelectChangeEvent } from "@mui/material";
 
 interface InventoryFilterPanelProps {
   categories: string[];
-  departments: string[]; // ✅ Thay locations thành departments
+  departments: string[];
   selectedCategories: string[];
   selectedStatuses: string[];
-  selectedDepartments: string[]; // ✅ Thay selectedLocations thành selectedDepartments
+  selectedDepartments: string[];
   onCategoryChange: (categories: string[]) => void;
   onStatusChange: (statuses: string[]) => void;
-  onDepartmentChange: (departments: string[]) => void; // ✅ Thay onLocationChange thành onDepartmentChange
+  onDepartmentChange: (departments: string[]) => void;
   sortBy: "name" | "quantity" | "value" | "status";
   sortOrder: "asc" | "desc";
   onSortChange: (
@@ -47,14 +46,24 @@ const InventoryFilterPanel: React.FC<InventoryFilterPanelProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const handleCategoryChange = (event: SelectChangeEvent<string[]>) => {
+  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value;
-    onCategoryChange(typeof value === "string" ? value.split(",") : value);
+
+    if (value === "all" || value === "") {
+      onCategoryChange([]);
+    } else {
+      onCategoryChange([value]);
+    }
   };
 
-  const handleDepartmentChange = (event: SelectChangeEvent<string[]>) => {
+  const handleDepartmentChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value;
-    onDepartmentChange(typeof value === "string" ? value.split(",") : value);
+
+    if (value === "all" || value === "") {
+      onDepartmentChange([]);
+    } else {
+      onDepartmentChange([value]);
+    }
   };
 
   return (
@@ -71,17 +80,13 @@ const InventoryFilterPanel: React.FC<InventoryFilterPanelProps> = ({
             </InputLabel>
             <Select
               labelId="category-filter-label"
-              multiple
-              value={selectedCategories}
+              value={
+                selectedCategories.length === 0
+                  ? "all"
+                  : selectedCategories[0]
+              }
               onChange={handleCategoryChange}
               input={<OutlinedInput label={t("Category")} />}
-              renderValue={(selected) => (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} size="small" />
-                  ))}
-                </Box>
-              )}
               MenuProps={{
                 PaperProps: {
                   style: {
@@ -90,6 +95,7 @@ const InventoryFilterPanel: React.FC<InventoryFilterPanelProps> = ({
                 },
               }}
             >
+              <MenuItem value="all">{t("all")}</MenuItem>
               {categories.map((category) => (
                 <MenuItem key={category} value={category}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -113,17 +119,13 @@ const InventoryFilterPanel: React.FC<InventoryFilterPanelProps> = ({
             </InputLabel>
             <Select
               labelId="department-filter-label"
-              multiple
-              value={selectedDepartments}
+              value={
+                selectedDepartments.length === 0
+                  ? "all"
+                  : selectedDepartments[0]
+              }
               onChange={handleDepartmentChange}
               input={<OutlinedInput label={t("Department")} />}
-              renderValue={(selected) => (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} size="small" />
-                  ))}
-                </Box>
-              )}
               MenuProps={{
                 PaperProps: {
                   style: {
@@ -132,6 +134,7 @@ const InventoryFilterPanel: React.FC<InventoryFilterPanelProps> = ({
                 },
               }}
             >
+              <MenuItem value="all">{t("all")}</MenuItem>
               {departments.map((department) => (
                 <MenuItem key={department} value={department}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

@@ -224,6 +224,9 @@
     "additionalNotes": "Ghi Chú Thêm",
     "notes": "Ghi Chú",
     "createAsset": "Thêm Tài Sản",
-    "assetName": "Tên Tài Sản"
+    "assetName": "Tên Tài Sản",
+    "category": "Danh Mục",
+    "description": "Mô Tả",
+    "notAssigned": "Chưa Phân Bổ"
   }
 }

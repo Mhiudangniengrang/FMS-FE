@@ -191,6 +191,7 @@
     "quantity": "Quantity",
     "value": "Value",
     "status": {
+      "_label": "Status",
       "available": "Available",
       "in_use": "In_Use",
       "maintenance": "Maintenance",
@@ -198,6 +199,7 @@
       "decommissioned": "Decommissioned"
     },
     "condition": {
+      "_label": "Condition",
       "good": "Good",
       "new": "New",
       "fair": "Fair",
@@ -216,6 +218,11 @@
     "additionalNotes": "Additional Notes",
     "notes": "Notes",
     "createAsset": "Create Asset",
-    "assetName": "Asset Name"
+    "assetName": "Asset Name",
+    "category": "Category",
+    "description": "Description",
+    "notAssigned": "Not Assigned",
+    "purchaseDate": "Purchase Date",
+    "warrantyDate": "Warranty Date"
   }
 }
