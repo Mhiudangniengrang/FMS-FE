@@ -6,16 +6,12 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Chip,
   OutlinedInput,
-  Grid,
-  Button,
-  ButtonGroup,
 } from "@mui/material";
 import {
   Category as CategoryIcon,
   Business as DepartmentIcon,
-  TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
 } from "@mui/icons-material";
 import type { SelectChangeEvent } from "@mui/material";
 
@@ -81,9 +77,7 @@ const InventoryFilterPanel: React.FC<InventoryFilterPanelProps> = ({
             <Select
               labelId="category-filter-label"
               value={
-                selectedCategories.length === 0
-                  ? "all"
-                  : selectedCategories[0]
+                selectedCategories.length === 0 ? "all" : selectedCategories[0]
               }
               onChange={handleCategoryChange}
               input={<OutlinedInput label={t("Category")} />}

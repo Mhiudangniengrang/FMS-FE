@@ -3,31 +3,26 @@ import { useTranslation } from "react-i18next";
 import {
   Box,
   Typography,
-  Paper,
   Grid,
   Chip,
   Divider,
   Button,
   Stack,
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogActions,
   IconButton,
   Avatar,
   useTheme,
   useMediaQuery,
-  Card,
-  CardContent,
+
 } from "@mui/material";
 import {
   Close as CloseIcon,
-  Edit as EditIcon,
-  DeleteOutline as DeleteIcon,
+
 } from "@mui/icons-material";
 import {
-  useStatusTranslation,
-  useConditionTranslation,
+
   statusColors,
   conditionColors,
 } from "../../Asset/utils/constants";
@@ -44,12 +39,8 @@ const InventoryDetail: React.FC<InventoryDetailProps> = ({
   open,
   onClose,
   asset,
-  onEdit,
-  onDelete,
 }) => {
   const { t, i18n } = useTranslation();
-  const { getStatusText } = useStatusTranslation();
-  const { getConditionText } = useConditionTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -260,7 +251,7 @@ const InventoryDetail: React.FC<InventoryDetailProps> = ({
                   </Typography>
                 </Box>
               </Grid>
-              <Grid item xs={4}>
+              <Grid size={{ xs: 4 }} >
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     {t("purchaseDate")}
@@ -270,7 +261,7 @@ const InventoryDetail: React.FC<InventoryDetailProps> = ({
                   </Typography>
                 </Box>
               </Grid>
-              <Grid item xs={4}>
+              <Grid size={{ xs: 4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     {t("warrantyDate")}

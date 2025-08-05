@@ -59,32 +59,30 @@ const DeleteConfirm: React.FC<DeleteConfirmationDialogProps> = ({
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <WarningIcon color="error" sx={{ fontSize: 32 }} />
           <Typography variant="h6" color="error">
-            {t("Delete Asset")}
+            {t("deleteAsset")}
           </Typography>
         </Box>
       </DialogTitle>
 
       <DialogContent>
         <Alert severity="warning" sx={{ mb: 3 }}>
-          {t(
-            "This action cannot be undone. The asset will be permanently deleted from the system."
-          )}
+          {t("deleteWarning")}
         </Alert>
 
         <Typography variant="body1" gutterBottom>
-          {t("Are you sure you want to delete this asset?")}
+          {t("deleteAssetConfirmation")}
         </Typography>
 
         {/* Asset Details */}
         <Box sx={{ mt: 3, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
           <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-            {t("Asset Details")}
+            {t("assetDetails")}
           </Typography>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body2" color="text.secondary">
-                {t("Asset Code")}:
+                {t("assetCode")}:
               </Typography>
               <Typography variant="body2" fontWeight="medium">
                 {asset.assetCode || "N/A"}
@@ -93,7 +91,7 @@ const DeleteConfirm: React.FC<DeleteConfirmationDialogProps> = ({
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body2" color="text.secondary">
-                {t("Name")}:
+                {t("name")}:
               </Typography>
               <Typography variant="body2" fontWeight="medium">
                 {asset.name || "N/A"}
@@ -102,7 +100,7 @@ const DeleteConfirm: React.FC<DeleteConfirmationDialogProps> = ({
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body2" color="text.secondary">
-                {t("Brand/Model")}:
+                {t("brand/Model")}:
               </Typography>
               <Typography variant="body2" fontWeight="medium">
                 {asset.brand || "N/A"} {asset.model || ""}
@@ -111,14 +109,14 @@ const DeleteConfirm: React.FC<DeleteConfirmationDialogProps> = ({
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body2" color="text.secondary">
-                {t("Category")}:
+                {t("category")}:
               </Typography>
               <Chip label={asset.category || "N/A"} size="small" />
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body2" color="text.secondary">
-                {t("Value")}:
+                {t("value")}:
               </Typography>
               <Typography
                 variant="body2"
@@ -137,7 +135,7 @@ const DeleteConfirm: React.FC<DeleteConfirmationDialogProps> = ({
             {asset.assignedTo && (
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="body2" color="text.secondary">
-                  {t("Assigned To")}:
+                  {t("assignedTo")}:
                 </Typography>
                 <Typography variant="body2" fontWeight="medium">
                   {asset.assignedTo}
@@ -152,13 +150,13 @@ const DeleteConfirm: React.FC<DeleteConfirmationDialogProps> = ({
           color="text.secondary"
           sx={{ mt: 2, fontStyle: "italic" }}
         >
-          {t("Please confirm that you want to permanently delete this asset.")}
+          {t("deleteConfirm")}
         </Typography>
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 1 }}>
         <Button onClick={onClose} disabled={isLoading} variant="outlined">
-          {t("Cancel")}
+          {t("cancel")}
         </Button>
         <Button
           onClick={handleConfirm} // Sử dụng handleConfirm thay vì onConfirm trực tiếp
@@ -167,7 +165,7 @@ const DeleteConfirm: React.FC<DeleteConfirmationDialogProps> = ({
           startIcon={<DeleteIcon />}
           disabled={isLoading}
         >
-          {isLoading ? t("Deleting...") : t("Delete Asset")}
+          {isLoading ? t("deleting...") : t("deleteAsset")}
         </Button>
       </DialogActions>
     </Dialog>

@@ -227,6 +227,12 @@
     "assetName": "Tên Tài Sản",
     "category": "Danh Mục",
     "description": "Mô Tả",
-    "notAssigned": "Chưa Phân Bổ"
+    "notAssigned": "Chưa Phân Bổ",
+    "brand/Model": "Thương Hiệu/Mẫu",
+    "deleteAsset": "Xóa Tài Sản",
+    "deleteAssetConfirmation": "Bạn có chắc chắn muốn xóa tài sản này không?",
+    "deleteWarning": "Hành động này không thể hoàn tác. Tài sản sẽ bị xóa vĩnh viễn khỏi hệ thống.",
+    "deleteConfirm": "Vui lòng xác nhận rằng bạn muốn xóa vĩnh viễn tài sản này.",
+    "deleteAssetSuccess": "Tài sản đã được xóa thành công."
   }
 }

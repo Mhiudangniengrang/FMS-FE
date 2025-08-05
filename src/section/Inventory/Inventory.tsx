@@ -230,12 +230,26 @@ const Inventory: React.FC = () => {
   }, [sortedAssets, page, rowsPerPage]);
 
   // Get unique values for filters from raw assets
-  const uniqueCategories = [
-    ...new Set(assets.map((asset: any) => asset.category).filter(Boolean)),
+  const uniqueCategories: string[] = [
+    ...new Set<string>(
+      assets
+        .map((asset: any) => asset.category)
+        .filter(
+          (category: any): category is string =>
+            typeof category === "string" && category.trim() !== ""
+        )
+    ),
   ];
-  const uniqueDepartments = [
-    // ✅ Thay uniqueLocations thành uniqueDepartments
-    ...new Set(assets.map((asset: any) => asset.department).filter(Boolean)),
+
+  const uniqueDepartments: string[] = [
+    ...new Set<string>(
+      assets
+        .map((asset: any) => asset.department)
+        .filter(
+          (department: any): department is string =>
+            typeof department === "string" && department.trim() !== ""
+        )
+    ),
   ];
 
   // Event handlers
@@ -379,16 +393,7 @@ const Inventory: React.FC = () => {
     setViewingAsset(asset);
     setOpenDetailDialog(true);
   };
-  // Helper functions for labels (use API data for labels)
-  const getStatusLabel = (status: string) => {
-    const option = statusOptions.find((s) => s.value === status);
-    return option?.label || status;
-  };
 
-  const getConditionLabel = (condition: string) => {
-    const option = conditionOptions.find((c) => c.value === condition);
-    return option?.label || condition;
-  };
 
   // Format currency
   const formatCurrency = (value: number): string => {
@@ -466,8 +471,6 @@ const Inventory: React.FC = () => {
         </Grid>
         <Grid size={{ xs: 12, md: 8 }}>
           <InventoryFilterPanel
-            categories={uniqueCategories}
-            departments={uniqueDepartments}
             selectedCategories={selectedCategories}
             selectedStatuses={selectedStatuses}
             selectedDepartments={selectedDepartments}
@@ -477,6 +480,8 @@ const Inventory: React.FC = () => {
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSortChange={handleSortChange}
+            categories={uniqueCategories}
+            departments={uniqueDepartments}
           />
         </Grid>
       </Grid>
@@ -493,19 +498,9 @@ const Inventory: React.FC = () => {
         sortBy={sortBy}
         sortOrder={sortOrder}
         onSortChange={handleSortChange}
-        // Add CRUD handlers
         onView={handleView}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        // Add options for chip colors
-        statusOptions={statusOptions}
-        conditionOptions={conditionOptions}
-        // Use constants-based color functions
-        getStatusColor={getStatusColor}
-        getConditionColor={getConditionColor}
-        // Add missing label functions
-        getStatusLabel={getStatusLabel}
-        getConditionLabel={getConditionLabel}
       />
 
       {/* Form Drawer */}
