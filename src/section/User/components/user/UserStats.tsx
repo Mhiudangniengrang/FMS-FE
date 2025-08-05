@@ -9,9 +9,6 @@ import {
 } from "@mui/material";
 import {
   Person as ManagerIcon,
-  SupervisorAccount as SupervisorIcon,
-  Badge as StaffIcon,
-  Group as GroupIcon,
 } from "@mui/icons-material";
 import type { User } from "@/types/user.types";
 import { useTranslation } from "react-i18next";

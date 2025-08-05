@@ -8,6 +8,9 @@ import {
   Menu as MenuIcon,
   MenuOpen as MenuOpenIcon,
   Logout as LogoutIcon,
+  History as HistoryIcon,
+  LocationOn as LocationOnIcon,
+  Inventory as InventoryIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import {
@@ -48,38 +51,51 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const { t } = useTranslation();
   const userRole = Cookies.get("__role") || "guest";
 
-  // Menu items with enhanced icons and structure
+  // Menu items for admin
+  const adminMenuItems: MenuItemType[] = [
+    createMenuItem(t("overview"), "1", <HomeIcon />, "/overview"),
+    createMenuItem(
+      t("accountManagement"),
+      "2",
+      <PersonAddIcon />,
+      "/user/view"
+    ),
+    createMenuItem(
+      t("locationManagement"),
+      "3",
+      <LocationOnIcon />,
+      "/departments/view"
+    ),
+    createMenuItem(
+      t("inventoryManagement"),
+      "4",
+      <InventoryIcon />, // Thay thế ở đây
+      "/inventory/view"
+    ),
+
+    createMenuItem(t("assetManagement"), "5", <LaptopMacIcon />, "/asset/view"),
+    createMenuItem(
+      "Maintenance Management",
+      "6",
+      <SettingsIcon />,
+      "/maintenance/management"
+    ),
+  ];
+
+  // Menu items for staff
+  const staffMenuItems: MenuItemType[] = [
+    createMenuItem(
+      t("staffMaintenance"),
+      "1",
+      <SettingsIcon />,
+      "/staff/maintenance"
+    ),
+  ];
+
   const items: MenuItemType[] =
-    userRole === "staff"
-      ? [
-          createMenuItem(
-            t("staffMaintenance"),
-            "5",
-            <SettingsIcon />,
-            "/staff/maintenance"
-          ),
-        ]
-      : [
-          createMenuItem(t("overview"), "1", <HomeIcon />, "/overview"),
-          createMenuItem(
-            t("accountManagement"),
-            "2",
-            <PersonAddIcon />,
-            "/user/view"
-          ),
-          createMenuItem(
-            t("assetManagement"),
-            "3",
-            <LaptopMacIcon />,
-            "/asset/view"
-          ),
-          createMenuItem(
-            "Maintenance Management",
-            "4",
-            <SettingsIcon />,
-            "/maintenance/management"
-          ),
-        ];
+    userRole === "admin" || userRole === "manager"
+      ? adminMenuItems
+      : staffMenuItems;
 
   // React Query for user data
   const { data: infoUser } = useUserInfo();

@@ -33,7 +33,7 @@ export const useUserManagement = () => {
 
       return response.data;
     },
-    staleTime: 0, 
+    staleTime: 0,
   });
 
   // Create user mutation

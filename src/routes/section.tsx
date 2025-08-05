@@ -13,10 +13,11 @@ export const MaintenancePage = lazy(() => import("../page/MaintenancePage"));
 export const MaintenanceManagementPage = lazy(
   () => import("../page/MaintenanceManagementPage")
 );
-
+export const DepartmentPage = lazy(() => import("@/page/DepartmentPage"));
+export const InventoryPage = lazy(() => import("@/page/InventoryPage"));
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRole: string;
+  allowedRole: string | string[];
   userRole?: string;
 }
 
@@ -26,7 +27,15 @@ const ProtectedRoute = ({
   allowedRole,
   userRole,
 }: ProtectedRouteProps): React.JSX.Element => {
-  if (userRole?.toLowerCase() !== allowedRole.toLowerCase()) {
+  // Chuyển allowedRole thành array để xử lý thống nhất
+  const allowedRoles = Array.isArray(allowedRole) ? allowedRole : [allowedRole];
+
+  // Kiểm tra xem userRole có nằm trong danh sách allowedRoles không
+  const isAllowed = allowedRoles.some(
+    (role) => role.toLowerCase() === userRole?.toLowerCase()
+  );
+
+  if (!isAllowed) {
     return <Navigate to="/" replace />;
   }
   return <>{children}</>;
@@ -53,7 +62,10 @@ export const Router = (): React.JSX.Element | null => {
         // Admin routes
         {
           element: (
-            <ProtectedRoute allowedRole="admin" userRole={userRole}>
+            <ProtectedRoute
+              allowedRole={["admin", "manager"]}
+              userRole={userRole}
+            >
               <Outlet />
             </ProtectedRoute>
           ),
@@ -65,6 +77,8 @@ export const Router = (): React.JSX.Element | null => {
               element: <MaintenanceManagementPage />,
               path: "/maintenance/management",
             },
+            { element: <DepartmentPage />, path: "/departments/view" },
+            { element: <InventoryPage />, path: "/inventory/view" },
             { element: <Error404 />, path: "*" },
           ],
         },

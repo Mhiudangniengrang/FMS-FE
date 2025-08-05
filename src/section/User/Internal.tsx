@@ -9,7 +9,7 @@ import {
   UserForm,
   DeleteConfirmation,
   Header,
-} from "./components";
+} from "./components/user";
 
 const Internal: React.FC = () => {
   const [open, setOpen] = useState(false);
