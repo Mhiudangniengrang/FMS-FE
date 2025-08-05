@@ -203,6 +203,19 @@
       "fair": "Fair",
       "poor": "Poor",
       "damaged": "Damaged"
-    }
+    },
+    "addAsset": "Add Asset",
+    "addNewAsset": "Add New Asset",
+    "basicInformation": "Basic Information",
+    "technicalInformation": "Technical Information",
+    "serialNumber": "Serial Number",
+    "brand": "Brand",
+    "model": "Model",
+    "supplier": "Supplier",
+    "financialInformation": "Financial Information",
+    "additionalNotes": "Additional Notes",
+    "notes": "Notes",
+    "createAsset": "Create Asset",
+    "assetName": "Asset Name"
   }
 }

@@ -691,6 +691,16 @@
       "targetId": null,
       "role": "auth",
       "timestamp": "2025-08-05T14:01:44.899Z"
+    },
+    {
+      "id": 6,
+      "userId": 1,
+      "username": "John Smith",
+      "action": "login",
+      "details": "User John Smith logged in",
+      "targetId": null,
+      "role": "auth",
+      "timestamp": "2025-08-05T14:06:06.250Z"
     }
   ],
   "maintenance": [

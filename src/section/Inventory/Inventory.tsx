@@ -21,6 +21,7 @@ import InventoryTable from "./components/InventoryTable";
 import LowStockAlert from "./components/LowStockAlert";
 import DeleteConfirm from "./components/DeleteConfirm";
 import InventoryForm from "./components/InventoryForm";
+import InventoryDetail from "./components/InventoryDetail";
 
 // Types
 interface InventoryItem {
@@ -139,7 +140,7 @@ const Inventory: React.FC = () => {
     }, []);
 
     // Calculate average value and stock status
-    inventory.forEach((item) => {
+    inventory.forEach((item: any) => {
       item.averageValue = item.totalValue / item.totalQuantity;
       item.stockStatus = item.totalQuantity <= item.minStock ? "Low" : "Normal";
     });
@@ -149,7 +150,7 @@ const Inventory: React.FC = () => {
 
   // Filter raw assets for the table (not grouped data)
   const filteredAssets = useMemo(() => {
-    return assets.filter((asset) => {
+    return assets.filter((asset: any) => {
       // Search filter
       const matchSearch =
         asset.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -230,11 +231,11 @@ const Inventory: React.FC = () => {
 
   // Get unique values for filters from raw assets
   const uniqueCategories = [
-    ...new Set(assets.map((asset) => asset.category).filter(Boolean)),
+    ...new Set(assets.map((asset: any) => asset.category).filter(Boolean)),
   ];
   const uniqueDepartments = [
     // ✅ Thay uniqueLocations thành uniqueDepartments
-    ...new Set(assets.map((asset) => asset.department).filter(Boolean)),
+    ...new Set(assets.map((asset: any) => asset.department).filter(Boolean)),
   ];
 
   // Event handlers
@@ -295,11 +296,6 @@ const Inventory: React.FC = () => {
   const handleAdd = () => {
     setEditingAsset(null);
     setOpenFormDrawer(true);
-  };
-
-  const handleView = (asset: any) => {
-    console.log("View asset:", asset);
-    // TODO: Open view dialog or navigate to detail page
   };
 
   const handleEdit = (asset: any) => {
@@ -376,6 +372,13 @@ const Inventory: React.FC = () => {
     return conditionColors[condition] || "default";
   };
 
+  const [viewingAsset, setViewingAsset] = useState<any | null>(null);
+  const [openDetailDialog, setOpenDetailDialog] = useState(false);
+
+  const handleView = (asset: any) => {
+    setViewingAsset(asset);
+    setOpenDetailDialog(true);
+  };
   // Helper functions for labels (use API data for labels)
   const getStatusLabel = (status: string) => {
     const option = statusOptions.find((s) => s.value === status);
@@ -440,7 +443,7 @@ const Inventory: React.FC = () => {
           </Typography>
         </Box>
         <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>
-          {t("Add Asset")}
+          {t("addAsset")}
         </Button>
       </Box>
 
@@ -464,13 +467,13 @@ const Inventory: React.FC = () => {
         <Grid size={{ xs: 12, md: 8 }}>
           <InventoryFilterPanel
             categories={uniqueCategories}
-            departments={uniqueDepartments} // ✅ Thay locations thành departments
+            departments={uniqueDepartments}
             selectedCategories={selectedCategories}
             selectedStatuses={selectedStatuses}
-            selectedDepartments={selectedDepartments} // ✅ Thay selectedLocations thành selectedDepartments
+            selectedDepartments={selectedDepartments}
             onCategoryChange={handleCategoryChange}
             onStatusChange={handleStatusChange}
-            onDepartmentChange={handleDepartmentChange} // ✅ Thay onLocationChange thành onDepartmentChange
+            onDepartmentChange={handleDepartmentChange}
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSortChange={handleSortChange}
@@ -530,6 +533,15 @@ const Inventory: React.FC = () => {
         onConfirm={handleConfirmDelete}
         asset={deletingAsset}
         isLoading={deleteAssetMutation.isPending}
+      />
+
+      {/* Asset Detail Dialog */}
+      <InventoryDetail
+        open={openDetailDialog}
+        onClose={() => setOpenDetailDialog(false)}
+        asset={viewingAsset}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
       />
     </Box>
   );

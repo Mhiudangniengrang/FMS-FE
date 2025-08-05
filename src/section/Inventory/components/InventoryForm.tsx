@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -14,17 +14,18 @@ import {
   MenuItem,
   Divider,
   Stack,
-  Chip,
   IconButton,
   InputAdornment,
   CircularProgress,
   Fade,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
-import EditIcon from "@mui/icons-material/Edit";
 import { useTranslation } from "react-i18next";
+import {
+  useStatusTranslation,
+  useConditionTranslation,
+} from "../../Asset/utils/constants";
 
 // Types
 interface InventoryFormDrawerProps {
@@ -77,19 +78,19 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
   onSubmit,
   isLoading,
   categories,
-  statusOptions,
-  conditionOptions,
-  departments, // ✅ Thay locations thành departments
+  statusOptions, // Có thể không cần dùng nữa
+  conditionOptions, // Có thể không cần dùng nữa
+  departments,
 }) => {
   const { t } = useTranslation();
+  const { getStatusText } = useStatusTranslation();
+  const { getConditionText } = useConditionTranslation();
   const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState("");
   const [isFormReady, setIsFormReady] = useState(false);
-
   // Loại bỏ logic edit - chỉ có create mode
-  const formTitle = t("Add New Asset");
-  const submitButtonText = t("Save Asset");
-  const loadingText = t("Creating...");
+  const formTitle = t("addNewAsset");
+  const submitButtonText = t("createAsset");
+  const loadingText = t("creating...");
 
   const {
     control,
@@ -105,7 +106,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
       category: "",
       status: "available",
       condition: "new",
-      department: "", // ✅ Thay location thành department
+      department: "",
       assignedTo: "",
       assigneeId: "",
       value: 0,
@@ -123,15 +124,15 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
 
   // Filter options based on create/edit mode
   const getFilteredStatusOptions = () => {
-    // Chỉ hiển thị "available" cho asset mới
-    return statusOptions.filter((status) => status.value === "available");
+    return [{ value: "available", label: getStatusText("available") }];
   };
 
   const getFilteredConditionOptions = () => {
-    // Chỉ hiển thị new, good, fair cho asset mới
-    return conditionOptions.filter((condition) =>
-      ["new", "good", "fair"].includes(condition.value)
-    );
+    return [
+      { value: "new", label: getConditionText("new") },
+      { value: "good", label: getConditionText("good") },
+      { value: "fair", label: getConditionText("fair") },
+    ];
   };
 
   // Reset form when drawer opens/closes or editing asset changes
@@ -147,7 +148,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
           category: "",
           status: "available",
           condition: "new",
-          department: "", // ✅ Thay location thành department
+          department: "",
           assignedTo: "",
           assigneeId: "",
           value: 0,
@@ -181,29 +182,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
 
   // Handle close with confirmation if form is dirty
   const handleClose = () => {
-    if (isDirty) {
-      if (
-        window.confirm(
-          t("You have unsaved changes. Are you sure you want to close?")
-        )
-      ) {
-        onClose();
-      }
-    } else {
-      onClose();
-    }
-  };
-
-  // Tag handling
-  const handleAddTag = () => {
-    if (tagInput && !tags.includes(tagInput)) {
-      setTags([...tags, tagInput]);
-      setTagInput("");
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+    onClose();
   };
 
   return (
@@ -268,7 +247,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                       fontWeight="bold"
                       gutterBottom
                     >
-                      {t("Basic Information")}
+                      {t("basicInformation")}
                     </Typography>
                     <Divider sx={{ mb: 2 }} />
                   </Box>
@@ -282,7 +261,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Asset Code")}
+                          label={t("assetCode")}
                           error={!!errors.assetCode}
                           helperText={errors.assetCode?.message?.toString()}
                           required
@@ -303,7 +282,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Asset Name")}
+                          label={t("assetName")}
                           error={!!errors.name}
                           helperText={errors.name?.message?.toString()}
                           required
@@ -326,10 +305,10 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                           error={!!errors.category}
                           required
                         >
-                          <InputLabel>{t("Category")}</InputLabel>
+                          <InputLabel>{t("category")}</InputLabel>
                           <Select
                             {...field}
-                            label={t("Category")}
+                            label={t("category")}
                             sx={{ borderRadius: 2 }}
                           >
                             {categories.map((category) => (
@@ -359,10 +338,10 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                       control={control}
                       render={({ field }) => (
                         <FormControl fullWidth error={!!errors.status} required>
-                          <InputLabel>{t("Status")}</InputLabel>
+                          <InputLabel>{t("status._label")}</InputLabel>
                           <Select
                             {...field}
-                            label={t("Status")}
+                            label={t("status._label")}
                             sx={{ borderRadius: 2 }}
                           >
                             {getFilteredStatusOptions().map((status) => (
@@ -385,7 +364,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                     />
                   </Box>
 
-                  {/* Condition - chỉ hiển thị các option cho create mode */}
+                  {/* Condition */}
                   <Box>
                     <Controller
                       name="condition"
@@ -396,10 +375,10 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                           error={!!errors.condition}
                           required
                         >
-                          <InputLabel>{t("condition")}</InputLabel>
+                          <InputLabel>{t("condition._label")}</InputLabel>
                           <Select
                             {...field}
-                            label={t("condition")}
+                            label={t("condition._label")}
                             sx={{ borderRadius: 2 }}
                           >
                             {getFilteredConditionOptions().map((condition) => (
@@ -436,10 +415,10 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                           error={!!errors.department}
                           required
                         >
-                          <InputLabel>{t("Department")}</InputLabel>
+                          <InputLabel>{t("department")}</InputLabel>
                           <Select
                             {...field}
-                            label={t("Department")}
+                            label={t("department")}
                             sx={{ borderRadius: 2 }}
                           >
                             {departments?.map((department) => (
@@ -482,7 +461,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                       gutterBottom
                       sx={{ mt: 2 }}
                     >
-                      {t("Financial Information")}
+                      {t("financialInformation")}
                     </Typography>
                     <Divider sx={{ mb: 2 }} />
                   </Box>
@@ -496,7 +475,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Value (VND)")}
+                          label={t("value")}
                           error={!!errors.value}
                           helperText={errors.value?.message?.toString()}
                           type="number"
@@ -525,7 +504,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Quantity")}
+                          label={t("quantity")}
                           error={!!errors.quantity}
                           helperText={errors.quantity?.message?.toString()}
                           type="number"
@@ -547,7 +526,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Purchase Date")}
+                          label={t("purchaseDate")}
                           error={!!errors.purchaseDate}
                           helperText={errors.purchaseDate?.message?.toString()}
                           type="date"
@@ -570,7 +549,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Warranty Date")}
+                          label={t("warrantyDate")}
                           error={!!errors.warrantyDate}
                           helperText={errors.warrantyDate?.message?.toString()}
                           type="date"
@@ -591,7 +570,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                       gutterBottom
                       sx={{ mt: 2 }}
                     >
-                      {t("Technical Information")}
+                      {t("technicalInformation")}
                     </Typography>
                     <Divider sx={{ mb: 2 }} />
                   </Box>
@@ -605,7 +584,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Serial Number")}
+                          label={t("serialNumber")}
                           error={!!errors.serialNumber}
                           helperText={errors.serialNumber?.message?.toString()}
                           required
@@ -626,7 +605,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Brand")}
+                          label={t("brand")}
                           error={!!errors.brand}
                           helperText={errors.brand?.message?.toString()}
                           required
@@ -647,7 +626,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Model")}
+                          label={t("model")}
                           error={!!errors.model}
                           helperText={errors.model?.message?.toString()}
                           required
@@ -668,7 +647,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Supplier")}
+                          label={t("supplier")}
                           error={!!errors.supplier}
                           helperText={errors.supplier?.message?.toString()}
                           sx={{
@@ -707,7 +686,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                       gutterBottom
                       sx={{ mt: 2 }}
                     >
-                      {t("Additional Notes")}
+                      {t("additionalNotes")}
                     </Typography>
                     <Divider sx={{ mb: 2 }} />
                   </Box>
@@ -720,7 +699,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                         <TextField
                           {...field}
                           fullWidth
-                          label={t("Notes")}
+                          label={t("notes")}
                           multiline
                           rows={3}
                           sx={{

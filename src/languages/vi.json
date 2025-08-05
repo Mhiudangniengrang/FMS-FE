@@ -195,18 +195,35 @@
     "quantity": "Số Lượng",
     "value": "Giá Trị",
     "status": {
+      "_label": "Trạng Thái",
       "available": "Sẵn Sàng",
-      "assigned": "Đang sử dụng",
+      "in_use": "Đang sử dụng",
       "maintenance": "Bảo Trì",
-      "repair": "Sửa Chữa",
+      "broken": "Hỏng",
       "decommissioned": "Ngưng Sử Dụng"
     },
     "condition": {
+      "_label": "Tình Trạng",
       "good": "Tốt",
-      "verygood": "Rất Tốt",
-      "fairlygood": "Khá Tốt",
-      "repair": "Cần Sửa Chữa",
-      "heavilydamaged": "Hư Hỏng Nặng"
-    }
+      "new": "Mới",
+      "fair": "Khá",
+      "poor": "Yếu",
+      "damaged": "Hỏng"
+    },
+    "addAsset": "Thêm Tài Sản",
+    "addNewAsset": "Thêm Tài Sản Mới",
+    "basicInformation": "Thông Tin Cơ Bản",
+    "technicalInformation": "Thông Tin Kỹ Thuật",
+    "serialNumber": "Số Seri",
+    "brand": "Thương Hiệu",
+    "model": "Mẫu",
+    "supplier": "Nhà Cung Cấp",
+    "financialInformation": "Thông Tin Thiết Bị",
+    "purchaseDate": "Ngày Mua",
+    "warrantyDate": "Ngày Bảo Hành",
+    "additionalNotes": "Ghi Chú Thêm",
+    "notes": "Ghi Chú",
+    "createAsset": "Thêm Tài Sản",
+    "assetName": "Tên Tài Sản"
   }
 }
