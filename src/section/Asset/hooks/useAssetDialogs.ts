@@ -9,6 +9,7 @@ const useAssetDialogs = () => {
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null)
   const [detailDialogOpen, setDetailDialogOpen] = useState<boolean>(false)
   const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false)
+  const [updateDrawerOpen, setUpdateDrawerOpen] = useState<boolean>(false)
   const [addAssetForm, setAddAssetForm] = useState<NewAssetForm>({
     name: "",
     category: "",
@@ -111,6 +112,16 @@ const useAssetDialogs = () => {
     })
   }, [])
 
+  const handleOpenUpdateDrawer = useCallback((asset: Asset) => {
+    setSelectedAsset(asset)
+    setUpdateDrawerOpen(true)
+  }, [])
+
+  const handleCloseUpdateDrawer = useCallback(() => {
+    setUpdateDrawerOpen(false)
+    setSelectedAsset(null)
+  }, [])
+
   const handleAddAsset = useCallback(async () => {
     const asset = convertFormToAsset(addAssetForm)
     addAssetMutation.mutate(asset)
@@ -118,7 +129,8 @@ const useAssetDialogs = () => {
 
   const handleUpdateAsset = useCallback((id: number, data: Partial<Asset>) => {
     updateAssetMutation.mutate({ id, data })
-  }, [updateAssetMutation])
+    handleCloseUpdateDrawer()
+  }, [updateAssetMutation, handleCloseUpdateDrawer])
 
   const handleDeleteAsset = useCallback((id: number) => {
     deleteAssetMutation.mutate(id)
@@ -137,6 +149,7 @@ const useAssetDialogs = () => {
     selectedAsset,
     detailDialogOpen,
     addDialogOpen,
+    updateDrawerOpen,
     addAssetForm,
     setAddAssetForm,
     snackbarOpen,
@@ -145,6 +158,8 @@ const useAssetDialogs = () => {
     handleCloseDetailDialog,
     handleOpenAddDialog,
     handleCloseAddDialog,
+    handleOpenUpdateDrawer,
+    handleCloseUpdateDrawer,
     handleAddAsset,
     handleUpdateAsset,
     handleDeleteAsset,

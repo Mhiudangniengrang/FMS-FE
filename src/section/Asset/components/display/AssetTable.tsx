@@ -16,7 +16,10 @@ import {
   Avatar,
   TableSortLabel,
 } from "@mui/material"
-import { Visibility as VisibilityIcon } from "@mui/icons-material"
+import { 
+  Visibility as VisibilityIcon,
+  Edit as EditIcon,
+} from "@mui/icons-material"
 import { getCategoryIcon, statusColors, conditionColors, formatCurrency } from "../../utils"
 
 import type { AssetTableProps } from '../../types'
@@ -31,6 +34,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
   totalCount,
   onSort,
   onViewDetail,
+  onUpdate,
   onPageChange,
   onRowsPerPageChange,
   rowsPerPageOptions,
@@ -124,7 +128,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
                     sx={{ borderRadius: 2 }}
                   />
                 </TableCell>
-                <TableCell>{asset.location}</TableCell>
+                <TableCell>{asset.department}</TableCell>
                 <TableCell>{asset.assignedTo || "Chưa phân công"}</TableCell>
                 <TableCell>
                   <Typography variant="body2" fontWeight="medium" color="primary">
@@ -132,16 +136,28 @@ const AssetTable: React.FC<AssetTableProps> = ({
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Tooltip title="Xem chi tiết">
-                    <IconButton
-                      size="small"
-                      onClick={() => onViewDetail(asset)}
-                      sx={{ borderRadius: 2 }}
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    <Tooltip title="Xem chi tiết">
+                      <IconButton
+                        size="small"
+                        onClick={() => onViewDetail(asset)}
+                        sx={{ borderRadius: 2 }}
+                      >
+                        <VisibilityIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Cập nhật">
+                      <IconButton
+                        size="small"
+                        onClick={() => onUpdate(asset)}
+                        sx={{ borderRadius: 2, color: "primary.main" }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </TableCell>
+                
               </TableRow>
             ))}
           </TableBody>

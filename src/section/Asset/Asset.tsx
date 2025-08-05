@@ -12,11 +12,13 @@ import {
   usePerformanceMonitor,
 } from "./hooks"
 import { AssetLayout, AssetErrorBoundary } from "./components"
+import { UpdateAssetDrawer } from "./components/dialogs"
 import { categoryApi } from "./services/category"
-import { locationApi } from "./services/location"
+
 import { employeeApi } from "./services/employee"
 import { statusOptionApi } from "./services/statusOption"
 import { conditionOptionApi } from "./services/conditionOption"
+import { departmentApi } from "./services/department"
 type ViewMode = typeof viewModes.TABLE | typeof viewModes.GRID
 
 const AssetManagement: React.FC = () => {
@@ -36,10 +38,10 @@ const AssetManagement: React.FC = () => {
     },
   })
 
-  const { data: locations = [] } = useQuery({
-    queryKey: ['locations'],
+  const { data: departments = [] } = useQuery({
+    queryKey: ['departments'],
     queryFn: async () => {
-      const result = await locationApi.getLocations()
+      const result = await departmentApi.getDepartments()
       return result.data
     },
   })
@@ -73,11 +75,11 @@ const AssetManagement: React.FC = () => {
     searchTerm,
     categoryFilter,
     statusFilter,
-    locationFilter,
+    departmentFilter,
     setSearchTerm,
     setCategoryFilter,
     setStatusFilter,
-    setLocationFilter,
+    setDepartmentFilter,
     filteredAssets,
   } = useAssetFilters(assets || [])
   const {
@@ -98,6 +100,7 @@ const AssetManagement: React.FC = () => {
     selectedAsset,
     detailDialogOpen,
     addDialogOpen,
+    updateDrawerOpen,
     addAssetForm,
     setAddAssetForm,
     snackbarOpen,
@@ -106,6 +109,8 @@ const AssetManagement: React.FC = () => {
     handleCloseDetailDialog,
     handleOpenAddDialog,
     handleCloseAddDialog,
+    handleOpenUpdateDrawer,
+    handleCloseUpdateDrawer,
     handleAddAsset,
     handleUpdateAsset,
     handleDeleteAsset,
@@ -116,19 +121,17 @@ const AssetManagement: React.FC = () => {
   } = useAssetDialogs()
 
   // Chuẩn bị object data tổng hợp
-  const layoutData = assets
-    ? {
-        assets,
-        categories,
-        locations,
-        employees,
-        statusOptions,
-        conditionOptions,
-      }
-    : null
+  const layoutData = {
+    assets: assets || [],
+    categories: categories || [],
+    departments: departments || [],
+    employees: employees || [],
+    statusOptions: statusOptions || [],
+    conditionOptions: conditionOptions || [],
+  }
 
   // Loading state tổng hợp
-  const loading = assetsLoading || !categories || !locations || !employees || !statusOptions || !conditionOptions
+  const loading = assetsLoading || !categories || !departments || !employees || !statusOptions || !conditionOptions
 
   return (
     <AssetErrorBoundary>
@@ -137,11 +140,18 @@ const AssetManagement: React.FC = () => {
         data={layoutData}
         loading={loading}
         error={assetsError}
+        // Individual data properties
+        assets={assets || []}
+        categories={categories || []}
+        departments={departments || []}
+        employees={employees || []}
+        statusOptions={statusOptions || []}
+        conditionOptions={conditionOptions || []}
         // Filters
         searchTerm={searchTerm}
         categoryFilter={categoryFilter}
         statusFilter={statusFilter}
-        locationFilter={locationFilter}
+        departmentFilter={departmentFilter}
         viewMode={viewMode}
         // Sorting
         sortBy={sortBy}
@@ -163,10 +173,11 @@ const AssetManagement: React.FC = () => {
         onSearchChange={setSearchTerm}
         onCategoryChange={setCategoryFilter}
         onStatusChange={setStatusFilter}
-        onLocationChange={setLocationFilter}
+        onDepartmentChange={setDepartmentFilter}
         onViewModeChange={setViewMode}
         onSort={handleSort}
         onViewDetail={handleViewAssetDetail}
+        onUpdate={handleOpenUpdateDrawer}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
         onAddAsset={handleOpenAddDialog}
@@ -180,7 +191,18 @@ const AssetManagement: React.FC = () => {
         // Loading states
         isAdding={isAdding}
         isUpdating={isUpdating}
-        isDeleting={isDeleting} assets={[]} categories={[]} locations={[]} employees={[]} statusOptions={[]} conditionOptions={[]}      />
+        isDeleting={isDeleting}
+      />
+      
+      {/* Update Asset Drawer */}
+      <UpdateAssetDrawer
+        open={updateDrawerOpen}
+        asset={selectedAsset}
+        data={layoutData}
+        onClose={handleCloseUpdateDrawer}
+        onSubmit={handleUpdateAsset}
+        isUpdating={isUpdating}
+      />
     </AssetErrorBoundary>
   )
 }

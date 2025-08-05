@@ -28,7 +28,7 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
   searchTerm,
   categoryFilter,
   statusFilter,
-  locationFilter,
+  departmentFilter,
   viewMode,
   sortBy,
   sortOrder,
@@ -45,10 +45,11 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
   onSearchChange,
   onCategoryChange,
   onStatusChange,
-  onLocationChange,
+  onDepartmentChange,
   onViewModeChange,
   onSort,
   onViewDetail,
+  onUpdate,
   onPageChange,
   onRowsPerPageChange,
   onAddAsset,
@@ -122,18 +123,18 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
         <AssetFilters
           data={{
             categories: data.categories,
-            locations: data.locations,
+            departments: data.departments,
             statusOptions: data.statusOptions,
           }}
           searchTerm={searchTerm}
           categoryFilter={categoryFilter}
           statusFilter={statusFilter}
-          locationFilter={locationFilter}
+          departmentFilter={departmentFilter}
           viewMode={viewMode}
           onSearchChange={onSearchChange}
           onCategoryChange={onCategoryChange}
           onStatusChange={onStatusChange}
-          onLocationChange={onLocationChange}
+          onDepartmentChange={onDepartmentChange}
           onViewModeChange={onViewModeChange}
           onAddAsset={onAddAsset}
         />
@@ -159,6 +160,7 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
             totalCount={data.assets.length}
             onSort={onSort}
             onViewDetail={onViewDetail}
+            onUpdate={onUpdate}
             onPageChange={onPageChange}
             onRowsPerPageChange={onRowsPerPageChange}
             rowsPerPageOptions={paginationConfig.rowsPerPageOptions}
@@ -171,6 +173,7 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
             rowsPerPage={rowsPerPage}
             totalCount={data.assets.length}
             onViewDetail={onViewDetail}
+            onUpdate={onUpdate}
             onPageChange={onPageChange}
             onRowsPerPageChange={onRowsPerPageChange}
             rowsPerPageOptions={paginationConfig.rowsPerPageOptions}

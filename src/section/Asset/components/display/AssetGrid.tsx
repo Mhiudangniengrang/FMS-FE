@@ -9,8 +9,11 @@ import {
   Button,
   TablePagination,
 } from "@mui/material"
-import { Visibility as VisibilityIcon } from "@mui/icons-material"
-import type { Asset, Category, Location, Employee, StatusOption, ConditionOption } from '../../types'
+import { 
+  Visibility as VisibilityIcon,
+  Edit as EditIcon,
+} from "@mui/icons-material"
+import type { Asset, Category, Employee, StatusOption, ConditionOption } from '../../types'
 import { statusColors, conditionColors, formatCurrency } from "../../utils"
 
 interface AssetGridProps {
@@ -26,6 +29,7 @@ interface AssetGridProps {
   rowsPerPage: number
   totalCount: number
   onViewDetail: (asset: Asset) => void
+  onUpdate: (asset: Asset) => void
   onPageChange: (page: number) => void
   onRowsPerPageChange: (rowsPerPage: number) => void
   rowsPerPageOptions: number[]
@@ -38,6 +42,7 @@ const AssetGrid: React.FC<AssetGridProps> = ({
   rowsPerPage,
   totalCount,
   onViewDetail,
+  onUpdate,
   onPageChange,
   onRowsPerPageChange,
   rowsPerPageOptions,
@@ -93,7 +98,7 @@ const AssetGrid: React.FC<AssetGridProps> = ({
                 />
               </Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                📍 {asset.location}
+                📍 {asset.department}
               </Typography>
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 👤 {asset.assignedTo || "Chưa phân công"}
@@ -102,7 +107,7 @@ const AssetGrid: React.FC<AssetGridProps> = ({
                 {formatCurrency(asset.value)}
               </Typography>
             </CardContent>
-            <Box sx={{ p: 2, pt: 0 }}>
+            <Box sx={{ p: 2, pt: 0, display: "flex", gap: 1 }}>
               <Button
                 fullWidth
                 variant="outlined"
@@ -111,6 +116,15 @@ const AssetGrid: React.FC<AssetGridProps> = ({
                 sx={{ borderRadius: 2, textTransform: "none" }}
               >
                 Xem chi tiết
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                startIcon={<EditIcon />}
+                onClick={() => onUpdate(asset)}
+                sx={{ borderRadius: 2, textTransform: "none" }}
+              >
+                Cập nhật
               </Button>
             </Box>
           </Card>

@@ -5,7 +5,7 @@ export interface Asset {
   category: string
   status: string
   condition: string
-  location: string
+  department: string
   assignedTo: string
   assigneeId: string
   value: number
@@ -32,7 +32,7 @@ export interface NewAssetForm {
   model: string
   serialNumber: string
   description: string
-  location: string
+  department: string
   assignedTo: string
   assigneeId: string
   status: string

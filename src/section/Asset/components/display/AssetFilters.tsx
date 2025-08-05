@@ -26,12 +26,12 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
   searchTerm,
   categoryFilter,
   statusFilter,
-  locationFilter,
+  departmentFilter,
   viewMode,
   onSearchChange,
   onCategoryChange,
   onStatusChange,
-  onLocationChange,
+  onDepartmentChange,
   onViewModeChange,
   onAddAsset,
 }) => {
@@ -60,7 +60,7 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
             }}
           />
         </Box>
-        <Box>
+        {/* <Box>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -78,7 +78,7 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
           >
             Thêm tài sản
           </Button>
-        </Box>
+        </Box> */}
         <Box>
           <FormControl fullWidth>
             <InputLabel>Danh mục</InputLabel>
@@ -117,23 +117,23 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
         </Box>
         <Box>
           <FormControl fullWidth>
-            <InputLabel>Vị trí</InputLabel>
+            <InputLabel>Phòng ban</InputLabel>
             <Select
-              value={locationFilter}
-              label="Vị trí"
-              onChange={(e) => onLocationChange(e.target.value)}
+              value={departmentFilter}
+              label="Phòng ban"
+              onChange={(e) => onDepartmentChange(e.target.value)}
               sx={{ borderRadius: 2 }}
             >
               <MenuItem value="">Tất cả</MenuItem>
-              {data.locations.map((location) => (
-                <MenuItem key={location.id} value={location.name}>
-                  {location.name}
+              {data.departments.map((department) => (
+                <MenuItem key={department.id} value={department.name}>
+                  {department.name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+        {/* <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
           <ToggleButtonGroup
             value={viewMode}
             exclusive
@@ -144,11 +144,11 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
             <ToggleButton value="table" sx={{ borderRadius: 2 }}>
               <ViewListIcon />
             </ToggleButton>
-            {/* <ToggleButton value="grid" sx={{ borderRadius: 2 }}>
+            <ToggleButton value="grid" sx={{ borderRadius: 2 }}>
               <ViewModuleIcon />
-            </ToggleButton> */}
+            </ToggleButton> 
           </ToggleButtonGroup>
-        </Box>
+        </Box> */}
       </Box>
     </Paper>
   )

@@ -12,14 +12,14 @@ import {
   Divider,
 } from "@mui/material"
 
-import type { Asset, Category, Location, Employee, StatusOption, ConditionOption } from '../../types'
+import type { Asset, Category, Department, Employee, StatusOption, ConditionOption } from '../../types'
 import { statusColors, conditionColors, formatCurrency, formatDate } from "../../utils"
 
 interface AssetDetailDialogProps {
   asset: Asset | null
   data: {
     categories: Category[]
-    locations: Location[]
+    departments: Department[]
     employees: Employee[]
     statusOptions: StatusOption[]
     conditionOptions: ConditionOption[]
@@ -64,7 +64,7 @@ const AssetDetailDialog: React.FC<AssetDetailDialogProps> = ({
       </DialogTitle>
       <DialogContent>
         <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 3 }}>
-          <Box>
+          {/* <Box>
             <Typography variant="subtitle2" gutterBottom>
               Thông tin cơ bản
             </Typography>
@@ -92,7 +92,7 @@ const AssetDetailDialog: React.FC<AssetDetailDialogProps> = ({
               </Typography>
               <Typography variant="body1">{asset.serialNumber}</Typography>
             </Box>
-          </Box>
+          </Box> */}
           <Box>
             <Typography variant="subtitle2" gutterBottom>
               Trạng thái & Vị trí
@@ -122,9 +122,9 @@ const AssetDetailDialog: React.FC<AssetDetailDialogProps> = ({
             </Box>
             <Box sx={{ mb: 2 }}>
               <Typography variant="body2" color="text.secondary">
-                Vị trí:
+                Phòng ban:
               </Typography>
-              <Typography variant="body1">{asset.location || "Chưa có"}</Typography>
+              <Typography variant="body1">{asset.department || "Chưa có"}</Typography>
             </Box>
             <Box sx={{ mb: 2 }}>
               <Typography variant="body2" color="text.secondary">

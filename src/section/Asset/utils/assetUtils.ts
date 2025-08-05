@@ -5,7 +5,7 @@ export const filterAssets = (
   searchTerm: string,
   categoryFilter: string,
   statusFilter: string,
-  locationFilter: string
+  departmentFilter: string
 ): Asset[] => {
   return assets.filter((asset) => {
     const matchesSearch =
@@ -18,9 +18,9 @@ export const filterAssets = (
 
     const matchesCategory = categoryFilter === "" || asset.category === categoryFilter
     const matchesStatus = statusFilter === "" || asset.status === statusFilter
-    const matchesLocation = locationFilter === "" || asset.location === locationFilter
+    const matchesDepartment = departmentFilter === "" || asset.department === departmentFilter
 
-    return matchesSearch && matchesCategory && matchesStatus && matchesLocation
+    return matchesSearch && matchesCategory && matchesStatus && matchesDepartment
   })
 }
 
@@ -70,8 +70,8 @@ export const getAssetsByStatus = (assets: Asset[], status: string): Asset[] => {
   return assets.filter((asset) => asset.status === status)
 }
 
-export const getAssetsByLocation = (assets: Asset[], location: string): Asset[] => {
-  return assets.filter((asset) => asset.location === location)
+export const getAssetsByDepartment = (assets: Asset[], department: string): Asset[] => {
+  return assets.filter((asset) => asset.department === department)
 }
 
 export const getAssetsByAssignee = (assets: Asset[], assigneeId: string): Asset[] => {
