@@ -107,7 +107,6 @@
     "rowsPerPage": "Rows per page",
     "noLogsFound": "No activity logs found",
     "errorLoadingLogs": "Error loading activity logs",
-    "locationManagement": "Location Management",
     "View which departments use which assets": "View which departments use which assets",
     "Loading data...": "Loading data...",
     "Error occurred while loading data": "Error occurred while loading data",
@@ -193,17 +192,17 @@
     "value": "Value",
     "status": {
       "available": "Available",
-      "assigned": "In_Use",
+      "in_use": "In_Use",
       "maintenance": "Maintenance",
-      "repair": "Repair",
+      "broken": "Broken",
       "decommissioned": "Decommissioned"
     },
     "condition": {
       "good": "Good",
-      "verygood": "Very Good",
-      "fairlygood": "Fairly Good",
-      "repair": "Repair",
-      "heavilydamaged": "Heavily Damaged"
+      "new": "New",
+      "fair": "Fair",
+      "poor": "Poor",
+      "damaged": "Damaged"
     }
   }
 }

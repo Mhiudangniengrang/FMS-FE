@@ -61,7 +61,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       "/user/view"
     ),
     createMenuItem(
-      t("locationManagement"),
+      t("departmentManagement"),
       "3",
       <LocationOnIcon />,
       "/departments/view"

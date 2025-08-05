@@ -100,7 +100,7 @@
       "assetCode": "TS001",
       "name": "Laptop Dell XPS 13",
       "category": "Máy tính",
-      "status": "assigned",
+      "status": "available",
       "condition": "good",
       "department": "Phòng kỹ thuật",
       "assignedTo": "Nguyễn Văn A",
@@ -126,8 +126,8 @@
       "assetCode": "TS002",
       "name": "Máy in Canon LBP2900",
       "category": "Thiết bị văn phòng",
-      "status": "available",
-      "condition": "verygood",
+      "status": "in_use",
+      "condition": "good",
       "department": "Phòng nhân sự",
       "assignedTo": "",
       "assigneeId": "",
@@ -153,7 +153,7 @@
       "name": "Xe Toyota Camry",
       "category": "Phương tiện",
       "status": "maintenance",
-      "condition": "repair",
+      "condition": "fair",
       "department": "Phòng phân tích dữ liệu",
       "assignedTo": "Trần Thị B",
       "assigneeId": "NV002",
@@ -178,8 +178,8 @@
       "assetCode": "TS004",
       "name": "iPhone 14 Pro",
       "category": "Thiết bị di động",
-      "status": "assigned",
-      "condition": "good",
+      "status": "available",
+      "condition": "new",
       "department": "Phòng thiết kế",
       "assignedTo": "Hoàng Thị E",
       "assigneeId": "NV005",
@@ -204,7 +204,7 @@
       "assetCode": "TS005",
       "name": "Màn hình Dell UltraSharp 27\"",
       "category": "Thiết bị máy tính",
-      "status": "assigned",
+      "status": "available",
       "condition": "good",
       "department": "Phòng kinh doanh",
       "assignedTo": "Vũ Văn F",
@@ -230,7 +230,7 @@
       "assetCode": "TS006",
       "name": "Bàn làm việc đứng FlexiSpot",
       "category": "Nội thất văn phòng",
-      "status": "available",
+      "status": "in_use",
       "condition": "good",
       "department": "Phòng kinh doanh",
       "assignedTo": "",
@@ -256,8 +256,8 @@
       "assetCode": "TS007",
       "name": "Máy pha cà phê Breville",
       "category": "Thiết bị sinh hoạt",
-      "status": "assigned",
-      "condition": "good",
+      "status": "decommissioned",
+      "condition": "damaged",
       "department": "Phòng quản lý dự án",
       "assignedTo": "Toàn bộ nhân viên",
       "assigneeId": "ALL",
@@ -282,8 +282,8 @@
       "assetCode": "TS008",
       "name": "Máy chiếu Epson EB-FH06",
       "category": "Thiết bị trình chiếu",
-      "status": "available",
-      "condition": "good",
+      "status": "maintenance",
+      "condition": "poor",
       "department": "Phòng phân tích dữ liệu",
       "assignedTo": "",
       "assigneeId": "",
@@ -581,7 +581,7 @@
     },
     {
       "value": "in_use",
-      "label": "assigned",
+      "label": "in_use",
       "color": "primary",
       "description": "Tài sản đang được sử dụng"
     },
@@ -592,100 +592,53 @@
       "description": "Tài sản đang được bảo trì"
     },
     {
-      "value": "repair",
-      "label": "repair",
-      "color": "error",
-      "description": "Tài sản đang được sửa chữa"
-    },
-    {
       "value": "broken",
-      "label": "Hỏng",
+      "label": "broken",
       "color": "error",
       "description": "Tài sản bị hỏng, không sử dụng được"
     },
     {
-      "value": "retired",
-      "label": "Ngừng sử dụng",
+      "value": "decommissioned",
+      "label": "decommissioned",
       "color": "grey",
       "description": "Tài sản không còn sử dụng"
-    },
-    {
-      "value": "reserved",
-      "label": "Đã đặt trước",
-      "color": "info",
-      "description": "Tài sản đã được đặt trước"
     }
   ],
   "conditionOptions": [
     {
       "value": "new",
       "label": "new",
-      "score": 10,
+      "score": 5,
       "color": "success",
       "description": "Tài sản hoàn toàn mới, chưa sử dụng"
     },
     {
-      "value": "excellent",
-      "label": "Xuất sắc",
-      "score": 9,
-      "color": "success",
-      "description": "Tình trạng rất good, gần như mới"
-    },
-    {
-      "value": "very_good",
-      "label": "Rất good",
-      "score": 8,
-      "color": "primary",
-      "description": "Tình trạng rất good, có dấu hiệu sử dụng nhẹ"
-    },
-    {
       "value": "good",
       "label": "good",
-      "score": 7,
+      "score": 4,
       "color": "primary",
-      "description": "Tình trạng good, hoạt động bình thường"
+      "description": "Tài sản hoạt động tốt, ít hao mòn"
     },
     {
       "value": "fair",
-      "label": "Khá",
-      "score": 6,
+      "label": "fair",
+      "score": 3,
       "color": "info",
-      "description": "Tình trạng khá, có một số dấu hiệu hao mòn"
-    },
-    {
-      "value": "average",
-      "label": "Trung bình",
-      "score": 5,
-      "color": "warning",
-      "description": "Tình trạng trung bình, cần chú ý bảo dưỡng"
-    },
-    {
-      "value": "below_average",
-      "label": "Dưới trung bình",
-      "score": 4,
-      "color": "warning",
-      "description": "Tình trạng dưới mức trung bình"
+      "description": "Tài sản còn dùng được, có dấu hiệu hao mòn"
     },
     {
       "value": "poor",
-      "label": "Kém",
-      "score": 3,
-      "color": "error",
-      "description": "Tình trạng kém, cần sửa chữa"
-    },
-    {
-      "value": "very_poor",
-      "label": "Rất kém",
+      "label": "poor",
       "score": 2,
-      "color": "error",
-      "description": "Tình trạng rất kém, cần sửa chữa gấp"
+      "color": "warning",
+      "description": "Tài sản kém, cần sửa chữa"
     },
     {
       "value": "damaged",
-      "label": "Hỏng",
+      "label": "damaged",
       "score": 1,
       "color": "error",
-      "description": "Tài sản bị hỏng, không thể sử dụng"
+      "description": "Tài sản hỏng, không sử dụng được"
     }
   ],
   "userLogs": [
@@ -718,6 +671,26 @@
       "targetId": null,
       "role": "auth",
       "timestamp": "2025-08-05T11:15:36.662Z"
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "username": "John Smith",
+      "action": "login",
+      "details": "User John Smith logged in",
+      "targetId": null,
+      "role": "auth",
+      "timestamp": "2025-08-05T13:51:36.730Z"
+    },
+    {
+      "id": 5,
+      "userId": 1,
+      "username": "John Smith",
+      "action": "login",
+      "details": "User John Smith logged in",
+      "targetId": null,
+      "role": "auth",
+      "timestamp": "2025-08-05T14:01:44.899Z"
     }
   ],
   "maintenance": [

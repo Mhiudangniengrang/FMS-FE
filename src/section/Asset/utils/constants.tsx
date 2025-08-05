@@ -59,9 +59,9 @@ export const statusColors: {
     | "warning";
 } = {
   available: "info",
-  assigned: "success",
+  in_use: "success",
   maintenance: "warning",
-  repair: "error",
+  broken: "error",
   decommissioned: "default",
 };
 
@@ -75,11 +75,11 @@ export const conditionColors: {
     | "success"
     | "warning";
 } = {
-  good: "success",
-  verygood: "info",
-  fairlygood: "warning",
-  needsrepair: "error",
-  heavilydamaged: "error",
+  new: "success",
+  good: "info",
+  fair: "warning",
+  poor: "error",
+  damaged: "error",
 };
 
 export const viewModes = {

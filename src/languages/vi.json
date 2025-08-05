@@ -110,7 +110,6 @@
     "loginFailed": "Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn và thử lại.",
     "Incorrect email or password": "Email hoặc mật khẩu không chính xác",
     "rowsPerPage": "Số dòng mỗi trang",
-    "locationManagement": "Quản Lý Phòng Ban",
     "View which departments use which assets": "Xem phòng ban nào sử dụng tài sản nào",
     "Loading data...": "Đang tải dữ liệu...",
     "Error occurred while loading data": "Đã xảy ra lỗi khi tải dữ liệu",
