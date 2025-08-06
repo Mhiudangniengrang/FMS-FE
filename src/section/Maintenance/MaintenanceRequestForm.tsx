@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   TextField,
@@ -13,18 +14,35 @@ import {
   Autocomplete,
   CircularProgress,
   Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Chip,
 } from "@mui/material";
 import {
   Build as BuildIcon,
   Send as SendIcon,
+  Save as SaveIcon,
 } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
-import { useAssets, useCreateMaintenanceRequest } from "../../hooks/useMaintenance";
+import { useAssets, useCreateMaintenanceRequest, useSaveDraftMaintenanceRequest } from "../../hooks/useMaintenance";
 import type { MaintenanceFormData, Asset } from "../../types";
+import Cookies from "js-cookie";
 
 const MaintenanceRequestForm: React.FC = () => {
   const { data: assets, isLoading: assetsLoading } = useAssets();
   const createMaintenanceMutation = useCreateMaintenanceRequest();
+  const saveDraftMutation = useSaveDraftMaintenanceRequest();
+  
+  // States for auto-save draft functionality
+  const [showDraftDialog, setShowDraftDialog] = useState(false);
+  const [hasFormChanges, setHasFormChanges] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  const isSubmittingRef = useRef(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const {
     control,
@@ -37,13 +55,117 @@ const MaintenanceRequestForm: React.FC = () => {
 
   const selectedAssetId = watch("assetId");
   const selectedAsset = assets?.find((asset) => asset.id === selectedAssetId);
+  
+  // Watch all form fields for changes
+  const watchedFields = watch();
+  
+  // Track form changes
+  useEffect(() => {
+    const hasData = watchedFields.assetId || watchedFields.title || watchedFields.description || watchedFields.priority || watchedFields.expectedCompletionTime;
+    setHasFormChanges(!!hasData);
+  }, [watchedFields]);
+  
+  // Handle beforeunload event
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasFormChanges && !isSubmittingRef.current) {
+        e.preventDefault();
+        e.returnValue = 'Bạn có thay đổi chưa được lưu. Bạn có chắc muốn rời khỏi trang?';
+        return e.returnValue;
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasFormChanges]);
+
+  // Handle route changes within the app
+  useEffect(() => {
+    // This is a simplified version - in a real app you'd use react-router's blocker
+    // For now, the beforeunload event will handle most cases
+    return () => {
+      // Cleanup
+    };
+  }, [location, hasFormChanges]);
 
   const onSubmit = async (data: MaintenanceFormData) => {
     try {
-      await createMaintenanceMutation.mutateAsync(data);
+      isSubmittingRef.current = true;
+      const userId = Cookies.get("__userId");
+      await createMaintenanceMutation.mutateAsync({
+        ...data,
+        isDraft: false,
+        // Note: In real app, requestedBy should be set by backend from auth token
+        requestedBy: userId ? parseInt(userId) : undefined,
+      });
       reset();
+      setHasFormChanges(false);
     } catch {
       // Error is handled in the hook
+    } finally {
+      isSubmittingRef.current = false;
+    }
+  };
+
+  const onSaveDraft = async (data: MaintenanceFormData) => {
+    try {
+      isSubmittingRef.current = true;
+      const userId = Cookies.get("__userId");
+      await saveDraftMutation.mutateAsync({
+        ...data,
+        isDraft: true,
+        // Note: In real app, requestedBy should be set by backend from auth token
+        requestedBy: userId ? parseInt(userId) : undefined,
+      });
+      reset();
+      setHasFormChanges(false);
+    } catch {
+      // Error is handled in the hook
+    } finally {
+      isSubmittingRef.current = false;
+    }
+  };
+
+  // Handle auto-save draft dialog
+  const handleSaveAsDraft = async () => {
+    const formData = watchedFields as MaintenanceFormData;
+    if (formData.assetId || formData.title || formData.description) {
+      await onSaveDraft(formData);
+    }
+    setShowDraftDialog(false);
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+      setPendingNavigation(null);
+    }
+  };
+
+  const handleDiscardChanges = () => {
+    setShowDraftDialog(false);
+    setHasFormChanges(false);
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+      setPendingNavigation(null);
+    }
+  };
+
+  // Helper functions for asset status
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "available": return "Có sẵn";
+      case "in_use": return "Đang sử dụng";
+      case "broken": return "Hỏng";
+      case "maintenance": return "Bảo trì";
+      default: return status;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "available": return "success";
+      case "in_use": return "warning";  // Màu cam/vàng như trong ảnh
+      case "broken": return "error";
+      case "maintenance": return "info";
+      default: return "default";
     }
   };
 
@@ -63,6 +185,7 @@ const MaintenanceRequestForm: React.FC = () => {
   }
 
   return (
+    <>
     <Card elevation={3}>
       <CardContent>
         <Box sx={{ mb: 3 }}>
@@ -90,7 +213,7 @@ const MaintenanceRequestForm: React.FC = () => {
                       options={assets || []}
                       getOptionLabel={(option: Asset) => `${option.name} (${option.code})`}
                       value={assets?.find((asset) => asset.id === field.value) || null}
-                      onChange={(_, newValue) => field.onChange(newValue?.id || "")}
+                      onChange={(_, newValue: Asset | null) => field.onChange(newValue?.id || "")}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -101,7 +224,7 @@ const MaintenanceRequestForm: React.FC = () => {
                           fullWidth
                         />
                       )}
-                      renderOption={(props, option) => (
+                      renderOption={(props, option: Asset) => (
                         <Box component="li" {...props}>
                           <Box>
                             <Typography variant="subtitle2">{option.name}</Typography>
@@ -131,25 +254,16 @@ const MaintenanceRequestForm: React.FC = () => {
                   <Typography variant="body2">
                     <strong>Vị trí:</strong> {selectedAsset.location}
                   </Typography>
-                  <Typography variant="body2">
-                    <strong>Trạng thái:</strong>{" "}
-                    <Box
-                      component="span"
-                      sx={{
-                        px: 1,
-                        py: 0.5,
-                        borderRadius: 1,
-                        bgcolor: selectedAsset.status === "available" ? "success.light" : "warning.light",
-                        color: "white",
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      {selectedAsset.status === "available" && "Khả dụng"}
-                      {selectedAsset.status === "in_use" && "Đang sử dụng"}
-                      {selectedAsset.status === "maintenance" && "Bảo trì"}
-                      {selectedAsset.status === "broken" && "Hỏng"}
-                    </Box>
-                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Typography variant="body2">
+                      <strong>Trạng thái:</strong>
+                    </Typography>
+                    <Chip 
+                      label={getStatusLabel(selectedAsset.status)}
+                      color={getStatusColor(selectedAsset.status) as "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning"}
+                      size="small"
+                    />
+                  </Box>
                 </Box>
               )}
             </Box>
@@ -220,15 +334,43 @@ const MaintenanceRequestForm: React.FC = () => {
               placeholder="Mô tả chi tiết về sự cố, triệu chứng, thời điểm xảy ra..."
             />
 
-            {/* Submit Button */}
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            {/* Expected Completion Time */}
+            <Box sx={{ maxWidth: { xs: "100%", md: "50%" } }}>
+              <TextField
+                {...register("expectedCompletionTime")}
+                label="Thời Gian Mong Muốn Hoàn Thành"
+                type="datetime-local"
+                variant="outlined"
+                fullWidth
+                error={!!errors.expectedCompletionTime}
+                helperText={errors.expectedCompletionTime?.message || "Thời gian mong muốn bảo trì được hoàn thành"}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Box>
+
+            {/* Submit Buttons */}
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, flexWrap: "wrap" }}>
               <Button
                 type="button"
                 variant="outlined"
                 onClick={() => reset()}
-                disabled={createMaintenanceMutation.isPending}
+                disabled={createMaintenanceMutation.isPending || saveDraftMutation.isPending}
               >
                 Hủy
+              </Button>
+              <Button
+                type="button"
+                variant="outlined"
+                startIcon={
+                  saveDraftMutation.isPending ? <CircularProgress size={20} /> : <SaveIcon />
+                }
+                onClick={handleSubmit(onSaveDraft)}
+                disabled={createMaintenanceMutation.isPending || saveDraftMutation.isPending}
+                sx={{ minWidth: 140 }}
+              >
+                {saveDraftMutation.isPending ? "Đang lưu..." : "Lưu Bản Nháp"}
               </Button>
               <Button
                 type="submit"
@@ -236,7 +378,7 @@ const MaintenanceRequestForm: React.FC = () => {
                 startIcon={
                   createMaintenanceMutation.isPending ? <CircularProgress size={20} /> : <SendIcon />
                 }
-                disabled={createMaintenanceMutation.isPending}
+                disabled={createMaintenanceMutation.isPending || saveDraftMutation.isPending}
                 sx={{ minWidth: 140 }}
               >
                 {createMaintenanceMutation.isPending ? "Đang gửi..." : "Gửi Yêu Cầu"}
@@ -246,6 +388,29 @@ const MaintenanceRequestForm: React.FC = () => {
         </Box>
       </CardContent>
     </Card>
+
+    {/* Auto-save Draft Dialog */}
+    <Dialog open={showDraftDialog} onClose={() => {}}>
+      <DialogTitle>Lưu thay đổi?</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Bạn có những thay đổi chưa được lưu. Bạn có muốn lưu vào bản nháp để hoàn thành sau không?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleDiscardChanges} color="inherit">
+          Không lưu
+        </Button>
+        <Button 
+          onClick={handleSaveAsDraft} 
+          variant="contained" 
+          disabled={saveDraftMutation.isPending}
+        >
+          {saveDraftMutation.isPending ? "Đang lưu..." : "Lưu bản nháp"}
+        </Button>
+      </DialogActions>
+    </Dialog>
+    </>
   );
 };
 

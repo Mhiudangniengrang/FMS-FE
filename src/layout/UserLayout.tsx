@@ -8,6 +8,8 @@ import {
   MenuOpen as MenuOpenIcon,
   Logout as LogoutIcon,
   Person as PersonIcon,
+  Build as BuildIcon,
+  History as HistoryIcon,
 } from "@mui/icons-material";
 import {
   Box,
@@ -34,18 +36,42 @@ import logo from "../assets/unit-corp-logo.webp";
 import { dashboardStyles } from "../styles/dashboard.styles";
 import type { MenuItemType, DashboardLayoutProps } from "../types";
 import { useUserInfo, useLogout } from "../hooks/useAuth";
-
-// User menu items
-const items: MenuItemType[] = [
-  {
-    key: "assets",
-    label: "My Assets",
-    icon: <ListAltIcon />,
-    path: "/user/assets",
-  },
-];
+import Cookies from "js-cookie";
 
 const UserLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const userRole = Cookies.get("__role") || "user";
+  
+  // Menu items based on user role
+  const getMenuItems = (): MenuItemType[] => {
+    if (userRole === "staff") {
+      return [
+        {
+          key: "maintenance",
+          label: "Gửi Yêu Cầu Bảo Trì",
+          icon: <BuildIcon />,
+          path: "/staff/maintenance",
+        },
+        {
+          key: "maintenance-history", 
+          label: "Lịch Sử Yêu Cầu",
+          icon: <HistoryIcon />,
+          path: "/staff/maintenance/history",
+        },
+      ];
+    }
+    
+    // Default user menu
+    return [
+      {
+        key: "assets",
+        label: "My Assets",
+        icon: <ListAltIcon />,
+        path: "/user/assets",
+      },
+    ];
+  };
+
+  const items = getMenuItems();
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [anchorElNotification, setAnchorElNotification] =
@@ -165,7 +191,7 @@ const UserLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               display: collapsed ? "none" : "block",
             }}
           >
-            User Menu
+            {userRole === "staff" ? "Staff Menu" : "User Menu"}
           </Typography>
           <List sx={{ pt: 0.5 }}>
             {items.map((item) => (

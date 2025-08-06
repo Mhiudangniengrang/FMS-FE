@@ -14,6 +14,8 @@ export const AssetPage = lazy(() => import("../page/AssetPage"));
 export const MaintenancePage = lazy(() => import("../page/MaintenancePage"));
 // *** THÊM MỚI: Route cho Admin xem danh sách yêu cầu bảo trì ***
 export const MaintenanceManagementPage = lazy(() => import("../page/MaintenanceManagementPage"));
+// *** THÊM MỚI: Route cho Staff xem lịch sử yêu cầu bảo trì ***
+export const MyMaintenanceHistoryPage = lazy(() => import("../page/MyMaintenanceHistoryPage"));
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -91,6 +93,10 @@ export const Router = (): React.JSX.Element | null => {
         {
           element: <MaintenancePage />,
           path: "/staff/maintenance",
+        },
+        {
+          element: <MyMaintenanceHistoryPage />,
+          path: "/staff/maintenance/history",
         },
         { element: <Error404 />, path: "*" },
       ],

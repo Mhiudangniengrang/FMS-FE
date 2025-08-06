@@ -56,6 +56,7 @@ export const useLogin = () => {
     onSuccess: (data: AuthResponse) => {
       Cookies.set("__token", data.access_token, { expires: 1 });
       Cookies.set("__role", data.user.role, { expires: 1 });
+      Cookies.set("__userId", data.user.id.toString(), { expires: 1 });
       queryClient.setQueryData(authKeys.me(), data.user);
       showSnackbar("Login successful!", "success");
       if (data.user.role === "user") {
@@ -115,6 +116,7 @@ export const useLogout = () => {
     onSuccess: () => {
       Cookies.remove("__token");
       Cookies.remove("__role");
+      Cookies.remove("__userId");
       showSnackbar("Logout successful!", "success"); // <-- gọi ở đây
       queryClient.clear();
       navigate("/");
