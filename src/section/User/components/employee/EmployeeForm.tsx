@@ -160,7 +160,6 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                       label={t("employeeId")}
                       error={!!errors.id}
                       helperText={errors.id?.message}
-                      disabled={true}
                       sx={{
                         "& .MuiInputBase-input.Mui-disabled": {
                           WebkitTextFillColor: "rgba(0, 0, 0, 0.6)",

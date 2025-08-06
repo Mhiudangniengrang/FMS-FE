@@ -231,6 +231,7 @@
     "deleteAssetConfirmation": "Are you sure you want to delete this asset?",
     "deleteWarning": "This action cannot be undone. The asset will be permanently deleted from the system.",
     "deleteConfirm": "Please confirm that you want to permanently delete this asset.",
-    "assetDeleteSuccess": "Asset deleted successfully."
+    "assetDeleteSuccess": "Asset deleted successfully.",
+    "noEmployeesFound": "No employees found."
   }
 }

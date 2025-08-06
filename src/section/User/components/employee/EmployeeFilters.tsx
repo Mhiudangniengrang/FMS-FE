@@ -39,8 +39,8 @@ interface EmployeeFiltersProps {
 export const EmployeeFilters: React.FC<EmployeeFiltersProps> = ({
   searchQuery,
   filterDepartment,
+  departments, // Dùng departments thay vì departmentStats
   departmentStats,
-  departments,
   onSearchChange,
   onDepartmentFilterChange,
   onClearSearch,
@@ -76,7 +76,7 @@ export const EmployeeFilters: React.FC<EmployeeFiltersProps> = ({
       />
 
       {/* Department Filter */}
-      <FormControl size="small" sx={{ minWidth: "180px" }}>
+      <FormControl size="small" sx={{ minWidth: 200 }}>
         <InputLabel id="department-filter-label">
           {t("filterByDepartment")}
         </InputLabel>
@@ -92,12 +92,16 @@ export const EmployeeFilters: React.FC<EmployeeFiltersProps> = ({
           }
         >
           <MenuItem value="all">{t("allDepartments")}</MenuItem>
-          {departmentStats &&
-            Object.entries(departmentStats).map(([dept, stats]) => (
-              <MenuItem key={dept} value={dept}>
-                {dept} ({stats.count})
+
+          {/* Hiển thị tất cả departments, không chỉ những phòng có nhân viên */}
+          {departments?.map((dept) => {
+            const employeeCount = departmentStats?.[dept.name]?.count || 0;
+            return (
+              <MenuItem key={dept.id} value={dept.name}>
+                {dept.name} ({employeeCount})
               </MenuItem>
-            ))}
+            );
+          })}
         </Select>
       </FormControl>
     </Box>

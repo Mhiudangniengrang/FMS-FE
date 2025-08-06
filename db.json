@@ -351,16 +351,7 @@
       "id": 1,
       "name": "Phòng kỹ thuật",
       "description": "Phòng kỹ thuật và bảo trì",
-      "employees": [
-        {
-          "id": "NV001",
-          "name": "Nguyễn Văn A"
-        },
-        {
-          "id": "NV003",
-          "name": "Phạm Văn C"
-        }
-      ]
+      "employees": []
     },
     {
       "id": 2,
@@ -368,8 +359,28 @@
       "description": "Phòng thiết kế đồ họa",
       "employees": [
         {
-          "id": "NV002",
-          "name": "Trần Thị B"
+          "id": "NV004",
+          "name": "Lê Văn D"
+        },
+        {
+          "id": "NV006",
+          "name": "Vũ Văn F"
+        },
+        {
+          "id": "NV008",
+          "name": "Trần Văn H"
+        },
+        {
+          "id": "NV009",
+          "name": "Phạm Thị I"
+        },
+        {
+          "id": "NV015",
+          "name": "Nguyễn Văn E"
+        },
+        {
+          "id": "NV001",
+          "name": "Nguyễn Văn A"
         }
       ]
     },
@@ -377,16 +388,7 @@
       "id": 3,
       "name": "Phòng quản lý dự án",
       "description": "Phòng quản lý dự án và điều hành",
-      "employees": [
-        {
-          "id": "NV004",
-          "name": "Lê Văn D"
-        },
-        {
-          "id": "NV015",
-          "name": "Nguyễn Văn O"
-        }
-      ]
+      "employees": []
     },
     {
       "id": 4,
@@ -398,8 +400,8 @@
           "name": "Hoàng Thị E"
         },
         {
-          "id": "NV006",
-          "name": "Vũ Văn F"
+          "id": "NV007",
+          "name": "Nguyễn Thị G"
         }
       ]
     },
@@ -407,16 +409,7 @@
       "id": 5,
       "name": "Phòng chăm sóc khách hàng",
       "description": "Phòng chăm sóc khách hàng",
-      "employees": [
-        {
-          "id": "NV007",
-          "name": "Nguyễn Thị G"
-        },
-        {
-          "id": "NV008",
-          "name": "Trần Văn H"
-        }
-      ]
+      "employees": []
     },
     {
       "id": 6,
@@ -424,8 +417,8 @@
       "description": "Phòng phân tích dữ liệu và báo cáo",
       "employees": [
         {
-          "id": "NV009",
-          "name": "Phạm Thị I"
+          "id": "NV003",
+          "name": "Phạm Văn C"
         },
         {
           "id": "NV010",
@@ -438,6 +431,10 @@
       "name": "Phòng nhân sự",
       "description": "Phòng nhân sự và hành chính",
       "employees": [
+        {
+          "id": "NV002",
+          "name": "Trần Thị B"
+        },
         {
           "id": "NV011",
           "name": "Nguyễn Văn K"
@@ -467,10 +464,9 @@
   "employees": [
     {
       "name": "Nguyễn Văn A",
-      "position": "Trưởng phòng IT",
-      "department": "Phòng kỹ thuật",
+      "position": "Trưởng phòng kỹ thuật",
+      "department": "Phòng thiết kế",
       "email": "nguyenvana@company.com",
-      "locationId": 1,
       "id": "NV001"
     },
     {
@@ -483,8 +479,8 @@
     {
       "id": "NV003",
       "name": "Phạm Văn C",
-      "position": "Nhân viên phân tích dữ liệu",
-      "department": "Phòng phân tích dữ liệu",
+      "position": "Kỹ thuật viên",
+      "department": "Phòng kỹ thuật",
       "email": "phamvanc@company.com"
     },
     {
@@ -523,11 +519,11 @@
       "email": "tranvanh@company.com"
     },
     {
-      "id": "NV009",
       "name": "Phạm Thị I",
       "position": "Quản lý dự án",
-      "department": "Phòng quản lý dự án",
-      "email": "phamthi@company.com"
+      "department": "Phòng thiết kế",
+      "email": "phamthi@company.com",
+      "id": "NV009"
     },
     {
       "id": "NV010",
@@ -566,7 +562,7 @@
     },
     {
       "name": "Nguyễn Văn E",
-      "position": "Nhân viên bảo trì",
+      "position": "Nhân viên thiết kế",
       "department": "Phòng thiết kế",
       "email": "nguyenvano@company.com",
       "id": "NV015"

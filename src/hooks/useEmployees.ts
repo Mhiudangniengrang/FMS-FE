@@ -7,6 +7,11 @@ import {
   updateEmployee,
   deleteEmployee,
 } from "@/api/employees";
+import {
+  addEmployeeToDepartment,
+  removeEmployeeFromDepartment,
+  updateEmployeeInDepartment,
+} from "@/api/department";
 import { showSnackbar } from "@/App";
 import type {
   CreateEmployeeData,
@@ -63,10 +68,17 @@ export const useEmployees = () => {
   const createEmployeeMutation = useMutation({
     mutationFn: async (employeeData: CreateEmployeeData) => {
       const response = await createEmployee(employeeData);
+
+      // Đồng bộ với department
+      if (employeeData.department && response.data) {
+        await addEmployeeToDepartment(employeeData.department, response.data);
+      }
+
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
+      queryClient.invalidateQueries({ queryKey: ["departments"] });
       queryClient.invalidateQueries({ queryKey: ["departmentStats"] });
       showSnackbar && showSnackbar(t("employeeCreateSuccess"), "success");
     },
@@ -83,12 +95,39 @@ export const useEmployees = () => {
   // Update employee mutation
   const updateEmployeeMutation = useMutation({
     mutationFn: async ({ id, ...employeeData }: UpdateEmployeeData) => {
+      const oldEmployee = employees?.find((emp: any) => emp.id === id);
+
       const response = await updateEmployee(id, employeeData);
+
+      // Xử lý đồng bộ department
+      if (oldEmployee && response.data) {
+        const oldDepartment = oldEmployee.department;
+        const newDepartment = employeeData.department;
+
+        if (oldDepartment !== newDepartment) {
+          if (oldDepartment) {
+            await removeEmployeeFromDepartment(oldDepartment, id);
+          }
+          if (newDepartment) {
+            await addEmployeeToDepartment(newDepartment, response.data);
+          }
+        } else if (newDepartment) {
+          // Cùng phòng ban: chỉ cập nhật thông tin
+          await updateEmployeeInDepartment(newDepartment, response.data);
+        }
+      }
+
       return response.data;
     },
     onSuccess: () => {
+      // Invalidate tất cả queries liên quan
       queryClient.invalidateQueries({ queryKey: ["employees"] });
+      queryClient.invalidateQueries({ queryKey: ["departments"] });
       queryClient.invalidateQueries({ queryKey: ["departmentStats"] });
+
+      // Force refetch ngay lập tức
+      refetch();
+
       showSnackbar && showSnackbar(t("employeeUpdateSuccess"), "success");
     },
     onError: (error: any) => {
@@ -104,11 +143,20 @@ export const useEmployees = () => {
   // Delete employee mutation
   const deleteEmployeeMutation = useMutation({
     mutationFn: async (id: string) => {
+      const employeeToDelete = employees?.find((emp: any) => emp.id === id);
+
       const response = await deleteEmployee(id);
+
+      // Xóa nhân viên khỏi department
+      if (employeeToDelete?.department) {
+        await removeEmployeeFromDepartment(employeeToDelete.department, id);
+      }
+
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
+      queryClient.invalidateQueries({ queryKey: ["departments"] });
       queryClient.invalidateQueries({ queryKey: ["departmentStats"] });
       showSnackbar && showSnackbar(t("employeeDeleteSuccess"), "success");
     },
