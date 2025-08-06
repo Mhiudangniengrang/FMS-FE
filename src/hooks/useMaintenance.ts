@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 import { 
   getAssets,
   getAssetById,
@@ -8,6 +9,9 @@ import {
   updateMaintenanceRequest,
   deleteMaintenanceRequest,
   getMyMaintenanceRequests,
+  getMyDraftRequests,
+  saveDraftMaintenanceRequest,
+  updateDraftMaintenanceRequest,
   getTechnicians
 } from "../api/maintenance";
 import type { 
@@ -25,6 +29,7 @@ const maintenanceKeys = {
   details: () => [...maintenanceKeys.all, "detail"] as const,
   detail: (id: number) => [...maintenanceKeys.details(), id] as const,
   myRequests: () => [...maintenanceKeys.all, "my-requests"] as const,
+  myDrafts: () => [...maintenanceKeys.all, "my-drafts"] as const,
 };
 
 const assetKeys = {
@@ -89,7 +94,17 @@ export const useMyMaintenanceRequests = () => {
     queryKey: maintenanceKeys.myRequests(),
     queryFn: async () => {
       const response = await getMyMaintenanceRequests();
-      return response.data;
+      // Get current user info from cookies/localStorage
+      const userId = Cookies.get("__userId");
+      console.log("Current userId from cookie:", userId);
+      console.log("All maintenance requests:", response.data);
+      // Filter requests by current user
+      const myRequests = response.data.filter(request => {
+        console.log(`Checking request ${request.id}: requestedBy=${request.requestedBy}, userId=${userId}`);
+        return request.requestedBy === parseInt(userId || "0");
+      });
+      console.log("Filtered my requests:", myRequests);
+      return myRequests;
     },
     staleTime: 2 * 60 * 1000,
   });
@@ -171,5 +186,73 @@ export const useTechnicians = () => {
       return response.data;
     },
     staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+
+// Get Draft Maintenance Requests
+export const useMyDraftRequests = () => {
+  return useQuery({
+    queryKey: maintenanceKeys.myDrafts(),
+    queryFn: async () => {
+      const response = await getMyDraftRequests();
+      return response.data;
+    },
+    staleTime: 2 * 60 * 1000,
+  });
+};
+
+// Save Draft Maintenance Request
+export const useSaveDraftMaintenanceRequest = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: CreateMaintenanceRequest) => {
+      const response = await saveDraftMaintenanceRequest(data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: maintenanceKeys.myDrafts() });
+      showSnackbar("Bản nháp đã được lưu thành công!", "success");
+    },
+    onError: (error: unknown) => {
+      const errorMessage = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { message?: string } } })?.response?.data?.message
+        : "Không thể lưu bản nháp!";
+      showSnackbar(errorMessage || "Không thể lưu bản nháp!", "error");
+    },
+  });
+};
+
+// Update Draft Maintenance Request
+export const useUpdateDraftMaintenanceRequest = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Partial<CreateMaintenanceRequest> }) => {
+      console.log("Hook: Calling updateDraftMaintenanceRequest with:", { id, data });
+      try {
+        const response = await updateDraftMaintenanceRequest(id, data);
+        console.log("Hook: Response received:", response.data);
+        return response.data;
+      } catch (error) {
+        console.error("Hook: API call failed:", error);
+        throw error;
+      }
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: maintenanceKeys.myDrafts() });
+      queryClient.invalidateQueries({ queryKey: maintenanceKeys.myRequests() });
+      queryClient.invalidateQueries({ queryKey: maintenanceKeys.all });
+      
+      // Show different message based on whether it was submitted or saved as draft
+      const message = data.isDraft ? "Cập nhật bản nháp thành công!" : "Gửi yêu cầu thành công!";
+      showSnackbar(message, "success");
+    },
+    onError: (error: unknown) => {
+      const errorMessage = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { message?: string } } })?.response?.data?.message
+        : "Có lỗi xảy ra!";
+      showSnackbar(errorMessage || "Có lỗi xảy ra!", "error");
+    },
   });
 }; 

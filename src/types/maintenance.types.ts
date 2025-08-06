@@ -20,9 +20,11 @@ export interface MaintenanceRequest {
   title: string;
   description: string;
   priority: "low" | "medium" | "high" | "urgent";
-  status: "pending" | "approved" | "in_progress" | "completed" | "cancelled";
+  status: "pending" | "approved" | "in_progress" | "completed" | "cancelled" | "draft";
   assignedTo?: number; // Technician User ID
   assignedToName?: string;
+  expectedCompletionTime?: string; // Thời gian mong muốn hoàn thành
+  isDraft: boolean; // Đánh dấu là bản nháp
   createdAt: string;
   updatedAt: string;
   completedAt?: string;
@@ -34,12 +36,16 @@ export interface CreateMaintenanceRequest {
   title: string;
   description: string;
   priority: "low" | "medium" | "high" | "urgent";
+  expectedCompletionTime?: string; // Thời gian mong muốn hoàn thành
+  isDraft?: boolean; // Đánh dấu là bản nháp (mặc định false)
+  requestedBy?: number; // User ID của người gửi yêu cầu
+  status?: "pending" | "approved" | "in_progress" | "completed" | "cancelled"; // Status khi chuyển từ draft
 }
 
 export interface UpdateMaintenanceRequest {
   id: number;
   status?: "pending" | "approved" | "in_progress" | "completed" | "cancelled";
-  assignedTo?: number;
+  assignedTo?: number | null; // Cho phép null để hủy phân công
   notes?: string;
 }
 
@@ -48,6 +54,7 @@ export interface MaintenanceFormData {
   title: string;
   description: string;
   priority: "low" | "medium" | "high" | "urgent";
+  expectedCompletionTime?: string; // Thời gian mong muốn hoàn thành
 }
 
 export interface MaintenanceFilter {
