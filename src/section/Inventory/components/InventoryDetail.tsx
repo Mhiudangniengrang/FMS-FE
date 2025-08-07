@@ -15,17 +15,9 @@ import {
   Avatar,
   useTheme,
   useMediaQuery,
-
 } from "@mui/material";
-import {
-  Close as CloseIcon,
-
-} from "@mui/icons-material";
-import {
-
-  statusColors,
-  conditionColors,
-} from "../../Asset/utils/constants";
+import { Close as CloseIcon } from "@mui/icons-material";
+import { statusColors, conditionColors } from "../../Asset/utils/constants";
 
 interface InventoryDetailProps {
   open: boolean;
@@ -251,7 +243,7 @@ const InventoryDetail: React.FC<InventoryDetailProps> = ({
                   </Typography>
                 </Box>
               </Grid>
-              <Grid size={{ xs: 4 }} >
+              <Grid size={{ xs: 4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     {t("purchaseDate")}
@@ -283,7 +275,7 @@ const InventoryDetail: React.FC<InventoryDetailProps> = ({
                 {t("description")}
               </Typography>
               <Typography variant="body2" fontWeight="medium">
-                {asset.description || t("inventory.defaultDescription")}
+                {asset.description || t("noDescription")}
               </Typography>
             </Box>
 
@@ -292,7 +284,7 @@ const InventoryDetail: React.FC<InventoryDetailProps> = ({
                 {t("notes")}
               </Typography>
               <Typography variant="body2" fontWeight="medium">
-                {asset.notes || t("inventory.defaultNotes")}
+                {asset.notes || t("noNotes")}
               </Typography>
             </Box>
           </Box>

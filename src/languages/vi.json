@@ -234,6 +234,8 @@
     "deleteWarning": "Hành động này không thể hoàn tác. Tài sản sẽ bị xóa vĩnh viễn khỏi hệ thống.",
     "deleteConfirm": "Vui lòng xác nhận rằng bạn muốn xóa vĩnh viễn tài sản này.",
     "deleteAssetSuccess": "Tài sản đã được xóa thành công.",
-    "noEmployeesFound": "Không tìm thấy nhân viên nào."
+    "noEmployeesFound": "Không tìm thấy nhân viên nào.",
+    "noDescription": "Không có mô tả nào.",
+    "noNotes": "Không có ghi chú nào."
   }
 }

@@ -232,6 +232,8 @@
     "deleteWarning": "This action cannot be undone. The asset will be permanently deleted from the system.",
     "deleteConfirm": "Please confirm that you want to permanently delete this asset.",
     "assetDeleteSuccess": "Asset deleted successfully.",
-    "noEmployeesFound": "No employees found."
+    "noEmployeesFound": "No employees found.",
+    "noDescription": "No description available.",
+    "noNotes": "No notes available."
   }
 }

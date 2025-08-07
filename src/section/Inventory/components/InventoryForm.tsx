@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -37,7 +37,7 @@ interface InventoryFormDrawerProps {
   categories: Array<{ id: number; name: string }>;
   statusOptions: Array<{ value: string; label: string; color: string }>;
   conditionOptions: Array<{ value: string; label: string; color: string }>;
-  departments: Array<{ id: number; name: string; description: string }>; 
+  departments: Array<{ id: number; name: string; description: string }>;
   employees: Array<{
     id: string;
     name: string;
@@ -53,7 +53,7 @@ const validationSchema = yup.object({
   category: yup.string().required("Category is required"),
   status: yup.string().required("Status is required"),
   condition: yup.string().required("Condition is required"),
-  department: yup.string().required("Department is required"), 
+  department: yup.string().required("Department is required"),
   value: yup
     .number()
     .min(0, "Value must be positive")
@@ -401,7 +401,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                     />
                   </Box>
 
-                  {/* Department - ✅ Thay Location thành Department */}
+                  {/* Department */}
                   <Box>
                     <Controller
                       name="department"
@@ -429,9 +429,7 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                                     variant="caption"
                                     color="text.secondary"
                                     sx={{ ml: 1 }}
-                                  >
-                                    - {department.description}
-                                  </Typography>
+                                  ></Typography>
                                 )}
                               </MenuItem>
                             ))}
