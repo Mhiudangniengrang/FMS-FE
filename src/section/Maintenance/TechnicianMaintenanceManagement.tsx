@@ -25,6 +25,7 @@ import {
   Drawer,
   Divider,
   TablePagination,
+  Alert,
 } from "@mui/material";
 import {
   Assignment as AssignmentIcon,
@@ -35,12 +36,14 @@ import {
   Search as SearchIcon,
   Clear as ClearIcon,
   Close as CloseIcon,
+  CheckCircle as CompleteIcon,
+  PlayArrow as StartIcon,
 } from "@mui/icons-material";
-import { useMaintenanceRequests, useTechnicians, useUpdateMaintenanceRequest } from "../../hooks/useMaintenance";
+import { useAssignedMaintenanceRequests, useUpdateMaintenanceRequest } from "../../hooks/useMaintenance";
 import useMaintenancePagination from "../../hooks/useMaintenancePagination";
 import type { MaintenanceRequest, UpdateMaintenanceRequest } from "../../types";
 
-const MaintenanceManagement: React.FC = () => {
+const TechnicianMaintenanceManagement: React.FC = () => {
   // Filter states
   const [filterStatus, setFilterStatus] = useState<string>("");
   const [filterPriority, setFilterPriority] = useState<string>("");
@@ -56,19 +59,18 @@ const MaintenanceManagement: React.FC = () => {
   // Drawer states
   const [selectedRequest, setSelectedRequest] = useState<MaintenanceRequest | null>(null);
   const [viewDrawerOpen, setViewDrawerOpen] = useState(false);
-  const [assignDrawerOpen, setAssignDrawerOpen] = useState(false);
-  const [selectedTechnician, setSelectedTechnician] = useState<number>(0);
-  const [isEditingStatus, setIsEditingStatus] = useState(false);
-  const [editedStatus, setEditedStatus] = useState<string>("");
+  const [statusUpdateDrawerOpen, setStatusUpdateDrawerOpen] = useState(false);
+  const [newStatus, setNewStatus] = useState<string>("");
+  const [updateNotes, setUpdateNotes] = useState<string>("");
 
-  // Get all maintenance requests without any backend filtering
-  const { data: allMaintenanceRequests, isLoading, refetch } = useMaintenanceRequests();
+  // Get assigned maintenance requests
+  const { data: allAssignedRequests, isLoading, refetch } = useAssignedMaintenanceRequests();
   
-  // Apply all filters on frontend for better control
+  // Apply all filters on frontend
   const filteredRequests = useMemo(() => {
-    if (!allMaintenanceRequests) return [];
+    if (!allAssignedRequests) return [];
     
-    return allMaintenanceRequests.filter(request => {
+    return allAssignedRequests.filter(request => {
       // Filter by status
       if (appliedFilters.status && appliedFilters.status.trim() !== "") {
         if (request.status !== appliedFilters.status) {
@@ -92,7 +94,7 @@ const MaintenanceManagement: React.FC = () => {
       
       return true;
     });
-  }, [allMaintenanceRequests, appliedFilters]);
+  }, [allAssignedRequests, appliedFilters]);
 
   // Use pagination hook
   const {
@@ -105,7 +107,7 @@ const MaintenanceManagement: React.FC = () => {
     totalCount,
     resetPagination,
   } = useMaintenancePagination(filteredRequests);
-  const { data: technicians } = useTechnicians();
+
   const updateMaintenance = useUpdateMaintenanceRequest();
 
   const statusColors: Record<string, string> = {
@@ -138,6 +140,29 @@ const MaintenanceManagement: React.FC = () => {
     urgent: "Khẩn cấp",
   };
 
+  // Available status options for technician
+  const getAvailableStatusOptions = (currentStatus: string) => {
+    const statusOptions = [
+      { value: "approved", label: "Đã duyệt" },
+      { value: "in_progress", label: "Đang xử lý" },
+      { value: "completed", label: "Hoàn thành" },
+    ];
+
+    return statusOptions.filter(option => {
+      // Technician can only move forward in workflow
+      if (currentStatus === "approved") {
+        return ["in_progress", "completed"].includes(option.value);
+      }
+      if (currentStatus === "in_progress") {
+        return ["completed"].includes(option.value);
+      }
+      if (currentStatus === "completed") {
+        return false; // Can't change completed status
+      }
+      return false;
+    });
+  };
+
   // Search and filter handlers
   const handleSearch = () => {
     setAppliedFilters({
@@ -145,7 +170,6 @@ const MaintenanceManagement: React.FC = () => {
       priority: filterPriority,
       assetName: searchAssetName,
     });
-    // Reset pagination khi search
     resetPagination();
   };
 
@@ -158,7 +182,6 @@ const MaintenanceManagement: React.FC = () => {
       priority: "",
       assetName: "",
     });
-    // Reset pagination khi clear filters
     resetPagination();
   };
 
@@ -167,85 +190,70 @@ const MaintenanceManagement: React.FC = () => {
     setViewDrawerOpen(true);
   };
 
-  const handleAssignTechnician = (request: MaintenanceRequest) => {
+  const handleStartMaintenance = (request: MaintenanceRequest) => {
+    if (request.status === "approved") {
+      updateStatusDirectly(request, "in_progress");
+    }
+  };
+
+  const handleCompleteMaintenance = (request: MaintenanceRequest) => {
+    if (request.status === "in_progress") {
+      updateStatusDirectly(request, "completed");
+    }
+  };
+
+  const handleUpdateStatus = (request: MaintenanceRequest) => {
     setSelectedRequest(request);
-    setSelectedTechnician(request.assignedTo || 0);
-    setAssignDrawerOpen(true);
+    setNewStatus(request.status);
+    setUpdateNotes("");
+    setStatusUpdateDrawerOpen(true);
+  };
+
+  const updateStatusDirectly = async (request: MaintenanceRequest, status: string) => {
+    const updateData: UpdateMaintenanceRequest = {
+      id: request.id,
+      status: status as "pending" | "approved" | "in_progress" | "completed" | "cancelled",
+    };
+
+    try {
+      await updateMaintenance.mutateAsync(updateData);
+      refetch();
+    } catch {
+      // Error handled in hook
+    }
   };
 
   const handleCloseViewDrawer = () => {
     setViewDrawerOpen(false);
     setSelectedRequest(null);
-    setIsEditingStatus(false);
-    setEditedStatus("");
   };
 
-  const handleCloseAssignDrawer = () => {
-    setAssignDrawerOpen(false);
+  const handleCloseStatusUpdateDrawer = () => {
+    setStatusUpdateDrawerOpen(false);
     setSelectedRequest(null);
-    setSelectedTechnician(0);
-  };
-
-  const handleAssignSubmit = async () => {
-    if (!selectedRequest) return;
-
-    // Determine new status based on action
-    let newStatus = selectedRequest.status;
-    if (selectedTechnician === 0) {
-      // Hủy phân công - chuyển về chờ duyệt
-      newStatus = "pending";
-    } else if (selectedRequest.status === "pending") {
-      // Phân công lần đầu - chuyển thành đã duyệt
-      newStatus = "approved";
-    }
-
-    const updateData: UpdateMaintenanceRequest = {
-      id: selectedRequest.id,
-      assignedTo: selectedTechnician === 0 ? null : selectedTechnician,
-      status: newStatus as "pending" | "approved" | "in_progress" | "completed" | "cancelled",
-    };
-
-    try {
-      await updateMaintenance.mutateAsync(updateData);
-      handleCloseAssignDrawer();
-      refetch();
-    } catch {
-      // Error handled in hook
-    }
-  };
-
-  const handleStatusEdit = () => {
-    if (!selectedRequest) return;
-    setEditedStatus(selectedRequest.status);
-    setIsEditingStatus(true);
-  };
-
-  const handleStatusCancel = () => {
-    setIsEditingStatus(false);
-    setEditedStatus("");
+    setNewStatus("");
+    setUpdateNotes("");
   };
 
   const handleStatusSubmit = async () => {
-    if (!selectedRequest || !editedStatus || editedStatus === selectedRequest.status) return;
+    if (!selectedRequest || !newStatus || newStatus === selectedRequest.status) return;
 
     const updateData: UpdateMaintenanceRequest = {
       id: selectedRequest.id,
-      status: editedStatus as "pending" | "approved" | "in_progress" | "completed" | "cancelled",
+      status: newStatus as "pending" | "approved" | "in_progress" | "completed" | "cancelled",
+      notes: updateNotes.trim() || undefined,
     };
 
     try {
       await updateMaintenance.mutateAsync(updateData);
-      setIsEditingStatus(false);
-      setEditedStatus("");
+      handleCloseStatusUpdateDrawer();
       refetch();
     } catch {
       // Error handled in hook
     }
   };
 
-  // Determine if status can be edited
-  const canEditStatus = (status: string) => {
-    // Không thể sửa nếu đã hoàn thành hoặc đã hủy
+  const canUpdateStatus = (status: string) => {
     return status !== "completed" && status !== "cancelled";
   };
 
@@ -265,7 +273,7 @@ const MaintenanceManagement: React.FC = () => {
           <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Typography variant="h5" component="h1" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <AssignmentIcon color="primary" />
-              Quản Lý Yêu Cầu Bảo Trì
+              Các Yêu Cầu Bảo Trì Được Giao
             </Typography>
             <Button
               variant="outlined"
@@ -276,6 +284,11 @@ const MaintenanceManagement: React.FC = () => {
               Làm mới
             </Button>
           </Box>
+
+          {/* Info Alert */}
+          <Alert severity="info" sx={{ mb: 3 }}>
+            Đây là danh sách các yêu cầu bảo trì được admin giao cho bạn. Bạn có thể cập nhật trạng thái tiến độ thực hiện.
+          </Alert>
 
           {/* Search and Filters */}
           <Card variant="outlined" sx={{ mb: 3 }}>
@@ -310,11 +323,9 @@ const MaintenanceManagement: React.FC = () => {
                       onChange={(e) => setFilterStatus(e.target.value)}
                     >
                       <MenuItem value="">Tất cả</MenuItem>
-                      <MenuItem value="pending">Chờ duyệt</MenuItem>
                       <MenuItem value="approved">Đã duyệt</MenuItem>
                       <MenuItem value="in_progress">Đang xử lý</MenuItem>
                       <MenuItem value="completed">Hoàn thành</MenuItem>
-                      <MenuItem value="cancelled">Đã hủy</MenuItem>
                     </Select>
                   </FormControl>
 
@@ -393,7 +404,7 @@ const MaintenanceManagement: React.FC = () => {
           {/* Summary info */}
           <Box sx={{ mb: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Typography variant="body2" color="text.secondary">
-              Hiển thị {paginatedRequests?.length || 0} trong tổng số {totalCount} yêu cầu bảo trì
+              Hiển thị {paginatedRequests?.length || 0} trong tổng số {totalCount} yêu cầu được giao
             </Typography>
             {totalCount > 0 && (
               <Typography variant="body2" color="text.secondary">
@@ -413,7 +424,6 @@ const MaintenanceManagement: React.FC = () => {
                   <TableCell><strong>Người yêu cầu</strong></TableCell>
                   <TableCell><strong>Ưu tiên</strong></TableCell>
                   <TableCell><strong>Trạng thái</strong></TableCell>
-                  <TableCell><strong>Được giao</strong></TableCell>
                   <TableCell><strong>Ngày tạo</strong></TableCell>
                   <TableCell><strong>Thao tác</strong></TableCell>
                 </TableRow>
@@ -457,33 +467,54 @@ const MaintenanceManagement: React.FC = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      {request.assignedToName ? (
-                        <Typography variant="body2">{request.assignedToName}</Typography>
-                      ) : (
-                        <Typography variant="caption" color="text.secondary">
-                          Chưa phân công
-                        </Typography>
-                      )}
-                    </TableCell>
-                    <TableCell>
                       {new Date(request.createdAt).toLocaleDateString("vi-VN")}
                     </TableCell>
                     <TableCell>
-                      <Box sx={{ display: "flex", gap: 1 }}>
+                      <Box sx={{ display: "flex", gap: 0.5 }}>
                         <Tooltip title="Xem chi tiết">
                           <IconButton size="small" onClick={() => handleViewDetails(request)}>
                             <ViewIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Phân công kỹ thuật viên">
-                          <IconButton 
-                            size="small" 
-                            onClick={() => handleAssignTechnician(request)}
-                            disabled={request.status === "completed" || request.status === "cancelled"}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
+                        
+                        {/* Quick action buttons */}
+                        {request.status === "approved" && (
+                          <Tooltip title="Bắt đầu xử lý">
+                            <IconButton 
+                              size="small" 
+                              color="primary"
+                              onClick={() => handleStartMaintenance(request)}
+                              disabled={updateMaintenance.isPending}
+                            >
+                              <StartIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                        
+                        {request.status === "in_progress" && (
+                          <Tooltip title="Hoàn thành">
+                            <IconButton 
+                              size="small" 
+                              color="success"
+                              onClick={() => handleCompleteMaintenance(request)}
+                              disabled={updateMaintenance.isPending}
+                            >
+                              <CompleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                        
+                        {canUpdateStatus(request.status) && (
+                          <Tooltip title="Cập nhật trạng thái">
+                            <IconButton 
+                              size="small" 
+                              onClick={() => handleUpdateStatus(request)}
+                              disabled={updateMaintenance.isPending}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </Box>
                     </TableCell>
                   </TableRow>
@@ -510,7 +541,7 @@ const MaintenanceManagement: React.FC = () => {
           {(!filteredRequests || filteredRequests.length === 0) && (
             <Box sx={{ textAlign: "center", py: 4 }}>
               <Typography variant="body1" color="text.secondary">
-                Không có yêu cầu bảo trì nào
+                Không có yêu cầu bảo trì nào được giao cho bạn
               </Typography>
             </Box>
           )}
@@ -588,57 +619,13 @@ const MaintenanceManagement: React.FC = () => {
                     </Box>
                     <Box sx={{ flex: 1 }}>
                       <Typography variant="body2" color="text.secondary" gutterBottom>Trạng thái</Typography>
-                      {isEditingStatus ? (
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <FormControl size="small" sx={{ minWidth: 120 }}>
-                            <Select
-                              value={editedStatus}
-                              onChange={(e) => setEditedStatus(e.target.value)}
-                              displayEmpty
-                            >
-                              <MenuItem value="pending">Chờ duyệt</MenuItem>
-                              <MenuItem value="approved">Đã duyệt</MenuItem>
-                              <MenuItem value="in_progress">Đang xử lý</MenuItem>
-                              <MenuItem value="completed">Hoàn thành</MenuItem>
-                              <MenuItem value="cancelled">Đã hủy</MenuItem>
-                            </Select>
-                          </FormControl>
-                          <IconButton 
-                            size="small" 
-                            onClick={handleStatusSubmit}
-                            disabled={updateMaintenance.isPending}
-                            color="primary"
-                          >
-                            ✓
-                          </IconButton>
-                          <IconButton 
-                            size="small" 
-                            onClick={handleStatusCancel}
-                            disabled={updateMaintenance.isPending}
-                          >
-                            ✕
-                          </IconButton>
-                        </Stack>
-                      ) : (
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <Chip
-                            label={statusLabels[selectedRequest.status]}
-                            sx={{
-                              bgcolor: statusColors[selectedRequest.status],
-                              color: "white",
-                            }}
-                          />
-                          {canEditStatus(selectedRequest.status) && (
-                            <IconButton 
-                              size="small" 
-                              onClick={handleStatusEdit}
-                              sx={{ ml: 1 }}
-                            >
-                              <EditIcon fontSize="small" />
-                            </IconButton>
-                          )}
-                        </Stack>
-                      )}
+                      <Chip
+                        label={statusLabels[selectedRequest.status]}
+                        sx={{
+                          bgcolor: statusColors[selectedRequest.status],
+                          color: "white",
+                        }}
+                      />
                     </Box>
                   </Box>
 
@@ -654,19 +641,6 @@ const MaintenanceManagement: React.FC = () => {
               </Box>
 
               <Divider />
-
-              {/* Assignment Info */}
-              <Box>
-                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600 }}>
-                  Thông tin phân công
-                </Typography>
-                <Box sx={{ bgcolor: "grey.50", p: 2, borderRadius: 1 }}>
-                  <Typography variant="body2" color="text.secondary">Kỹ thuật viên được phân công</Typography>
-                  <Typography variant="body1">
-                    {selectedRequest.assignedToName || "Chưa phân công"}
-                  </Typography>
-                </Box>
-              </Box>
 
               {/* Timeline */}
               <Box>
@@ -711,17 +685,18 @@ const MaintenanceManagement: React.FC = () => {
               {/* Action Buttons */}
               <Box sx={{ pt: 2 }}>
                 <Stack direction="row" spacing={2}>
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      handleCloseViewDrawer();
-                      handleAssignTechnician(selectedRequest);
-                    }}
-                    disabled={selectedRequest.status === "completed" || selectedRequest.status === "cancelled"}
-                    fullWidth
-                  >
-                    Phân công kỹ thuật viên
-                  </Button>
+                  {canUpdateStatus(selectedRequest.status) && (
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        handleCloseViewDrawer();
+                        handleUpdateStatus(selectedRequest);
+                      }}
+                      fullWidth
+                    >
+                      Cập nhật trạng thái
+                    </Button>
+                  )}
                 </Stack>
               </Box>
             </Stack>
@@ -729,11 +704,11 @@ const MaintenanceManagement: React.FC = () => {
         </Box>
       </Drawer>
 
-      {/* Assign Technician Drawer */}
+      {/* Status Update Drawer */}
       <Drawer
         anchor="right"
-        open={assignDrawerOpen}
-        onClose={handleCloseAssignDrawer}
+        open={statusUpdateDrawerOpen}
+        onClose={handleCloseStatusUpdateDrawer}
         PaperProps={{
           sx: { width: { xs: "100%", sm: 400 } }
         }}
@@ -741,8 +716,8 @@ const MaintenanceManagement: React.FC = () => {
         <Box sx={{ p: 3 }}>
           {/* Header */}
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
-            <Typography variant="h6">Phân công & Cập nhật trạng thái</Typography>
-            <IconButton onClick={handleCloseAssignDrawer}>
+            <Typography variant="h6">Cập nhật trạng thái</Typography>
+            <IconButton onClick={handleCloseStatusUpdateDrawer}>
               <CloseIcon />
             </IconButton>
           </Box>
@@ -764,32 +739,17 @@ const MaintenanceManagement: React.FC = () => {
 
               <Divider />
 
-              {/* Current Assignment & Status */}
+              {/* Current Status */}
               <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                  Phân công hiện tại:
-                </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-                  {selectedRequest.assignedToName || "Chưa phân công"}
-                </Typography>
-                
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                   Trạng thái hiện tại:
                 </Typography>
                 <Chip 
-                  label={
-                    selectedRequest.status === "pending" ? "Chờ duyệt" :
-                    selectedRequest.status === "approved" ? "Đã duyệt" :
-                    selectedRequest.status === "in_progress" ? "Đang thực hiện" :
-                    selectedRequest.status === "completed" ? "Hoàn thành" :
-                    selectedRequest.status === "cancelled" ? "Đã hủy" : selectedRequest.status
-                  }
+                  label={statusLabels[selectedRequest.status]}
                   color={
-                    selectedRequest.status === "pending" ? "warning" :
                     selectedRequest.status === "approved" ? "info" :
                     selectedRequest.status === "in_progress" ? "primary" :
-                    selectedRequest.status === "completed" ? "success" :
-                    selectedRequest.status === "cancelled" ? "error" : "default"
+                    selectedRequest.status === "completed" ? "success" : "default"
                   }
                   size="small"
                 />
@@ -797,68 +757,57 @@ const MaintenanceManagement: React.FC = () => {
 
               <Divider />
 
-              {/* Technician Selection */}
+              {/* New Status Selection */}
               <Box>
                 <FormControl fullWidth>
-                  <InputLabel>Chọn kỹ thuật viên mới</InputLabel>
+                  <InputLabel>Trạng thái mới</InputLabel>
                   <Select
-                    value={selectedTechnician}
-                    label="Chọn kỹ thuật viên mới"
-                    onChange={(e) => setSelectedTechnician(Number(e.target.value))}
+                    value={newStatus}
+                    label="Trạng thái mới"
+                    onChange={(e) => setNewStatus(e.target.value)}
                   >
-                    <MenuItem value={0}>Hủy phân công</MenuItem>
-                    {technicians?.map((tech) => (
-                      <MenuItem key={tech.id} value={tech.id}>
-                        <Box>
-                          <Typography variant="body1">{tech.name}</Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {tech.role}
-                          </Typography>
-                        </Box>
+                    {getAvailableStatusOptions(selectedRequest.status).map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Box>
 
-              {/* Status Info */}
-              {selectedTechnician === 0 && (
-                <Box sx={{ p: 2, bgcolor: "warning.light", borderRadius: 1 }}>
-                  <Typography variant="body2" color="warning.contrastText">
-                  Khi hủy phân công, trạng thái sẽ tự động chuyển về "Chờ duyệt"
-                  </Typography>
-                </Box>
-              )}
-              {selectedRequest && selectedRequest.status === "pending" && selectedTechnician !== 0 && (
-                <Box sx={{ p: 2, bgcolor: "info.light", borderRadius: 1 }}>
-                  <Typography variant="body2" color="info.contrastText">
-                  Khi phân công, trạng thái sẽ tự động chuyển thành "Đã duyệt"
-                  </Typography>
-                </Box>
-              )}
+              {/* Notes */}
+              <Box>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  label="Ghi chú (tùy chọn)"
+                  value={updateNotes}
+                  onChange={(e) => setUpdateNotes(e.target.value)}
+                  placeholder="Thêm ghi chú về tiến độ hoặc kết quả bảo trì..."
+                />
+              </Box>
 
               {/* Action Buttons */}
               <Box sx={{ pt: 2 }}>
                 <Stack direction="row" spacing={2}>
                   <Button
                     variant="outlined"
-                    onClick={handleCloseAssignDrawer}
+                    onClick={handleCloseStatusUpdateDrawer}
                     fullWidth
                     disabled={updateMaintenance.isPending}
                   >
                     Hủy
                   </Button>
                   <Button 
-                    onClick={handleAssignSubmit}
+                    onClick={handleStatusSubmit}
                     variant="contained"
-                    disabled={updateMaintenance.isPending}
+                    disabled={updateMaintenance.isPending || !newStatus || newStatus === selectedRequest.status}
                     fullWidth
                   >
                     {updateMaintenance.isPending 
                       ? "Đang cập nhật..." 
-                      : selectedTechnician === 0 
-                        ? "Hủy phân công" 
-                        : "Cập nhật"
+                      : "Cập nhật"
                     }
                   </Button>
                 </Stack>
@@ -871,4 +820,4 @@ const MaintenanceManagement: React.FC = () => {
   );
 };
 
-export default MaintenanceManagement; 
+export default TechnicianMaintenanceManagement;

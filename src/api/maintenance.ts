@@ -47,7 +47,25 @@ export const deleteMaintenanceRequest = (id: number) => {
 
 // Get maintenance requests by user (for staff to see their own requests)
 export const getMyMaintenanceRequests = () => {
-  return axiosClient.get<MaintenanceRequest[]>("/maintenance/my-requests");
+  // Use regular endpoint and filter by user on frontend for now
+  // In real app, backend should handle this filtering with authentication
+  return axiosClient.get<MaintenanceRequest[]>("/maintenance");
+};
+
+// Get draft maintenance requests by user
+export const getMyDraftRequests = () => {
+  return axiosClient.get<MaintenanceRequest[]>("/maintenance/my-drafts");
+};
+
+// Save maintenance request as draft
+export const saveDraftMaintenanceRequest = (data: CreateMaintenanceRequest) => {
+  return axiosClient.post<MaintenanceRequest>("/maintenance/draft", data);
+};
+
+// Update draft maintenance request
+export const updateDraftMaintenanceRequest = (id: number, data: Partial<CreateMaintenanceRequest>) => {
+  console.log("API: Sending PUT request to /maintenance/draft/" + id, data);
+  return axiosClient.put<MaintenanceRequest>(`/maintenance/draft/${id}`, data);
 };
 
 // Get technicians (users with role staff/supervisor/manager for assignment)

@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
   Home as HomeIcon,
-  PersonAdd as PersonAddIcon,
-  LaptopMac as LaptopMacIcon,
+  ListAlt as ListAltIcon,
   Notifications as NotificationsIcon,
   Settings as SettingsIcon,
   Menu as MenuIcon,
   MenuOpen as MenuOpenIcon,
   Logout as LogoutIcon,
-
-  LocationOn as LocationOnIcon,
-  Inventory as InventoryIcon,
-  Assignment as AssignmentIcon,
+  Person as PersonIcon,
+  Build as BuildIcon,
+  History as HistoryIcon,
 } from "@mui/icons-material";
-import { useTranslation } from "react-i18next";
 import {
   Box,
   Drawer,
@@ -35,100 +32,68 @@ import {
   CssBaseline,
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
-import logo from "@/assets/unit-corp-logo.webp";
-import { dashboardStyles } from "@/styles/dashboard.styles";
-import type { MenuItemType, DashboardLayoutProps } from "@/types";
-import { createMenuItem } from "@/utils";
-import { useUserInfo, useLogout } from "@/hooks/useAuth";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import logo from "../assets/unit-corp-logo.webp";
+import { dashboardStyles } from "../styles/dashboard.styles";
+import type { MenuItemType, DashboardLayoutProps } from "../types";
+import { useUserInfo, useLogout } from "../hooks/useAuth";
 import Cookies from "js-cookie";
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+const UserLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const userRole = Cookies.get("__role") || "user";
+  
+  // Menu items based on user role
+  const getMenuItems = (): MenuItemType[] => {
+    if (userRole === "staff") {
+      return [
+        {
+          key: "maintenance",
+          label: "Gửi Yêu Cầu Bảo Trì",
+          icon: <BuildIcon />,
+          path: "/staff/maintenance",
+        },
+        {
+          key: "maintenance-history", 
+          label: "Lịch Sử Yêu Cầu",
+          icon: <HistoryIcon />,
+          path: "/staff/maintenance/history",
+        },
+      ];
+    }
+    
+    // Default user menu
+    return [
+      {
+        key: "assets",
+        label: "My Assets",
+        icon: <ListAltIcon />,
+        path: "/user/assets",
+      },
+    ];
+  };
+
+  const items = getMenuItems();
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [anchorElNotification, setAnchorElNotification] =
     useState<null | HTMLElement>(null);
   const location = useLocation();
-  const { t } = useTranslation();
-  const userRole = Cookies.get("__role") || "guest";
-
-  // Menu items for admin
-  const adminMenuItems: MenuItemType[] = [
-    createMenuItem(t("overview"), "1", <HomeIcon />, "/overview"),
-    createMenuItem(
-      t("accountManagement"),
-      "2",
-      <PersonAddIcon />,
-      "/user/view"
-    ),
-    createMenuItem(
-      t("departmentManagement"),
-      "3",
-      <LocationOnIcon />,
-      "/departments/view"
-    ),
-    createMenuItem(
-      t("inventoryManagement"),
-      "4",
-      <InventoryIcon />, // Thay thế ở đây
-      "/inventory/view"
-    ),
-
-    createMenuItem(t("assetManagement"), "5", <LaptopMacIcon />, "/asset/view"),
-    createMenuItem(
-      "Maintenance Management",
-      "6",
-      <SettingsIcon />,
-      "/maintenance/management"
-    ),
-  ];
-
-  // Menu items for staff
-  const staffMenuItems: MenuItemType[] = [
-    createMenuItem(
-      t("staffMaintenance"),
-      "1",
-      <SettingsIcon />,
-      "/staff/maintenance"
-    ),
-    ...(userRole === "supervisor" ? [
-      createMenuItem(
-        "Công việc bảo trì",
-        "2",
-        <AssignmentIcon />,
-        "/staff/maintenance-tasks"
-      ),
-    ] : []),
-  ];
-
-  const items: MenuItemType[] =
-    userRole === "admin" || userRole === "manager"
-      ? adminMenuItems
-      : staffMenuItems;
 
   // React Query for user data
   const { data: infoUser } = useUserInfo();
   const logoutMutation = useLogout();
 
-  // Handle overflow issues when window is resized
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 600 && !collapsed) {
         setCollapsed(true);
       }
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [collapsed]);
 
-  // React Query tự động fetch user info khi có token
-  // Không cần manual useEffect nữa
-
   const selectedKey =
-    items.find((item) => {
-      return item.path === location.pathname;
-    })?.key || "1";
+    items.find((item) => item.path === location.pathname)?.key || "home";
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -207,7 +172,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   fontSize: "0.7rem",
                 }}
               >
-                {t("facilityManagementSystem")}
+                Facility Management System
               </Typography>
             </Box>
           </Box>
@@ -226,7 +191,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               display: collapsed ? "none" : "block",
             }}
           >
-            {t("mainMenu")}
+            {userRole === "staff" ? "Staff Menu" : "User Menu"}
           </Typography>
           <List sx={{ pt: 0.5 }}>
             {items.map((item) => (
@@ -294,11 +259,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               >
                 {collapsed ? <MenuOpenIcon /> : <MenuIcon />}
               </IconButton>
+              <Typography
+                variant="h6"
+                sx={{ ml: 2, fontWeight: 700, color: "#1976d2" }}
+              >
+                FMS - User
+              </Typography>
             </Box>
 
             {/* Right side of header */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <LanguageSwitcher />
               <IconButton
                 color="inherit"
                 onClick={handleOpenNotificationMenu}
@@ -326,10 +296,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   sx={{ p: 2, borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
                 >
                   <Typography variant="subtitle1" fontWeight={600}>
-                    {t("notifications")}
+                    Notifications
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {t("unreadMessages", { count: 2 })}
+                    You have 2 unread messages
                   </Typography>
                 </Box>
                 <MenuItem onClick={handleCloseNotificationMenu} sx={{ py: 2 }}>
@@ -345,13 +315,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         variant="body2"
                         sx={{ fontWeight: 600, color: "text.primary" }}
                       >
-                        {t("systemUpdate")}
+                        System update
                       </Typography>
                       <Typography
                         variant="caption"
                         sx={{ color: "text.disabled" }}
                       >
-                        {t("hoursAgo", { count: 1 })}
+                        1 hour ago
                       </Typography>
                     </Box>
                     <Typography
@@ -362,7 +332,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         mt: 0.5,
                       }}
                     >
-                      {t("newVersionReleased")}
+                      Version 2.1.0 released
                     </Typography>
                   </Box>
                 </MenuItem>
@@ -377,7 +347,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     variant="caption"
                     sx={{ color: "#1976d2", cursor: "pointer" }}
                   >
-                    {t("viewAll")}
+                    View all notifications
                   </Typography>
                 </Box>
               </Menu>
@@ -423,10 +393,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   }}
                 >
                   <Typography variant="subtitle2" fontWeight={600}>
-                    {infoUser?.name || "Admin"}
+                    {infoUser?.name || "User"}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {infoUser?.email || "admin@example.com"}
+                    {infoUser?.email || "user@example.com"}
                   </Typography>
                 </Box>
                 <MenuItem
@@ -437,9 +407,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   }}
                 >
                   <ListItemIcon sx={{ color: "text.secondary" }}>
-                    <PersonAddIcon fontSize="small" />
+                    <PersonIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText primary={t("userProfile")} />
+                  <ListItemText primary="User Profile" />
                 </MenuItem>
                 <MenuItem
                   onClick={() => handleUserMenuClick("settings")}
@@ -451,7 +421,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <ListItemIcon sx={{ color: "text.secondary" }}>
                     <SettingsIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText primary={t("settings")} />
+                  <ListItemText primary="Setting" />
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem
@@ -465,7 +435,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <ListItemIcon sx={{ color: "#f44336" }}>
                     <LogoutIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText primary={t("logout")} />
+                  <ListItemText primary="Logout" />
                 </MenuItem>
               </Menu>
             </Box>
@@ -489,4 +459,4 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default UserLayout;

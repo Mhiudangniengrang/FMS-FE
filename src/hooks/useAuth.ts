@@ -58,16 +58,20 @@ export const useLogin = () => {
     onSuccess: (data: AuthResponse) => {
       const { access_token } = data;
       const role = data.user.role;
+      const userId = data.user.id;
       
       // Lưu với tên đúng
       Cookies.set("__role", role, { expires: 1 });
       Cookies.set("__token", access_token, { expires: 1 }); // Lưu access_token
+      Cookies.set("__userId", userId.toString(), { expires: 1 }); // Lưu userId
       
       queryClient.setQueryData(authKeys.me(), data.user);
       showSnackbar(t("loginSuccess"), "success");
       
       if (role === "admin" || role === "manager") {
         navigate("/overview");
+      } else if (role === "supervisor") {
+        navigate("/staff/maintenance-tasks");
       } else if (role === "staff") {
         navigate("/staff/maintenance");
       }
@@ -125,6 +129,7 @@ export const useLogout = () => {
     onSuccess: () => {
       Cookies.remove("__token");
       Cookies.remove("__role");
+      Cookies.remove("__userId");
       showSnackbar(t("logoutSuccess"), "success");
       queryClient.clear();
       navigate("/");

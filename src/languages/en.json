@@ -236,6 +236,9 @@
     "noDescription": "No description available.",
     "noNotes": "No notes available.",
     "noResultsFound": "No results found.",
-    "unknownDepartment": "Unknown Department"
+    "unknownDepartment": "Unknown Department",
+    "staffMaintenance": "Submit Maintenance Request",
+    "maintenanceRequest": "Maintenance Request",
+    "myMaintenanceHistory": "Maintenance History"
   }
 }

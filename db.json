@@ -92,6 +92,14 @@
       "password": "123456",
       "role": "manager",
       "id": 11
+    },
+    {
+      "name": "Tho Tran",
+      "email": "tho@company.com",
+      "phone": "0123654789",
+      "password": "tho123",
+      "role": "staff",
+      "id": 12
     }
   ],
   "assets": [
@@ -478,6 +486,44 @@
           "isReturned": false
         }
       ]
+    },
+    {
+      "assetCode": "TS475",
+      "name": "Iphone13",
+      "category": "Thiết bị văn phòng",
+      "status": "available",
+      "condition": "new",
+      "assigneeId": "",
+      "value": 0,
+      "quantity": 1,
+      "purchaseDate": "2025-08-07",
+      "warrantyDate": "2025-08-08",
+      "serialNumber": "1231231",
+      "brand": "ádsadas",
+      "model": "sdaasdasd",
+      "supplier": "qưeqwe",
+      "description": "âsdas",
+      "notes": "",
+      "tags": [],
+      "createdAt": "2025-08-07T08:35:22.748Z",
+      "updatedAt": "2025-08-07T08:35:22.748Z",
+      "id": 9,
+      "department": "",
+      "assignedTo": "",
+      "assignments": [
+        {
+          "id": "assign_1754555757804_0.2983491685779599",
+          "departmentId": 1,
+          "departmentName": "Phòng kỹ thuật",
+          "assignedTo": "Emily Davis",
+          "assigneeId": "NV499",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ]
     }
   ],
   "categories": [
@@ -535,6 +581,10 @@
         {
           "id": "NV632",
           "name": "Sarah Johnson"
+        },
+        {
+          "id": "NV499",
+          "name": "Emily Davis"
         }
       ]
     },
@@ -765,6 +815,13 @@
       "position": "Trưởng phòng IT",
       "department": "Phòng kỹ thuật",
       "email": "hiu@gmail.com"
+    },
+    {
+      "name": "Emily Davis",
+      "position": "Trưởng phòng kỹ thuật",
+      "department": "Phòng kỹ thuật",
+      "email": "hiu@gmail.com",
+      "id": "NV499"
     }
   ],
   "statusOptions": [
@@ -906,88 +963,94 @@
       "targetId": null,
       "role": "auth",
       "timestamp": "2025-08-07T08:12:52.923Z"
+    },
+    {
+      "id": 8,
+      "userId": 12,
+      "username": "Tho Tran",
+      "action": "login",
+      "details": "User Tho Tran logged in",
+      "targetId": null,
+      "role": "auth",
+      "timestamp": "2025-08-07T08:46:07.787Z"
     }
   ],
   "maintenance": [
     {
       "id": 1,
-      "assetId": 3,
-      "assetName": "Máy Chiếu Epson",
-      "assetCode": "PJ-003",
-      "requestedBy": 4,
-      "requestedByName": "David Wilson",
-      "title": "Máy chiếu không hiển thị hình ảnh",
-      "description": "Máy chiếu khi bật lên chỉ có ánh sáng trắng, không hiển thị được nội dung từ laptop. Đã thử thay cáp HDMI nhưng vẫn không được.",
-      "priority": "high",
-      "status": "approved",
-      "createdAt": "2024-03-20T09:30:00.000Z",
-      "updatedAt": "2025-07-29T10:49:46.458Z",
-      "assignedTo": 3,
-      "assignedToName": "Tho"
+      "assetId": 1,
+      "assetName": "Laptop Dell XPS 13",
+      "requestedBy": 12,
+      "requestedByName": "Tho Tran",
+      "title": "Máy tính bị lỗi cổng HDMI",
+      "description": "Máy tính bị lỗi cổng HDMI",
+      "priority": "low",
+      "status": "completed",
+      "createdAt": "2025-08-07T07:10:18.686Z",
+      "updatedAt": "2025-08-07T07:14:25.428Z",
+      "completedAt": "2025-08-07T07:14:25.428Z",
+      "assignedTo": 4,
+      "assignedToName": "Amanda Garcia"
     },
     {
       "id": 2,
-      "assetId": 1,
-      "assetName": "Máy In HP LaserJet",
-      "assetCode": "PR-001",
-      "requestedBy": 3,
-      "requestedByName": "Emily Davis",
-      "title": "Máy in bị kẹt giấy thường xuyên",
-      "description": "Máy in bị kẹt giấy mỗi khi in từ 5-10 trang. Cần kiểm tra và bảo dưỡng hệ thống cấp giấy.",
+      "assetId": 2,
+      "assetName": "Máy in Canon LBP2900",
+      "requestedBy": 12,
+      "requestedByName": "Tho Tran",
+      "title": "Máy không in ra giấy",
+      "description": "Máy in từ 5 trang trở lên thì không ra giấy nữa",
       "priority": "medium",
       "status": "approved",
-      "assignedTo": 7,
-      "assignedToName": "Amanda Garcia",
-      "createdAt": "2024-03-18T14:15:00.000Z",
-      "updatedAt": "2024-03-19T08:00:00.000Z"
+      "createdAt": "2025-08-07T07:10:35.219Z",
+      "updatedAt": "2025-08-07T08:37:14.638Z",
+      "assignedTo": 5,
+      "assignedToName": "Michael Brown"
     },
     {
       "id": 3,
-      "assetId": 4,
-      "assetName": "Máy Fax Canon",
-      "assetCode": "FX-004",
-      "requestedBy": 4,
-      "requestedByName": "David Wilson",
-      "title": "Máy fax không gửi được",
-      "description": "Máy fax không thể gửi tài liệu đi, luôn báo lỗi 'Line Error'. Cần kiểm tra đường dây và cài đặt.",
-      "priority": "urgent",
-      "status": "in_progress",
-      "assignedTo": 7,
-      "assignedToName": "Amanda Garcia",
-      "createdAt": "2024-03-15T11:20:00.000Z",
-      "updatedAt": "2024-03-16T10:30:00.000Z",
-      "notes": "Đã kiểm tra đường dây, cần thay thế board điều khiển"
+      "assetId": 5,
+      "assetName": "Màn hình Dell UltraSharp 27\"",
+      "requestedBy": 12,
+      "requestedByName": "Tho Tran",
+      "title": "Màn hình bị lỗi cổng HDMI và DP",
+      "description": "Hai cổng chính của màn hình bị lỗi jack cắm",
+      "priority": "high",
+      "status": "completed",
+      "createdAt": "2025-08-07T07:11:07.207Z",
+      "updatedAt": "2025-08-07T07:28:58.649Z",
+      "completedAt": "2025-08-07T07:28:58.649Z",
+      "assignedTo": 4,
+      "assignedToName": "Amanda Garcia"
     },
     {
       "id": 4,
       "assetId": 3,
-      "assetName": "Máy Chiếu Epson",
-      "assetCode": "PJ-003",
-      "requestedBy": 3,
-      "requestedByName": "Tho",
-      "title": "Máy chiếu bị lỗi cổng HDMI",
-      "description": "Máy chiếu không nhận được đầu ra của cổng HDMI và VGA",
-      "priority": "high",
-      "status": "approved",
-      "createdAt": "2025-07-29T10:46:54.732Z",
-      "updatedAt": "2025-07-29T10:49:39.772Z",
-      "assignedTo": 7,
+      "assetName": "Xe Toyota Camry",
+      "requestedBy": 12,
+      "requestedByName": "Tho Tran",
+      "title": "Không đề máy được",
+      "description": "Xe không nổ máy ",
+      "priority": "urgent",
+      "status": "completed",
+      "createdAt": "2025-08-07T07:11:32.388Z",
+      "updatedAt": "2025-08-07T07:21:43.082Z",
+      "completedAt": "2025-08-07T07:21:43.082Z",
+      "assignedTo": 4,
       "assignedToName": "Amanda Garcia"
     },
     {
       "id": 5,
-      "assetId": 1,
-      "assetName": "Laptop Dell XPS 13",
-      "requestedBy": 3,
-      "requestedByName": "Jennifer White",
-      "title": "Máy in lỏ",
-      "description": "tetstststststs\n",
-      "priority": "medium",
-      "status": "approved",
-      "createdAt": "2025-08-02T16:44:11.485Z",
-      "updatedAt": "2025-08-02T17:09:39.340Z",
-      "assignedTo": 7,
-      "assignedToName": "Michael Bin"
+      "assetId": 8,
+      "assetName": "Máy chiếu Epson EB-FH06",
+      "requestedBy": 12,
+      "requestedByName": "Tho Tran",
+      "title": "Máy chiếu không lên nguồn",
+      "description": "Máy chiếu không lên nguồn, cần sửa gấp để chuẩn bị cho cuộc họp",
+      "priority": "high",
+      "status": "pending",
+      "createdAt": "2025-08-07T07:12:07.625Z",
+      "updatedAt": "2025-08-07T07:12:07.625Z"
     }
   ]
 }
