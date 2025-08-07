@@ -212,14 +212,16 @@ const DepartmentDetailDialog: React.FC<DepartmentDetailDialogProps> = ({
                             <strong>{t("Serial")}:</strong> {asset.serialNumber}
                           </Typography>
                         )}
-                        {asset.assignedTo && (
+                        {asset.assignments && asset.assignments.length > 0 && (
                           <Typography
                             variant="caption"
                             display="block"
                             color="primary"
                           >
                             <strong>{t("Assigned to")}:</strong>{" "}
-                            {asset.assignedTo}
+                            {asset.assignments
+                              .map((assignment: any) => assignment.assignedTo)
+                              .join(", ")}
                           </Typography>
                         )}
                       </Box>

@@ -203,18 +203,6 @@ const AssetDetailDialog: React.FC<AssetDetailDialogProps> = ({
               <Typography variant="body2">{asset.notes}</Typography>
             </Box>
           )}
-          {asset.tags && asset.tags.length > 0 && (
-            <Box sx={{ gridColumn: "1 / -1" }}>
-              <Typography variant="subtitle2" gutterBottom>
-                Tags
-              </Typography>
-              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                {asset.tags.map((tag, index) => (
-                  <Chip key={index} label={tag} size="small" variant="outlined" sx={{ borderRadius: 2 }} />
-                ))}
-              </Box>
-            </Box>
-          )}
 
           {/* Assignment Details */}
           <Box sx={{ gridColumn: "1 / -1" }}>

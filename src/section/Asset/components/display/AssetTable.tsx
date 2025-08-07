@@ -76,8 +76,8 @@ const AssetTable: React.FC<AssetTableProps> = ({
               {/* <TableCell>Quantity</TableCell> */}
               <TableCell>Quantity</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Department</TableCell>
+              <TableCell>Condition</TableCell>
+              {/* <TableCell>Department</TableCell> */}
               <TableCell>Value</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
@@ -211,7 +211,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
                     sx={{ borderRadius: 2 }}
                   />
                 </TableCell>
-                <TableCell>{asset.department}</TableCell>
+                {/* <TableCell>{asset.department}</TableCell> */}
                 <TableCell>
                   <Typography
                     variant="body2"

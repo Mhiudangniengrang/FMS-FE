@@ -478,44 +478,6 @@
           "isReturned": false
         }
       ]
-    },
-    {
-      "notes": "",
-      "description": "áaa",
-      "supplier": "Apple",
-      "model": "Iphone",
-      "brand": "Apple",
-      "serialNumber": "1231231",
-      "warrantyDate": "2025-08-09",
-      "purchaseDate": "2025-08-07",
-      "quantity": 2,
-      "value": 5000000,
-      "assigneeId": "",
-      "condition": "new",
-      "status": "available",
-      "category": "Thiết bị di động",
-      "name": "Iphone 13",
-      "assetCode": "TS415",
-      "tags": [],
-      "createdAt": "2025-08-07T07:54:38.075Z",
-      "updatedAt": "2025-08-07T07:54:38.075Z",
-      "id": 10,
-      "department": "",
-      "assignedTo": "",
-      "assignments": [
-        {
-          "id": "assign_1754553322856_0.17057010097418435",
-          "departmentId": 2,
-          "departmentName": "Phòng thiết kế",
-          "assignedTo": "Lê Văn D",
-          "assigneeId": "NV004",
-          "quantity": 1,
-          "assignedDate": "2025-08-07",
-          "expectedReturnDate": "",
-          "actualReturnDate": null,
-          "isReturned": false
-        }
-      ]
     }
   ],
   "categories": [

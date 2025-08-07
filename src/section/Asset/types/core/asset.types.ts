@@ -18,9 +18,6 @@ export interface Asset {
   category: string
   status: string
   condition: string
-  department: string
-  assignedTo: string
-  assigneeId: string
   value: number
   quantity: number
   purchaseDate: string
@@ -35,7 +32,6 @@ export interface Asset {
   createdById: string
   createdAt: string
   updatedAt: string
-  tags: string[]
   notes: string
   assignments: AssetAssignment[]
 }
