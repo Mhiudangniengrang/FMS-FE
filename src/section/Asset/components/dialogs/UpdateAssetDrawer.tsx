@@ -99,12 +99,25 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
     assignedDate: new Date().toISOString().split("T")[0],
     expectedReturnDate: "",
   });
+  
+  // Track pending assignments (added in current form but not submitted yet)
+  const [pendingAssignments, setPendingAssignments] = useState<any[]>([]);
 
-  // Calculate available quantity
+  // Calculate available quantity considering pending assignments
   const stats = asset
     ? getAssetAssignmentStats(asset)
     : { totalQuantity: 0, availableQuantity: 0, activeQuantity: 0 };
-  const canAddMore = asset ? canAssignMore(asset) : false;
+  
+  // Calculate total pending quantity
+  const totalPendingQuantity = pendingAssignments.reduce(
+    (sum, assignment) => sum + (parseInt(assignment.quantity) || 0),
+    0
+  );
+  
+  // Available quantity = original available - pending assignments
+  const actualAvailableQuantity = Math.max(0, stats.availableQuantity - totalPendingQuantity);
+  
+  const canAddMore = asset ? actualAvailableQuantity > 0 : false;
 
   // Initialize form when asset changes
   useEffect(() => {
@@ -131,6 +144,7 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
         assignments: asset.assignments || [],
       });
       setHasChanges(false);
+      setPendingAssignments([]); // Clear pending assignments when asset changes
     }
   }, [asset]);
 
@@ -159,16 +173,16 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
       newAssignment.assignedTo &&
       requestedQuantity > 0
     ) {
-      // Double check if we can still assign this quantity
-      if (requestedQuantity > stats.availableQuantity) {
+      // Double check if we can still assign this quantity considering pending assignments
+      if (requestedQuantity > actualAvailableQuantity) {
         alert(
-          `Không thể phân công ${requestedQuantity} chiếc. Chỉ còn ${stats.availableQuantity} chiếc trong kho.`
+          `Không thể phân công ${requestedQuantity} chiếc. Chỉ còn ${actualAvailableQuantity} chiếc trong kho.`
         );
         return;
       }
 
       const assignment = {
-        id: `assign_${Date.now()}`,
+        id: `pending_${Date.now()}`,
         departmentId: parseInt(newAssignment.departmentId),
         departmentName: newAssignment.departmentName,
         assignedTo: newAssignment.assignedTo,
@@ -178,12 +192,11 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
         expectedReturnDate: newAssignment.expectedReturnDate,
         actualReturnDate: null,
         isReturned: false,
+        isPending: true, // Mark as pending
       };
 
-      setForm((prev) => ({
-        ...prev,
-        assignments: [...(prev.assignments || []), assignment],
-      }));
+      // Add to pending assignments instead of form.assignments
+      setPendingAssignments((prev) => [...prev, assignment]);
       setHasChanges(true);
       setShowNewAssignmentForm(false);
 
@@ -201,23 +214,43 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
   };
 
   const handleRemoveAssignment = (assignmentId: string) => {
-    setForm((prev) => ({
-      ...prev,
-      assignments: prev.assignments?.filter((a) => a.id !== assignmentId) || [],
-    }));
+    // Check if it's a pending assignment
+    if (assignmentId.startsWith('pending_')) {
+      setPendingAssignments((prev) => 
+        prev.filter((a) => a.id !== assignmentId)
+      );
+    } else {
+      // It's an existing assignment
+      setForm((prev) => ({
+        ...prev,
+        assignments: prev.assignments?.filter((a) => a.id !== assignmentId) || [],
+      }));
+    }
     setHasChanges(true);
   };
 
   const handleSubmit = () => {
     if (asset) {
+      // Merge pending assignments with existing assignments
+      const allAssignments = [
+        ...(form.assignments || []),
+        ...pendingAssignments.map(assignment => ({
+          ...assignment,
+          id: `assign_${Date.now()}_${Math.random()}`, // Generate new ID for submission
+          isPending: undefined // Remove pending flag
+        }))
+      ];
+      
       const formData = {
         ...form,
         value: parseFloat(form.value) || 0,
         quantity: parseInt(form.quantity) || 1,
+        assignments: allAssignments,
       };
       onSubmit(asset.id, formData);
       setConfirmDialogOpen(false);
       setHasChanges(false);
+      setPendingAssignments([]); // Clear pending assignments after submit
     }
   };
 
@@ -489,7 +522,7 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
               </Box>
 
               {/* Department and Assignment */}
-              <Box>
+              {/* <Box>
                 <Typography variant="h6" color="primary" gutterBottom>
                   📍 Phòng ban & Phân công
                 </Typography>
@@ -563,7 +596,7 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                     )}
                   />
                 </Box>
-              </Box>
+              </Box> */}
 
               {/* Assignment Management */}
               <Box>
@@ -602,9 +635,14 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                   <Typography variant="body2">
                     Tổng số lượng: {form.quantity} | Đang sử dụng:{" "}
                     {stats.activeQuantity} | Còn trống:{" "}
-                    {stats.availableQuantity} | Đã trả:{" "}
+                    {actualAvailableQuantity} | Đã trả:{" "}
                     {form.assignments?.filter((a) => a.isReturned).length || 0}{" "}
                     phòng ban
+                    {totalPendingQuantity > 0 && (
+                      <span style={{ color: '#1976d2', fontWeight: 'bold' }}>
+                        {" "}| Đang thêm: {totalPendingQuantity} chiếc
+                      </span>
+                    )}
                   </Typography>
                   {!canAddMore && (
                     <Typography
@@ -617,7 +655,7 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                   )}
                 </Alert>
 
-                {form.assignments && form.assignments.length > 0 ? (
+                {(form.assignments && form.assignments.length > 0) || pendingAssignments.length > 0 ? (
                   <Box>
                     {/* Active Assignments */}
                     {form.assignments.filter((a) => !a.isReturned).length >
@@ -707,6 +745,99 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                                 </ListItemSecondaryAction>
                               </ListItem>
                             ))}
+                        </List>
+                      </Box>
+                    )}
+
+                    {/* Pending Assignments */}
+                    {pendingAssignments.length > 0 && (
+                      <Box sx={{ mb: 2 }}>
+                        <Typography
+                          variant="subtitle2"
+                          gutterBottom
+                          color="warning.main"
+                          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                        >
+                          <span style={{ fontSize: '16px' }}>⏳</span>
+                          Đang thêm (chưa lưu):
+                        </Typography>
+                        <List
+                          sx={{
+                            bgcolor: "#fff3e0",
+                            borderRadius: 2,
+                            border: 1,
+                            borderColor: "warning.main",
+                          }}
+                        >
+                          {pendingAssignments.map((assignment, index) => (
+                            <ListItem
+                              key={assignment.id}
+                              divider={index < pendingAssignments.length - 1}
+                            >
+                              <ListItemText
+                                primary={
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 1,
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="subtitle2"
+                                      fontWeight="medium"
+                                      color="warning.dark"
+                                    >
+                                      {assignment.departmentName}
+                                    </Typography>
+                                    <Chip
+                                      label={`${assignment.quantity} chiếc`}
+                                      size="small"
+                                      color="warning"
+                                      variant="outlined"
+                                    />
+                                    <Chip
+                                      label="Chưa lưu"
+                                      size="small"
+                                      color="warning"
+                                      variant="filled"
+                                    />
+                                  </Box>
+                                }
+                                secondary={
+                                  <Box>
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                    >
+                                      Người sử dụng: {assignment.assignedTo}
+                                    </Typography>
+                                    <Typography
+                                      variant="caption"
+                                      color="text.secondary"
+                                    >
+                                      Ngày phân công:{" "}
+                                      {assignment.assignedDate} | Dự kiến trả:{" "}
+                                      {assignment.expectedReturnDate}
+                                    </Typography>
+                                  </Box>
+                                }
+                              />
+                              <ListItemSecondaryAction>
+                                <IconButton
+                                  edge="end"
+                                  aria-label="delete"
+                                  onClick={() =>
+                                    handleRemoveAssignment(assignment.id)
+                                  }
+                                  color="error"
+                                  size="small"
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </ListItemSecondaryAction>
+                            </ListItem>
+                          ))}
                         </List>
                       </Box>
                     )}
@@ -818,7 +949,10 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                         color="text.secondary"
                         align="center"
                       >
-                        Chưa có phân công nào. Nhấn "Thêm phân công" để bắt đầu.
+                        {pendingAssignments.length > 0 
+                          ? "Các phân công đang được thêm sẽ hiển thị ở trên."
+                          : "Chưa có phân công nào. Nhấn \"Thêm phân công\" để bắt đầu."
+                        }
                       </Typography>
                     </CardContent>
                   </Card>
@@ -948,7 +1082,7 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                           onChange={(e) => {
                             const value = parseInt(e.target.value) || 0;
                             const maxQuantity = Math.min(
-                              stats.availableQuantity,
+                              actualAvailableQuantity,
                               value
                             );
                             setNewAssignment((prev) => ({
@@ -958,12 +1092,12 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                           }}
                           inputProps={{
                             min: 1,
-                            max: stats.availableQuantity,
+                            max: actualAvailableQuantity,
                           }}
-                          helperText={`Tối đa: ${stats.availableQuantity} chiếc còn trống`}
+                          helperText={`Tối đa: ${actualAvailableQuantity} chiếc còn trống`}
                           error={
                             parseInt(newAssignment.quantity) >
-                            stats.availableQuantity
+                            actualAvailableQuantity
                           }
                           sx={{
                             "& .MuiOutlinedInput-root": { borderRadius: 2 },
@@ -1027,7 +1161,7 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                             !newAssignment.assignedTo ||
                             !newAssignment.quantity ||
                             parseInt(newAssignment.quantity) >
-                              stats.availableQuantity ||
+                              actualAvailableQuantity ||
                             parseInt(newAssignment.quantity) <= 0
                           }
                         >

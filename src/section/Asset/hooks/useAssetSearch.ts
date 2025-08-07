@@ -40,13 +40,14 @@ const useAssetSearch = () => {
   const { data, isLoading, error, refetch } = useQuery<AssetSearchResponse>({
     queryKey: ['assets', 'search', currentSearchParams],
     queryFn: async () => {
+      console.log('🔍 API called with searchTerm:', currentSearchParams.search)
       const result = await assetApi.searchAssets(currentSearchParams)
       return result.data
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 0, // Disable cache - always refetch
+    gcTime: 0, // Don't keep cache in memory
     refetchOnWindowFocus: false, // Prevent refetch on window focus
-    refetchOnMount: isInitialLoad.current, // Only refetch on initial mount
+    refetchOnMount: true, // Always refetch on mount
     placeholderData: (previousData) => previousData, // Keep previous data while loading
     retry: 1, // Only retry once on error
     retryDelay: 1000, // Wait 1 second before retry
