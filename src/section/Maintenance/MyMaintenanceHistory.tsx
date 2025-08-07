@@ -70,6 +70,9 @@ const MyMaintenanceHistory: React.FC = () => {
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
+    // Reset page to 1 when switching tabs
+    setPage(1);
+    setDraftPage(1);
   };
 
   const handleViewDetails = (request: MaintenanceRequest) => {
@@ -287,30 +290,34 @@ const MyMaintenanceHistory: React.FC = () => {
           {/* Tab Panels */}
           <TabPanel value={tabValue} index={0}>
             <RequestsTable requests={paginatedRequests} loading={requestsLoading} />
-            {myRequests && myRequests.length > itemsPerPage && (
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-                <Pagination
-                  count={Math.ceil(myRequests.length / itemsPerPage)}
-                  page={page}
-                  onChange={(_, newPage) => setPage(newPage)}
-                  color="primary"
-                />
-              </Box>
-            )}
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+              <Pagination
+                count={Math.ceil((myRequests.length || 0) / itemsPerPage) || 1}
+                page={page}
+                onChange={(_, newPage) => setPage(newPage)}
+                color="primary"
+                showFirstButton
+                showLastButton
+                siblingCount={1}
+                boundaryCount={1}
+              />
+            </Box>
           </TabPanel>
 
           <TabPanel value={tabValue} index={1}>
             <RequestsTable requests={paginatedDrafts} loading={requestsLoading} isDraftTable={true} />
-            {myDrafts && myDrafts.length > itemsPerPage && (
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-                <Pagination
-                  count={Math.ceil(myDrafts.length / itemsPerPage)}
-                  page={draftPage}
-                  onChange={(_, newPage) => setDraftPage(newPage)}
-                  color="primary"
-                />
-              </Box>
-            )}
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+              <Pagination
+                count={Math.ceil((myDrafts.length || 0) / itemsPerPage) || 1}
+                page={draftPage}
+                onChange={(_, newPage) => setDraftPage(newPage)}
+                color="primary"
+                showFirstButton
+                showLastButton
+                siblingCount={1}
+                boundaryCount={1}
+              />
+            </Box>
           </TabPanel>
         </CardContent>
       </Card>
