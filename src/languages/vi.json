@@ -237,6 +237,7 @@
     "noEmployeesFound": "Không tìm thấy nhân viên nào.",
     "noDescription": "Không có mô tả nào.",
     "noNotes": "Không có ghi chú nào.",
-    "noResultsFound": "Không tìm thấy kết quả nào."
+    "noResultsFound": "Không tìm thấy kết quả nào.",
+    "unknownDepartment": "Không có Phòng Ban"
   }
 }

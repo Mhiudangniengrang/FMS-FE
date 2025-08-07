@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Typography, Paper, Container, Tabs, Tab } from "@mui/material";
+import { Box, Typography, Paper, Tabs, Tab } from "@mui/material";
 import { useUserInfo } from "@/hooks/useAuth";
 import Internal from "./Internal";
 import UserLog from "./UserLog";

@@ -79,7 +79,8 @@ const Internal: React.FC = () => {
   // Phân trang dữ liệu đã lọc
   const paginatedUsers = useMemo(() => {
     // Nếu đang thực hiện lọc (có search query hoặc filter), thì phân trang ở client
-    if (debouncedSearchQuery || filterRole !== "all") { // Sử dụng debouncedSearchQuery
+    if (debouncedSearchQuery || filterRole !== "all") {
+      // Sử dụng debouncedSearchQuery
       const startIndex = page * limit;
       const endIndex = startIndex + limit;
 
@@ -100,7 +101,8 @@ const Internal: React.FC = () => {
 
   // Đảm bảo trang hiện tại không vượt quá số trang tối đa
   useEffect(() => {
-    if (debouncedSearchQuery || filterRole !== "all") { // Sử dụng debouncedSearchQuery
+    if (debouncedSearchQuery || filterRole !== "all") {
+      // Sử dụng debouncedSearchQuery
       if (filteredUsers.length > 0) {
         const maxPage = Math.max(
           0,

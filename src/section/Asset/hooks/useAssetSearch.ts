@@ -40,7 +40,6 @@ const useAssetSearch = () => {
   const { data, isLoading, error, refetch } = useQuery<AssetSearchResponse>({
     queryKey: ['assets', 'search', currentSearchParams],
     queryFn: async () => {
-      console.log('🔍 API called with searchTerm:', currentSearchParams.search)
       const result = await assetApi.searchAssets(currentSearchParams)
       return result.data
     },

@@ -56,12 +56,8 @@ export const useLogin = () => {
       return response.data;
     },
     onSuccess: (data: AuthResponse) => {
-      // Sửa từ 'token' thành 'access_token' theo server response
       const { access_token } = data;
       const role = data.user.role;
-      
-      console.log("Token:", access_token); // Debug
-      console.log("Role:", role); // Debug
       
       // Lưu với tên đúng
       Cookies.set("__role", role, { expires: 1 });
@@ -84,7 +80,6 @@ export const useLogin = () => {
           : t("loginFailed"),
         "error"
       );
-      // Trả ra lỗi
       return error;
     },
   });

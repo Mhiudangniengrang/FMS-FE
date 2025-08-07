@@ -198,16 +198,23 @@ const InventoryDetail: React.FC<InventoryDetailProps> = ({
                       {t("department")}
                     </Typography>
                     <Typography variant="body2" fontWeight="medium">
-                      {asset.department || t("inventory.defaultLocation")}
+                      {asset.assignments && asset.assignments.length > 0
+                        ? asset.assignments
+                            .map((assignment: any) => assignment.departmentName)
+                            .join(", ")
+                        : t("unknownDepartment")}
                     </Typography>
                   </Box>
-
                   <Box>
                     <Typography variant="body2" color="text.secondary">
                       {t("Assigned to")}
                     </Typography>
                     <Typography variant="body2" fontWeight="medium">
-                      {asset.assignedTo || t("notAssigned")}
+                      {asset.assignments && asset.assignments.length > 0
+                        ? asset.assignments
+                            .map((assignment: any) => assignment.assignedTo)
+                            .join(", ")
+                        : t("notAssigned")}
                     </Typography>
                   </Box>
                 </Stack>

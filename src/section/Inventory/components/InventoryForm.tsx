@@ -37,7 +37,6 @@ interface InventoryFormDrawerProps {
   categories: Array<{ id: number; name: string }>;
   statusOptions: Array<{ value: string; label: string; color: string }>;
   conditionOptions: Array<{ value: string; label: string; color: string }>;
-  departments: Array<{ id: number; name: string; description: string }>;
   employees: Array<{
     id: string;
     name: string;
@@ -53,8 +52,6 @@ const validationSchema = yup.object({
   category: yup.string().required("Category is required"),
   status: yup.string().required("Status is required"),
   condition: yup.string().required("Condition is required"),
-  department: yup.string().required("Department is required"),
-  assignedTo: yup.string().optional(), 
   assigneeId: yup.string().optional(),
   value: yup
     .number()
@@ -80,7 +77,6 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
   onSubmit,
   isLoading,
   categories,
-  departments,
 }) => {
   const { t } = useTranslation();
   const { getStatusText } = useStatusTranslation();
@@ -105,8 +101,6 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
       category: "",
       status: "available",
       condition: "new",
-      department: "",
-      assignedTo: "",
       assigneeId: "",
       value: 0,
       quantity: 1,
@@ -147,8 +141,6 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
           category: "",
           status: "available",
           condition: "new",
-          department: "",
-          assignedTo: "",
           assigneeId: "",
           value: 0,
           quantity: 1,
@@ -403,49 +395,24 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                     />
                   </Box>
 
-                  {/* Department */}
+                  {/* Quantity - Moved up here */}
                   <Box>
                     <Controller
-                      name="department"
+                      name="quantity"
                       control={control}
                       render={({ field }) => (
-                        <FormControl
+                        <TextField
+                          {...field}
                           fullWidth
-                          error={!!errors.department}
+                          label={t("quantity")}
+                          error={!!errors.quantity}
+                          helperText={errors.quantity?.message?.toString()}
+                          type="number"
                           required
-                        >
-                          <InputLabel>{t("department")}</InputLabel>
-                          <Select
-                            {...field}
-                            label={t("department")}
-                            sx={{ borderRadius: 2 }}
-                          >
-                            {departments?.map((department) => (
-                              <MenuItem
-                                key={department.id}
-                                value={department.name}
-                              >
-                                {department.name}
-                                {department.description && (
-                                  <Typography
-                                    variant="caption"
-                                    color="text.secondary"
-                                    sx={{ ml: 1 }}
-                                  ></Typography>
-                                )}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          {errors.department && (
-                            <Typography
-                              variant="caption"
-                              color="error"
-                              sx={{ mt: 0.5, ml: 1 }}
-                            >
-                              {errors.department.message?.toString()}
-                            </Typography>
-                          )}
-                        </FormControl>
+                          sx={{
+                            "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                          }}
+                        />
                       )}
                     />
                   </Box>
@@ -484,28 +451,6 @@ const InventoryForm: React.FC<InventoryFormDrawerProps> = ({
                               </InputAdornment>
                             ),
                           }}
-                          sx={{
-                            "& .MuiOutlinedInput-root": { borderRadius: 2 },
-                          }}
-                        />
-                      )}
-                    />
-                  </Box>
-
-                  {/* Quantity */}
-                  <Box>
-                    <Controller
-                      name="quantity"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          label={t("quantity")}
-                          error={!!errors.quantity}
-                          helperText={errors.quantity?.message?.toString()}
-                          type="number"
-                          required
                           sx={{
                             "& .MuiOutlinedInput-root": { borderRadius: 2 },
                           }}

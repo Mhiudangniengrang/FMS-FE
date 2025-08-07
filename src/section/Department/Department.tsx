@@ -9,10 +9,9 @@ import {
   DepartmentEmptyState,
   DepartmentFilter,
 } from "./components";
-import { useQuery } from "@tanstack/react-query";
-import { assetApi } from "../Asset/services/assets";
 import type { Asset } from "../Asset/types";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useAssetData } from "../Asset/hooks";
 
 interface DepartmentSummary {
   department: string;
@@ -25,7 +24,7 @@ interface DepartmentSummary {
 const Departments: React.FC = () => {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
-  const debouncedSearchQuery = useDebounce(searchQuery, 500); // ✅ Giống Inventory
+  const debouncedSearchQuery = useDebounce(searchQuery, 500); 
   const [selectedDepartment, setSelectedDepartment] =
     useState<DepartmentSummary | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
@@ -33,22 +32,17 @@ const Departments: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
 
-  // Fetch assets data
-  const {
-    data: assets = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["assets"],
-    queryFn: () => assetApi.getAssets().then((res) => res.data),
-  });
+  const { data: assets = [], loading: isLoading, error } = useAssetData();
 
   // Group assets by department
   const departmentSummaries = useMemo(() => {
     const grouped: { [key: string]: DepartmentSummary } = {};
 
     assets.forEach((asset: Asset) => {
-      const department = asset.department || t("Unassigned");
+      // Get department from assignments instead of asset.department
+      const department = asset.assignments && asset.assignments.length > 0
+        ? asset.assignments.map((assignment: any) => assignment.departmentName).join(", ")
+        : t("Unassigned");
 
       if (!grouped[department]) {
         grouped[department] = {
@@ -92,7 +86,7 @@ const Departments: React.FC = () => {
     }
 
     return filtered;
-  }, [departmentSummaries, debouncedSearchQuery, selectedDepartments]); 
+  }, [departmentSummaries, debouncedSearchQuery, selectedDepartments]);
 
   // Paginate filtered departments
   const paginatedDepartments = useMemo(() => {

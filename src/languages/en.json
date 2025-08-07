@@ -235,6 +235,7 @@
     "noEmployeesFound": "No employees found.",
     "noDescription": "No description available.",
     "noNotes": "No notes available.",
-    "noResultsFound": "No results found."
+    "noResultsFound": "No results found.",
+    "unknownDepartment": "Unknown Department"
   }
 }

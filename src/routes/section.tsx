@@ -21,16 +21,13 @@ interface ProtectedRouteProps {
   userRole?: string;
 }
 
-// Component bảo vệ route, chỉ cho phép truy cập khi đã đăng nhập
 const ProtectedRoute = ({
   children,
   allowedRole,
   userRole,
 }: ProtectedRouteProps): React.JSX.Element => {
-  // Chuyển allowedRole thành array để xử lý thống nhất
   const allowedRoles = Array.isArray(allowedRole) ? allowedRole : [allowedRole];
 
-  // Kiểm tra xem userRole có nằm trong danh sách allowedRoles không
   const isAllowed = allowedRoles.some(
     (role) => role.toLowerCase() === userRole?.toLowerCase()
   );
@@ -42,7 +39,6 @@ const ProtectedRoute = ({
 };
 
 export const Router = (): React.JSX.Element | null => {
-  // Lấy role từ cookies
   const userRole = Cookies.get("__role") || "guest";
 
   const routes = useRoutes([

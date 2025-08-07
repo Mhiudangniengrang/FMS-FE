@@ -56,7 +56,7 @@ const DepartmentSummaryCards: React.FC<DepartmentSummaryCardsProps> = ({
 
   const cards = [
     {
-      title: t("Total Departments"),
+      title: t("totalDepartments"),
       value: totalDepartments,
       icon: <DepartmentIcon />,
       color: "primary.main",

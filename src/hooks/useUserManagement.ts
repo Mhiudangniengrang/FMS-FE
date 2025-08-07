@@ -22,11 +22,10 @@ export const useUserManagement = () => {
     queryKey: ["users", page, limit],
     queryFn: async () => {
       const response = await fetchUsers({
-        page: page + 1, // json-server bắt đầu từ page 1
+        page: page + 1, 
         limit,
       });
 
-      // json-server trả về x-total-count trong header
       if (response.headers && response.headers["x-total-count"]) {
         setTotalCount(Number(response.headers["x-total-count"]));
       }

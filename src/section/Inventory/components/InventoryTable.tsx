@@ -184,9 +184,15 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
                   />
                 </TableCell>
 
-                {/* Location */}
+                {/* Department */}
                 <TableCell>
-                  <Typography variant="body2">{asset.department}</Typography>
+                  <Typography variant="body2">
+                    {asset.assignments && asset.assignments.length > 0
+                      ? asset.assignments
+                          .map((assignment: any) => assignment.departmentName)
+                          .join(", ")
+                      : t("unknownDepartment")}
+                  </Typography>
                   {asset.assignedTo && (
                     <Typography variant="caption" color="text.secondary">
                       {t("Assigned to")}: {asset.assignedTo}

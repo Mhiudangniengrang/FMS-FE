@@ -3,8 +3,8 @@ export interface User {
   name: string;
   email: string;
   phone: string;
-  password?: string; 
-  role: "manager" | "staff" | "supervisor" ;
+  password?: string;
+  role: "manager" | "staff" | "supervisor" | "admin";
   createdAt: string;
 }
 

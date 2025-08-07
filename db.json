@@ -102,11 +102,11 @@
       "category": "Máy tính",
       "status": "in_use",
       "condition": "good",
-      "department": "Phòng thiết kế",
+      "department": "",
       "assignedTo": "",
       "assigneeId": "",
       "value": 25000000,
-      "quantity": 1,
+      "quantity": 3,
       "purchaseDate": "2023-01-15",
       "warrantyDate": "2025-01-15",
       "serialNumber": "DXP130123456",
@@ -127,11 +127,23 @@
       "tags": [],
       "assignments": [
         {
-          "id": "assign_1754538251463",
+          "id": "assign_1754550902464_0.7572794733589944",
+          "departmentId": 3,
+          "departmentName": "Phòng quản lý dự án",
+          "assignedTo": "J97",
+          "assigneeId": "NV035",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        },
+        {
+          "id": "assign_1754551741762_0.25352653505589406",
           "departmentId": 2,
           "departmentName": "Phòng thiết kế",
-          "assignedTo": "Lê Văn D",
-          "assigneeId": "NV004",
+          "assignedTo": "Vũ Văn F",
+          "assigneeId": "NV006",
           "quantity": 1,
           "assignedDate": "2025-08-07",
           "expectedReturnDate": "",
@@ -168,15 +180,30 @@
       "assignedDate": null,
       "expectedReturnDate": null,
       "actualReturnDate": null,
-      "isReturned": true
+      "isReturned": true,
+      "tags": [],
+      "assignments": [
+        {
+          "id": "assign_1754551404748_0.5232478803351666",
+          "departmentId": 2,
+          "departmentName": "Phòng thiết kế",
+          "assignedTo": "Lê Văn D",
+          "assigneeId": "NV004",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ]
     },
     {
       "id": 3,
       "assetCode": "TS003",
       "name": "Xe Toyota Camry",
       "category": "Phương tiện",
-      "status": "maintenance",
-      "condition": "fair",
+      "status": "available",
+      "condition": "new",
       "department": "Phòng phân tích dữ liệu",
       "assignedTo": "Trần Thị B",
       "assigneeId": "NV002",
@@ -198,7 +225,22 @@
       "assignedDate": "2024-01-01",
       "expectedReturnDate": "2024-12-31",
       "actualReturnDate": null,
-      "isReturned": false
+      "isReturned": false,
+      "tags": [],
+      "assignments": [
+        {
+          "id": "assign_1754554718097_0.9728577954552301",
+          "departmentId": 6,
+          "departmentName": "Phòng phân tích dữ liệu",
+          "assignedTo": "Phạm Văn C",
+          "assigneeId": "NV003",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ]
     },
     {
       "id": 4,
@@ -228,7 +270,22 @@
       "assignedDate": "2024-01-01",
       "expectedReturnDate": "2024-12-31",
       "actualReturnDate": null,
-      "isReturned": false
+      "isReturned": false,
+      "tags": [],
+      "assignments": [
+        {
+          "id": "assign_1754551571911_0.6153455640507639",
+          "departmentId": 6,
+          "departmentName": "Phòng phân tích dữ liệu",
+          "assignedTo": "Phạm Văn C",
+          "assigneeId": "NV003",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ]
     },
     {
       "id": 5,
@@ -259,7 +316,33 @@
       "expectedReturnDate": "2024-12-31",
       "actualReturnDate": null,
       "isReturned": false,
-      "assignments": []
+      "assignments": [
+        {
+          "id": "assign_1754541931390_0.7193682446089879",
+          "departmentId": 2,
+          "departmentName": "Phòng thiết kế",
+          "assignedTo": "Vũ Văn F",
+          "assigneeId": "NV006",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        },
+        {
+          "id": "assign_1754541946833_0.9518351150674317",
+          "departmentId": 3,
+          "departmentName": "Phòng quản lý dự án",
+          "assignedTo": "J97",
+          "assigneeId": "NV035",
+          "quantity": 3,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ],
+      "tags": []
     },
     {
       "id": 6,
@@ -290,15 +373,29 @@
       "expectedReturnDate": null,
       "actualReturnDate": null,
       "isReturned": true,
-      "assignments": []
+      "assignments": [
+        {
+          "id": "assign_1754554658999_0.881862920491169",
+          "departmentId": 1,
+          "departmentName": "Phòng kỹ thuật",
+          "assignedTo": "Michael Bin",
+          "assigneeId": "NV736",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ],
+      "tags": []
     },
     {
       "id": 7,
       "assetCode": "TS007",
       "name": "Máy pha cà phê Breville",
       "category": "Thiết bị sinh hoạt",
-      "status": "decommissioned",
-      "condition": "damaged",
+      "status": "available",
+      "condition": "good",
       "department": "Phòng quản lý dự án",
       "assignedTo": "Toàn bộ nhân viên",
       "assigneeId": "ALL",
@@ -324,11 +421,11 @@
       "tags": [],
       "assignments": [
         {
-          "id": "assign_1754540101105_0.09159475970468445",
-          "departmentId": 2,
-          "departmentName": "Phòng thiết kế",
-          "assignedTo": "Lê Văn D",
-          "assigneeId": "NV004",
+          "id": "assign_1754554748048_0.29795746048772376",
+          "departmentId": 7,
+          "departmentName": "Phòng nhân sự",
+          "assignedTo": "Trần Thị B",
+          "assigneeId": "NV002",
           "quantity": 1,
           "assignedDate": "2025-08-07",
           "expectedReturnDate": "",
@@ -374,6 +471,44 @@
           "departmentName": "Phòng thiết kế",
           "assignedTo": "Vũ Văn F",
           "assigneeId": "NV006",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ]
+    },
+    {
+      "notes": "",
+      "description": "áaa",
+      "supplier": "Apple",
+      "model": "Iphone",
+      "brand": "Apple",
+      "serialNumber": "1231231",
+      "warrantyDate": "2025-08-09",
+      "purchaseDate": "2025-08-07",
+      "quantity": 2,
+      "value": 5000000,
+      "assigneeId": "",
+      "condition": "new",
+      "status": "available",
+      "category": "Thiết bị di động",
+      "name": "Iphone 13",
+      "assetCode": "TS415",
+      "tags": [],
+      "createdAt": "2025-08-07T07:54:38.075Z",
+      "updatedAt": "2025-08-07T07:54:38.075Z",
+      "id": 10,
+      "department": "",
+      "assignedTo": "",
+      "assignments": [
+        {
+          "id": "assign_1754553322856_0.17057010097418435",
+          "departmentId": 2,
+          "departmentName": "Phòng thiết kế",
+          "assignedTo": "Lê Văn D",
+          "assigneeId": "NV004",
           "quantity": 1,
           "assignedDate": "2025-08-07",
           "expectedReturnDate": "",
@@ -430,7 +565,16 @@
       "id": 1,
       "name": "Phòng kỹ thuật",
       "description": "Phòng kỹ thuật và bảo trì",
-      "employees": []
+      "employees": [
+        {
+          "id": "NV736",
+          "name": "Michael Bin"
+        },
+        {
+          "id": "NV632",
+          "name": "Sarah Johnson"
+        }
+      ]
     },
     {
       "id": 2,
@@ -467,12 +611,7 @@
       "id": 3,
       "name": "Phòng quản lý dự án",
       "description": "Phòng quản lý dự án và điều hành",
-      "employees": [
-        {
-          "id": "NV637",
-          "name": "Michael Bin"
-        }
-      ]
+      "employees": []
     },
     {
       "id": 4,
@@ -652,11 +791,18 @@
       "id": "NV015"
     },
     {
+      "id": "NV736",
       "name": "Michael Bin",
       "position": "Trưởng phòng IT",
-      "department": "Phòng quản lý dự án",
-      "email": "admin@example.com",
-      "id": "NV637"
+      "department": "Phòng kỹ thuật",
+      "email": "hiu@gmail.com"
+    },
+    {
+      "id": "NV632",
+      "name": "Sarah Johnson",
+      "position": "Trưởng phòng IT",
+      "department": "Phòng kỹ thuật",
+      "email": "hiu@gmail.com"
     }
   ],
   "statusOptions": [
@@ -788,6 +934,16 @@
       "targetId": null,
       "role": "auth",
       "timestamp": "2025-08-05T14:06:06.250Z"
+    },
+    {
+      "id": 7,
+      "userId": 1,
+      "username": "John Smith",
+      "action": "login",
+      "details": "User John Smith logged in",
+      "targetId": null,
+      "role": "auth",
+      "timestamp": "2025-08-07T08:12:52.923Z"
     }
   ],
   "maintenance": [
