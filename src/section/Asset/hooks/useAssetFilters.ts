@@ -6,12 +6,12 @@ const useAssetFilters = (assets: Asset[]) => {
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [categoryFilter, setCategoryFilter] = useState<string>("")
   const [statusFilter, setStatusFilter] = useState<string>("")
-  const [locationFilter, setLocationFilter] = useState<string>("")
+  const [departmentFilter, setDepartmentFilter] = useState<string>("")
 
   // Memoize filtered assets to prevent unnecessary recalculations
   const filteredAssets = useMemo(() => {
-    return filterAssets(assets, searchTerm, categoryFilter, statusFilter, locationFilter)
-  }, [assets, searchTerm, categoryFilter, statusFilter, locationFilter])
+    return filterAssets(assets, searchTerm, categoryFilter, statusFilter, departmentFilter)
+  }, [assets, searchTerm, categoryFilter, statusFilter, departmentFilter])
 
   // Memoize setters to prevent unnecessary re-renders
   const setSearchTermCallback = useCallback((value: string) => {
@@ -26,30 +26,30 @@ const useAssetFilters = (assets: Asset[]) => {
     setStatusFilter(value)
   }, [])
 
-  const setLocationFilterCallback = useCallback((value: string) => {
-    setLocationFilter(value)
+  const setDepartmentFilterCallback = useCallback((value: string) => {
+    setDepartmentFilter(value)
   }, [])
 
   const clearFilters = useCallback(() => {
     setSearchTerm("")
     setCategoryFilter("")
     setStatusFilter("")
-    setLocationFilter("")
+    setDepartmentFilter("")
   }, [])
 
   const hasActiveFilters = useMemo(() => {
-    return searchTerm !== "" || categoryFilter !== "" || statusFilter !== "" || locationFilter !== ""
-  }, [searchTerm, categoryFilter, statusFilter, locationFilter])
+    return searchTerm !== "" || categoryFilter !== "" || statusFilter !== "" || departmentFilter !== ""
+  }, [searchTerm, categoryFilter, statusFilter, departmentFilter])
 
   return {
     searchTerm,
     categoryFilter,
     statusFilter,
-    locationFilter,
+    departmentFilter,
     setSearchTerm: setSearchTermCallback,
     setCategoryFilter: setCategoryFilterCallback,
     setStatusFilter: setStatusFilterCallback,
-    setLocationFilter: setLocationFilterCallback,
+    setDepartmentFilter: setDepartmentFilterCallback,
     filteredAssets,
     clearFilters,
     hasActiveFilters,

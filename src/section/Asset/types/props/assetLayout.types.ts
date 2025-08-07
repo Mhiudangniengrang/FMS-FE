@@ -1,12 +1,12 @@
 import type { Asset, NewAssetForm } from '../core'
-import type { Category, Location, Employee } from '../entities'
+import type { Category, Department, Employee } from '../entities'
 import type { StatusOption, ConditionOption } from '../options'
 
 // Data interface
 export interface AssetLayoutData {
   assets: Asset[]
   categories: Category[]
-  locations: Location[]
+  departments: Department[]
   employees: Employee[]
   statusOptions: StatusOption[]
   conditionOptions: ConditionOption[]
@@ -17,8 +17,7 @@ export interface AssetLayoutFilters {
   searchTerm: string
   categoryFilter: string
   statusFilter: string
-  locationFilter: string
-  viewMode: "table" | "grid"
+  departmentFilter: string
 }
 
 // Sorting interface
@@ -58,10 +57,10 @@ export interface AssetLayoutHandlers {
   onSearchChange: (value: string) => void
   onCategoryChange: (value: string) => void
   onStatusChange: (value: string) => void
-  onLocationChange: (value: string) => void
-  onViewModeChange: (mode: "table" | "grid") => void
+  onDepartmentChange: (value: string) => void
   onSort: (property: keyof Asset) => void
   onViewDetail: (asset: Asset) => void
+  onUpdate: (asset: Asset) => void
   onPageChange: (page: number) => void
   onRowsPerPageChange: (rowsPerPage: number) => void
   onAddAsset: () => void

@@ -150,26 +150,26 @@ const AddAssetDialog: React.FC<AddAssetDialogProps> = ({
             />
           </Box>
 
-          {/* Location & Assignment */}
+          {/* Department & Assignment */}
           <Box sx={{ gridColumn: "1 / -1" }}>
             <Typography variant="h6" color="primary" gutterBottom sx={{ mt: 2 }}>
-              📍 Vị trí & Phân công
+              📍 Phòng ban & Phân công
             </Typography>
             <Divider sx={{ mb: 2 }} />
           </Box>
 
           <Box>
             <FormControl fullWidth>
-              <InputLabel>Vị trí</InputLabel>
+              <InputLabel>Phòng ban</InputLabel>
               <Select
-                value={form.location}
-                label="Vị trí"
-                onChange={(e) => handleInputChange("location", e.target.value)}
+                value={form.department}
+                label="Phòng ban"
+                onChange={(e) => handleInputChange("department", e.target.value)}
                 sx={{ borderRadius: 2 }}
               >
-                {data.locations.map((location) => (
-                  <MenuItem key={location.id} value={location.name}>
-                    {location.name} - {location.building}
+                {data.departments.map((department) => (
+                  <MenuItem key={department.id} value={department.name}>
+                    {department.name} - {department.building}
                   </MenuItem>
                 ))}
               </Select>

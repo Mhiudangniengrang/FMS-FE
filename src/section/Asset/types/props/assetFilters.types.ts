@@ -1,10 +1,10 @@
-import type { Category, Location } from '../entities'
+import type { Category, Department } from '../entities'
 import type { StatusOption } from '../options'
 
 // Data interface for AssetFilters
 export interface AssetFiltersData {
   categories: Category[]
-  locations: Location[]
+  departments: Department[]
   statusOptions: StatusOption[]
 }
 
@@ -13,8 +13,7 @@ export interface AssetFiltersValues {
   searchTerm: string
   categoryFilter: string
   statusFilter: string
-  locationFilter: string
-  viewMode: "table" | "grid"
+  departmentFilter: string
 }
 
 // Event handlers interface
@@ -22,8 +21,7 @@ export interface AssetFiltersHandlers {
   onSearchChange: (value: string) => void
   onCategoryChange: (value: string) => void
   onStatusChange: (value: string) => void
-  onLocationChange: (value: string) => void
-  onViewModeChange: (mode: "table" | "grid") => void
+  onDepartmentChange: (value: string) => void
   onAddAsset: () => void
 }
 

@@ -1,11 +1,11 @@
 import type { Asset } from '../core'
-import type { Category, Location, Employee } from '../entities'
+import type { Category, Department, Employee } from '../entities'
 import type { StatusOption, ConditionOption } from '../options'
 
 // Data interface for AssetTable
 export interface AssetTableData {
   categories: Category[]
-  locations: Location[]
+  departments: Department[]
   employees: Employee[]
   statusOptions: StatusOption[]
   conditionOptions: ConditionOption[]
@@ -29,6 +29,7 @@ export interface AssetTablePagination {
 export interface AssetTableHandlers {
   onSort: (property: keyof Asset) => void
   onViewDetail: (asset: Asset) => void
+  onUpdate: (asset: Asset) => void
   onPageChange: (page: number) => void
   onRowsPerPageChange: (rowsPerPage: number) => void
 }

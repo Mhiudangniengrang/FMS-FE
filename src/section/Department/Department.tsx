@@ -12,6 +12,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { assetApi } from "../Asset/services/assets";
 import type { Asset } from "../Asset/types";
+import { useDebounce } from "@/hooks/useDebounce";
+import { de } from "date-fns/locale";
 
 interface DepartmentSummary {
   department: string;
@@ -24,6 +26,7 @@ interface DepartmentSummary {
 const Departments: React.FC = () => {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 500); // ✅ Giống Inventory
   const [selectedDepartment, setSelectedDepartment] =
     useState<DepartmentSummary | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
@@ -78,9 +81,11 @@ const Departments: React.FC = () => {
     let filtered = departmentSummaries;
 
     // Filter by search query
-    if (searchQuery) {
+    if (debouncedSearchQuery) {
       filtered = filtered.filter((department) =>
-        department.department.toLowerCase().includes(searchQuery.toLowerCase())
+        department.department
+          .toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase())
       );
     }
 
@@ -92,7 +97,7 @@ const Departments: React.FC = () => {
     }
 
     return filtered;
-  }, [departmentSummaries, searchQuery, selectedDepartments]);
+  }, [departmentSummaries, debouncedSearchQuery, selectedDepartments]); // ✅ Dependency đúng
 
   // Paginate filtered departments
   const paginatedDepartments = useMemo(() => {
@@ -119,8 +124,8 @@ const Departments: React.FC = () => {
   };
 
   const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    setPage(0); // Reset to first page when searching
+    setSearchQuery(value); // ✅ Set searchQuery, useDebounce sẽ handle debounce
+    setPage(0);
   };
 
   const handleDepartmentFilterChange = (departments: string[]) => {
@@ -218,9 +223,8 @@ const Departments: React.FC = () => {
       />
 
       {/* Empty State */}
-      {paginatedDepartments.length === 0 && filteredDepartments.length === 0 && (
-        <DepartmentEmptyState />
-      )}
+      {paginatedDepartments.length === 0 &&
+        filteredDepartments.length === 0 && <DepartmentEmptyState />}
     </Box>
   );
 };

@@ -102,9 +102,9 @@
       "category": "Máy tính",
       "status": "in_use",
       "condition": "good",
-      "department": "Phòng kỹ thuật",
-      "assignedTo": "Nguyễn Văn A",
-      "assigneeId": "NV001",
+      "department": "Phòng thiết kế",
+      "assignedTo": "",
+      "assigneeId": "",
       "value": 25000000,
       "quantity": 1,
       "purchaseDate": "2023-01-15",
@@ -119,7 +119,26 @@
       "createdById": "NV002",
       "createdAt": "2023-01-15T08:30:00Z",
       "updatedAt": "2024-03-10T14:20:00Z",
-      "notes": "Được cấp cho team phát triển frontend"
+      "notes": "Được cấp cho team phát triển frontend",
+      "assignedDate": "2024-01-01",
+      "expectedReturnDate": "2024-12-31",
+      "actualReturnDate": null,
+      "isReturned": false,
+      "tags": [],
+      "assignments": [
+        {
+          "id": "assign_1754538251463",
+          "departmentId": 2,
+          "departmentName": "Phòng thiết kế",
+          "assignedTo": "Lê Văn D",
+          "assigneeId": "NV004",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ]
     },
     {
       "id": 2,
@@ -145,7 +164,11 @@
       "createdById": "NV003",
       "createdAt": "2022-08-20T10:15:00Z",
       "updatedAt": "2024-01-05T09:30:00Z",
-      "notes": "Dự phòng cho phòng hành chính"
+      "notes": "Dự phòng cho phòng hành chính",
+      "assignedDate": null,
+      "expectedReturnDate": null,
+      "actualReturnDate": null,
+      "isReturned": true
     },
     {
       "id": 3,
@@ -171,7 +194,11 @@
       "createdById": "NV004",
       "createdAt": "2021-05-10T14:45:00Z",
       "updatedAt": "2024-02-15T11:20:00Z",
-      "notes": "Đang bảo trì định kỳ, dự kiến hoàn thành 25/03/2024"
+      "notes": "Đang bảo trì định kỳ, dự kiến hoàn thành 25/03/2024",
+      "assignedDate": "2024-01-01",
+      "expectedReturnDate": "2024-12-31",
+      "actualReturnDate": null,
+      "isReturned": false
     },
     {
       "id": 4,
@@ -197,7 +224,11 @@
       "createdById": "NV001",
       "createdAt": "2023-09-20T16:20:00Z",
       "updatedAt": "2023-12-01T10:15:00Z",
-      "notes": "Dùng để chụp ảnh sản phẩm và quay video marketing"
+      "notes": "Dùng để chụp ảnh sản phẩm và quay video marketing",
+      "assignedDate": "2024-01-01",
+      "expectedReturnDate": "2024-12-31",
+      "actualReturnDate": null,
+      "isReturned": false
     },
     {
       "id": 5,
@@ -223,7 +254,12 @@
       "createdById": "NV002",
       "createdAt": "2023-03-15T13:10:00Z",
       "updatedAt": "2023-10-22T15:45:00Z",
-      "notes": "Màn hình chuyên dụng cho team thiết kế"
+      "notes": "Màn hình chuyên dụng cho team thiết kế",
+      "assignedDate": "2024-01-01",
+      "expectedReturnDate": "2024-12-31",
+      "actualReturnDate": null,
+      "isReturned": false,
+      "assignments": []
     },
     {
       "id": 6,
@@ -249,7 +285,12 @@
       "createdById": "NV003",
       "createdAt": "2023-11-10T09:25:00Z",
       "updatedAt": "2023-11-10T09:25:00Z",
-      "notes": "Dự trữ cho văn phòng mới"
+      "notes": "Dự trữ cho văn phòng mới",
+      "assignedDate": null,
+      "expectedReturnDate": null,
+      "actualReturnDate": null,
+      "isReturned": true,
+      "assignments": []
     },
     {
       "id": 7,
@@ -275,7 +316,11 @@
       "createdById": "NV004",
       "createdAt": "2022-12-01T11:40:00Z",
       "updatedAt": "2024-01-20T14:30:00Z",
-      "notes": "Được bảo trì định kỳ hàng tháng"
+      "notes": "Được bảo trì định kỳ hàng tháng",
+      "assignedDate": null,
+      "expectedReturnDate": null,
+      "actualReturnDate": null,
+      "isReturned": true
     },
     {
       "id": 8,
@@ -301,31 +346,26 @@
       "createdById": "NV005",
       "createdAt": "2023-06-25T08:15:00Z",
       "updatedAt": "2023-12-15T16:20:00Z",
-      "notes": "Sử dụng cho các cuộc họp và training"
-    },
-    {
-      "notes": "ádasd",
-      "description": "ádasd",
-      "supplier": "ádasdsasd",
-      "model": "sdaasdasd",
-      "brand": "ádasda",
-      "serialNumber": "1231231",
-      "warrantyDate": "2025-08-08",
-      "purchaseDate": "2025-08-07",
-      "quantity": 4,
-      "value": 20000,
-      "assigneeId": "",
-      "assignedTo": "",
-      "department": "Phòng kỹ thuật",
-      "condition": "new",
-      "status": "available",
-      "category": "Thiết bị văn phòng",
-      "name": "Sarah Johnson",
-      "assetCode": "TS793",
+      "notes": "Sử dụng cho các cuộc họp và training",
+      "assignedDate": null,
+      "expectedReturnDate": null,
+      "actualReturnDate": null,
+      "isReturned": true,
       "tags": [],
-      "createdAt": "2025-08-07T03:19:56.493Z",
-      "updatedAt": "2025-08-07T03:19:56.493Z",
-      "id": 10
+      "assignments": [
+        {
+          "id": "assign_1754538140472",
+          "departmentId": 2,
+          "departmentName": "Phòng thiết kế",
+          "assignedTo": "Vũ Văn F",
+          "assigneeId": "NV006",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ]
     }
   ],
   "categories": [

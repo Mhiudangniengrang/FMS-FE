@@ -214,6 +214,118 @@ server.get("/api/v1/auth/me", (req, res) => {
   }
 });
 
+// Protected routes middleware - chỉ bảo vệ những route cần authentication
+server.use(/^(?!\/api\/v1\/auth).*$/, (req, res, next) => {
+  if (
+    req.headers.authorization === undefined ||
+    req.headers.authorization.split(" ")[0] !== "Bearer"
+  ) {
+    const status = 401;
+    const message = "Error in authorization format";
+    res.status(status).json({ status, message });
+    return;
+  }
+
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = verifyToken(token);
+
+    if (decoded) {
+      req.userData = decoded;
+      next();
+    } else {
+      const status = 401;
+      const message = "Invalid token";
+      res.status(status).json({ status, message });
+    }
+  } catch (err) {
+    const status = 401;
+    const message = "Error token is revoked";
+    res.status(status).json({ status, message });
+  }
+});
+
+// Assets search endpoint (Server-side filtering) - MUST BE BEFORE /:id route
+server.get("/api/v1/assets/search", (req, res) => {
+  console.log("Assets search endpoint called");
+  console.log("Query params:", req.query);
+  
+  const userdb = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
+  let assets = [...userdb.assets];
+  
+  // Extract query parameters
+  const { 
+    search, 
+    category, 
+    status, 
+    department, 
+    page = 0, 
+    limit = 10, 
+    sortBy = 'name', 
+    sortOrder = 'asc' 
+  } = req.query;
+  
+  // Apply search filter
+  if (search) {
+    const searchLower = search.toLowerCase();
+    assets = assets.filter(asset => 
+      asset.name.toLowerCase().includes(searchLower) ||
+      asset.assetCode.toLowerCase().includes(searchLower) ||
+      asset.brand.toLowerCase().includes(searchLower) ||
+      asset.model.toLowerCase().includes(searchLower) ||
+      asset.assignedTo.toLowerCase().includes(searchLower)
+    );
+  }
+  
+  // Apply category filter
+  if (category) {
+    assets = assets.filter(asset => asset.category === category);
+  }
+  
+  // Apply status filter
+  if (status) {
+    assets = assets.filter(asset => asset.status === status);
+  }
+  
+  // Apply department filter
+  if (department) {
+    assets = assets.filter(asset => asset.department === department);
+  }
+  
+  // Apply sorting
+  assets.sort((a, b) => {
+    let aValue = a[sortBy];
+    let bValue = b[sortBy];
+    
+    if (typeof aValue === "string") {
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
+    }
+    
+    if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+    return 0;
+  });
+  
+  // Calculate pagination
+  const total = assets.length;
+  const pageNum = parseInt(page);
+  const limitNum = parseInt(limit);
+  const startIndex = pageNum * limitNum;
+  const endIndex = startIndex + limitNum;
+  const paginatedAssets = assets.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(total / limitNum);
+  
+  // Return response
+  res.status(200).json({
+    assets: paginatedAssets,
+    total,
+    page: pageNum,
+    limit: limitNum,
+    totalPages
+  });
+});
+
 // Assets endpoints
 server.get("/api/v1/assets", (req, res) => {
   console.log("Get assets endpoint called");

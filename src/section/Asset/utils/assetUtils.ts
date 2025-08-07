@@ -1,12 +1,14 @@
-import type { Asset, NewAssetForm } from "../types"
+import type { Asset, NewAssetForm, AssetAssignment } from "../types"
 
 export const filterAssets = (
   assets: Asset[],
   searchTerm: string,
   categoryFilter: string,
   statusFilter: string,
-  locationFilter: string
+  departmentFilter: string
 ): Asset[] => {
+
+  
   return assets.filter((asset) => {
     const matchesSearch =
       searchTerm === "" ||
@@ -18,9 +20,11 @@ export const filterAssets = (
 
     const matchesCategory = categoryFilter === "" || asset.category === categoryFilter
     const matchesStatus = statusFilter === "" || asset.status === statusFilter
-    const matchesLocation = locationFilter === "" || asset.location === locationFilter
+    const matchesDepartment = departmentFilter === "" || asset.department === departmentFilter
 
-    return matchesSearch && matchesCategory && matchesStatus && matchesLocation
+
+
+    return matchesSearch && matchesCategory && matchesStatus && matchesDepartment
   })
 }
 
@@ -70,8 +74,8 @@ export const getAssetsByStatus = (assets: Asset[], status: string): Asset[] => {
   return assets.filter((asset) => asset.status === status)
 }
 
-export const getAssetsByLocation = (assets: Asset[], location: string): Asset[] => {
-  return assets.filter((asset) => asset.location === location)
+export const getAssetsByDepartment = (assets: Asset[], department: string): Asset[] => {
+  return assets.filter((asset) => asset.department === department)
 }
 
 export const getAssetsByAssignee = (assets: Asset[], assigneeId: string): Asset[] => {
@@ -125,10 +129,11 @@ export function convertFormToAsset(form: NewAssetForm): Asset {
     category: form.category,
     status: form.status,
     condition: form.condition,
-    location: form.location,
+    department: form.department,
     assignedTo: form.assignedTo,
     assigneeId: form.assigneeId,
     value: Number(form.value),
+    quantity: Number(form.quantity),
     purchaseDate: form.purchaseDate,
     warrantyDate: form.warrantyDate,
     serialNumber: form.serialNumber,
@@ -143,5 +148,60 @@ export function convertFormToAsset(form: NewAssetForm): Asset {
     updatedAt: now,
     tags: form.tags,
     notes: form.notes,
+    assignments: form.assignments || [],
   }
+}
+
+// Assignment utilities
+export const getAssetAssignmentStats = (asset: Asset) => {
+  const totalQuantity = asset.quantity
+  const activeAssignments = asset.assignments?.filter(a => !a.isReturned) || []
+  const returnedAssignments = asset.assignments?.filter(a => a.isReturned) || []
+  
+  const activeQuantity = activeAssignments.reduce((sum, assignment) => sum + assignment.quantity, 0)
+  const returnedQuantity = returnedAssignments.reduce((sum, assignment) => sum + assignment.quantity, 0)
+  const availableQuantity = totalQuantity - activeQuantity
+  const usagePercentage = totalQuantity > 0 ? (activeQuantity / totalQuantity) * 100 : 0
+
+  return {
+    totalQuantity,
+    activeQuantity,
+    returnedQuantity,
+    availableQuantity,
+    usagePercentage,
+    isFullyAssigned: availableQuantity === 0,
+    isPartiallyAssigned: activeQuantity > 0 && availableQuantity > 0,
+    isUnassigned: activeQuantity === 0,
+    activeAssignments,
+    returnedAssignments
+  }
+}
+
+export const getAssetStatusByUsage = (asset: Asset): string => {
+  const stats = getAssetAssignmentStats(asset)
+  
+  if (stats.isFullyAssigned) return "fully_used"
+  if (stats.usagePercentage >= 80) return "limited"
+  if (stats.isUnassigned) return "available"
+  return "partially_used"
+}
+
+export const canAssignMore = (asset: Asset, requestedQuantity: number = 1): boolean => {
+  const stats = getAssetAssignmentStats(asset)
+  return stats.availableQuantity >= requestedQuantity
+}
+
+export const getAssignmentSummary = (asset: Asset) => {
+  if (!asset.assignments || asset.assignments.length === 0) {
+    return "Chưa có phân công"
+  }
+
+  const activeAssignments = asset.assignments.filter(a => !a.isReturned)
+  if (activeAssignments.length === 0) {
+    return "Tất cả đã được trả"
+  }
+
+  return activeAssignments.map(assignment => 
+    `${assignment.departmentName}: ${assignment.quantity} chiếc (${assignment.assignedTo})`
+  ).join(", ")
 } 

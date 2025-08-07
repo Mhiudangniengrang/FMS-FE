@@ -1,11 +1,11 @@
 import type { Asset, NewAssetForm } from '../core'
-import type { Category, Location, Employee } from '../entities'
+import type { Category, Department, Employee } from '../entities'
 import type { StatusOption, ConditionOption } from '../options'
 
 // Common dialog data interface
 export interface DialogData {
   categories: Category[]
-  locations: Location[]
+  departments: Department[]
   employees: Employee[]
   statusOptions: StatusOption[]
   conditionOptions: ConditionOption[]

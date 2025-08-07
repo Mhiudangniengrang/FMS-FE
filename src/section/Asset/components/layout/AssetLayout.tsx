@@ -14,7 +14,6 @@ import type { Asset } from '../../types'
 import {
   AssetFilters,
   AssetTable,
-  AssetGrid,
   AssetDetailDialog,
   AddAssetDialog,
 } from "../index"
@@ -28,8 +27,7 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
   searchTerm,
   categoryFilter,
   statusFilter,
-  locationFilter,
-  viewMode,
+  departmentFilter,
   sortBy,
   sortOrder,
   page,
@@ -45,10 +43,10 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
   onSearchChange,
   onCategoryChange,
   onStatusChange,
-  onLocationChange,
-  onViewModeChange,
+  onDepartmentChange,
   onSort,
   onViewDetail,
+  onUpdate,
   onPageChange,
   onRowsPerPageChange,
   onAddAsset,
@@ -105,6 +103,8 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
 
   if (!data) return null
 
+
+
   return (
     <Box>
       <div style={{ marginLeft: '10px', marginRight: '10px', marginTop: '20px', marginBottom: '20px' }}> 
@@ -121,20 +121,18 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
         {/* Filters */}
         <AssetFilters
           data={{
-            categories: data.categories,
-            locations: data.locations,
-            statusOptions: data.statusOptions,
+            categories: data.categories || [],
+            departments: data.departments || [],
+            statusOptions: data.statusOptions || [],
           }}
           searchTerm={searchTerm}
           categoryFilter={categoryFilter}
           statusFilter={statusFilter}
-          locationFilter={locationFilter}
-          viewMode={viewMode}
+          departmentFilter={departmentFilter}
           onSearchChange={onSearchChange}
           onCategoryChange={onCategoryChange}
           onStatusChange={onStatusChange}
-          onLocationChange={onLocationChange}
-          onViewModeChange={onViewModeChange}
+          onDepartmentChange={onDepartmentChange}
           onAddAsset={onAddAsset}
         />
 
@@ -148,7 +146,7 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
               Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm
             </Typography>
           </Paper>
-        ) : viewMode === "table" ? (
+        ) : (
           <AssetTable
             assets={paginatedAssets}
             data={data}
@@ -159,18 +157,7 @@ const AssetLayout: React.FC<AssetLayoutProps> = ({
             totalCount={data.assets.length}
             onSort={onSort}
             onViewDetail={onViewDetail}
-            onPageChange={onPageChange}
-            onRowsPerPageChange={onRowsPerPageChange}
-            rowsPerPageOptions={paginationConfig.rowsPerPageOptions}
-          />
-        ) : (
-          <AssetGrid
-            assets={paginatedAssets}
-            data={data}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            totalCount={data.assets.length}
-            onViewDetail={onViewDetail}
+            onUpdate={onUpdate}
             onPageChange={onPageChange}
             onRowsPerPageChange={onRowsPerPageChange}
             rowsPerPageOptions={paginationConfig.rowsPerPageOptions}

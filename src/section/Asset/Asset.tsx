@@ -1,33 +1,53 @@
 
 import type React from "react"
-import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { viewModes } from "./utils"
+
 import {
-  useAssetData,
-  useAssetFilters,
-  useAssetSorting,
-  useAssetPagination,
+  useAssetSearch,
   useAssetDialogs,
   usePerformanceMonitor,
 } from "./hooks"
 import { AssetLayout, AssetErrorBoundary } from "./components"
+import { UpdateAssetDrawer } from "./components/dialogs"
 import { categoryApi } from "./services/category"
-import { locationApi } from "./services/location"
 import { employeeApi } from "./services/employee"
 import { statusOptionApi } from "./services/statusOption"
 import { conditionOptionApi } from "./services/conditionOption"
-type ViewMode = typeof viewModes.TABLE | typeof viewModes.GRID
+import { departmentApi } from "./services/department"
+import type { Asset } from "./types"
 
 const AssetManagement: React.FC = () => {
   // Performance monitoring
   usePerformanceMonitor("AssetManagement")
 
-  const [viewMode, setViewMode] = useState<ViewMode>("table")
+  // Server-side search hook (replaces client-side filtering, sorting, pagination)
+  const {
+    assets,
+    total,
+    page,
+    limit,
+    totalPages,
+    loading: assetsLoading,
+    error: assetsError,
+    searchTerm,
+    categoryFilter,
+    statusFilter,
+    departmentFilter,
+    sortBy,
+    sortOrder,
+    onSearchChange,
+    onCategoryChange,
+    onStatusChange,
+    onDepartmentChange,
+    onSort,
+    onPageChange,
+    onRowsPerPageChange,
+    clearFilters,
+    hasActiveFilters,
+    refetch,
+  } = useAssetSearch()
 
-  // React Query hooks cho tất cả các entity
-  const { data: assets, loading: assetsLoading, error: assetsError } = useAssetData()
-  
+  // React Query hooks cho các entity khác (không thay đổi)
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
@@ -36,10 +56,10 @@ const AssetManagement: React.FC = () => {
     },
   })
 
-  const { data: locations = [] } = useQuery({
-    queryKey: ['locations'],
+  const { data: departments = [] } = useQuery({
+    queryKey: ['departments'],
     queryFn: async () => {
-      const result = await locationApi.getLocations()
+      const result = await departmentApi.getDepartments()
       return result.data
     },
   })
@@ -68,36 +88,12 @@ const AssetManagement: React.FC = () => {
     },
   })
 
-  // Custom hooks
-  const {
-    searchTerm,
-    categoryFilter,
-    statusFilter,
-    locationFilter,
-    setSearchTerm,
-    setCategoryFilter,
-    setStatusFilter,
-    setLocationFilter,
-    filteredAssets,
-  } = useAssetFilters(assets || [])
-  const {
-    sortBy,
-    sortOrder,
-    sortedAssets,
-    handleSort,
-  } = useAssetSorting(filteredAssets)
-  const {
-    page,
-    rowsPerPage,
-    paginatedAssets,
-    paginationConfig,
-    handlePageChange,
-    handleRowsPerPageChange,
-  } = useAssetPagination(sortedAssets, viewMode)
+  // Dialog hooks (không thay đổi)
   const {
     selectedAsset,
     detailDialogOpen,
     addDialogOpen,
+    updateDrawerOpen,
     addAssetForm,
     setAddAssetForm,
     snackbarOpen,
@@ -106,6 +102,8 @@ const AssetManagement: React.FC = () => {
     handleCloseDetailDialog,
     handleOpenAddDialog,
     handleCloseAddDialog,
+    handleOpenUpdateDrawer,
+    handleCloseUpdateDrawer,
     handleAddAsset,
     handleUpdateAsset,
     handleDeleteAsset,
@@ -116,19 +114,32 @@ const AssetManagement: React.FC = () => {
   } = useAssetDialogs()
 
   // Chuẩn bị object data tổng hợp
-  const layoutData = assets
-    ? {
-        assets,
-        categories,
-        locations,
-        employees,
-        statusOptions,
-        conditionOptions,
-      }
-    : null
+  const layoutData = {
+    assets: assets || [],
+    categories: categories || [],
+    departments: departments || [],
+    employees: employees || [],
+    statusOptions: statusOptions || [],
+    conditionOptions: conditionOptions || [],
+  }
 
   // Loading state tổng hợp
-  const loading = assetsLoading || !categories || !locations || !employees || !statusOptions || !conditionOptions
+  const loading = assetsLoading || !categories || !departments || !employees || !statusOptions || !conditionOptions
+
+  // Pagination config cho AssetLayout
+  const paginationConfig = {
+    page,
+    rowsPerPage: limit,
+    total: total,
+    totalPages,
+    rowsPerPageOptions: [5, 10, 25, 50], // Add missing property
+  }
+
+  // Wrapper for onSort to match expected signature
+  const handleSortWrapper = (property: keyof Asset) => {
+    const newSortOrder = sortBy === property && sortOrder === "asc" ? "desc" : "asc"
+    onSort(property, newSortOrder)
+  }
 
   return (
     <AssetErrorBoundary>
@@ -137,20 +148,26 @@ const AssetManagement: React.FC = () => {
         data={layoutData}
         loading={loading}
         error={assetsError}
-        // Filters
+        // Individual data properties
+        assets={assets || []}
+        categories={categories || []}
+        departments={departments || []}
+        employees={employees || []}
+        statusOptions={statusOptions || []}
+        conditionOptions={conditionOptions || []}
+        // Filters (from server-side search)
         searchTerm={searchTerm}
         categoryFilter={categoryFilter}
         statusFilter={statusFilter}
-        locationFilter={locationFilter}
-        viewMode={viewMode}
-        // Sorting
+        departmentFilter={departmentFilter}
+        // Sorting (from server-side search)
         sortBy={sortBy}
         sortOrder={sortOrder}
-        // Pagination
+        // Pagination (from server-side search)
         page={page}
-        rowsPerPage={rowsPerPage}
-        paginatedAssets={paginatedAssets}
-        sortedAssets={sortedAssets}
+        rowsPerPage={limit}
+        paginatedAssets={assets || []} // Server already returns paginated data
+        sortedAssets={assets || []} // Server already returns sorted data
         paginationConfig={paginationConfig}
         // Dialogs
         selectedAsset={selectedAsset}
@@ -159,16 +176,16 @@ const AssetManagement: React.FC = () => {
         addAssetForm={addAssetForm}
         snackbarOpen={snackbarOpen}
         snackbarMessage={snackbarMessage}
-        // Handlers
-        onSearchChange={setSearchTerm}
-        onCategoryChange={setCategoryFilter}
-        onStatusChange={setStatusFilter}
-        onLocationChange={setLocationFilter}
-        onViewModeChange={setViewMode}
-        onSort={handleSort}
+        // Handlers (from server-side search)
+        onSearchChange={onSearchChange}
+        onCategoryChange={onCategoryChange}
+        onStatusChange={onStatusChange}
+        onDepartmentChange={onDepartmentChange}
+        onSort={handleSortWrapper}
         onViewDetail={handleViewAssetDetail}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
+        onUpdate={handleOpenUpdateDrawer}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
         onAddAsset={handleOpenAddDialog}
         onSubmitAsset={handleAddAsset}
         onUpdateAsset={handleUpdateAsset}
@@ -180,7 +197,18 @@ const AssetManagement: React.FC = () => {
         // Loading states
         isAdding={isAdding}
         isUpdating={isUpdating}
-        isDeleting={isDeleting} assets={[]} categories={[]} locations={[]} employees={[]} statusOptions={[]} conditionOptions={[]}      />
+        isDeleting={isDeleting}
+      />
+      
+      {/* Update Asset Drawer */}
+      <UpdateAssetDrawer
+        open={updateDrawerOpen}
+        asset={selectedAsset}
+        data={layoutData}
+        onClose={handleCloseUpdateDrawer}
+        onSubmit={handleUpdateAsset}
+        isUpdating={isUpdating}
+      />
     </AssetErrorBoundary>
   )
 }

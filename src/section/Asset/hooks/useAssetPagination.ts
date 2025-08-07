@@ -1,15 +1,15 @@
 import { useState, useMemo, useCallback } from "react"
 import type { Asset } from "../types"
-import { paginateAssets, defaultPagination, gridPagination } from "../utils"
+import { paginateAssets, defaultPagination } from "../utils"
 
-const useAssetPagination = (assets: Asset[], viewMode: "table" | "grid") => {
+const useAssetPagination = (assets: Asset[]) => {
   const [page, setPage] = useState<number>(defaultPagination.page)
   const [rowsPerPage, setRowsPerPage] = useState<number>(defaultPagination.rowsPerPage)
 
-  // Memoize pagination config based on view mode
+  // Memoize pagination config
   const paginationConfig = useMemo(() => {
-    return viewMode === "table" ? defaultPagination : gridPagination
-  }, [viewMode])
+    return defaultPagination
+  }, [])
 
   // Memoize paginated assets to prevent unnecessary recalculations
   const paginatedAssets = useMemo(() => {

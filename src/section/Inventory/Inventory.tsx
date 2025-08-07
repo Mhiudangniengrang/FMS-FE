@@ -22,6 +22,7 @@ import LowStockAlert from "./components/LowStockAlert";
 import DeleteConfirm from "./components/DeleteConfirm";
 import InventoryForm from "./components/InventoryForm";
 import InventoryDetail from "./components/InventoryDetail";
+import { useDebounce } from "@/hooks/useDebounce";
 
 // Types
 interface InventoryItem {
@@ -68,6 +69,7 @@ const Inventory: React.FC = () => {
 
   // State management
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]); // ✅ Thay selectedLocations thành selectedDepartments
@@ -77,6 +79,7 @@ const Inventory: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  // const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   // Dialog states
   const [openFormDrawer, setOpenFormDrawer] = useState(false);
@@ -121,7 +124,7 @@ const Inventory: React.FC = () => {
           model: asset.model || t("Unknown"),
           category: asset.category || t("Others"),
           brand: asset.brand || t("Unknown"),
-          department: asset.department || t("Unassigned"), // ✅ Thay location thành department
+          department: asset.department || t("Unassigned"),
           totalQuantity: qty,
           totalValue: (Number(asset.value) || 0) * qty,
           averageValue: Number(asset.value) || 0,
@@ -151,13 +154,23 @@ const Inventory: React.FC = () => {
   // Filter raw assets for the table (not grouped data)
   const filteredAssets = useMemo(() => {
     return assets.filter((asset: any) => {
-      // Search filter
+      // Search filter - sử dụng debouncedSearchQuery thay vì searchQuery
       const matchSearch =
-        asset.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        asset.assetCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        asset.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        asset.model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        asset.category?.toLowerCase().includes(searchQuery.toLowerCase());
+        asset.name
+          ?.toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase()) ||
+        asset.assetCode
+          ?.toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase()) ||
+        asset.brand
+          ?.toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase()) ||
+        asset.model
+          ?.toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase()) ||
+        asset.category
+          ?.toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase());
 
       // Category filter
       const matchCategory =
@@ -178,9 +191,9 @@ const Inventory: React.FC = () => {
     });
   }, [
     assets,
-    searchQuery,
+    debouncedSearchQuery, // Thay searchQuery thành
     selectedCategories,
-    selectedDepartments, // ✅ Thay selectedLocations thành selectedDepartments
+    selectedDepartments,
     selectedStatuses,
   ]);
 
@@ -393,7 +406,6 @@ const Inventory: React.FC = () => {
     setViewingAsset(asset);
     setOpenDetailDialog(true);
   };
-
 
   // Format currency
   const formatCurrency = (value: number): string => {
