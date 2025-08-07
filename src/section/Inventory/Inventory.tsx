@@ -151,26 +151,16 @@ const Inventory: React.FC = () => {
     return inventory;
   }, [assets, t]);
 
-  // Filter raw assets for the table (not grouped data)
   const filteredAssets = useMemo(() => {
     return assets.filter((asset: any) => {
-      // Search filter - sử dụng debouncedSearchQuery thay vì searchQuery
+      const searchTerm = debouncedSearchQuery.trim().toLowerCase();
       const matchSearch =
-        asset.name
-          ?.toLowerCase()
-          .includes(debouncedSearchQuery.toLowerCase()) ||
-        asset.assetCode
-          ?.toLowerCase()
-          .includes(debouncedSearchQuery.toLowerCase()) ||
-        asset.brand
-          ?.toLowerCase()
-          .includes(debouncedSearchQuery.toLowerCase()) ||
-        asset.model
-          ?.toLowerCase()
-          .includes(debouncedSearchQuery.toLowerCase()) ||
-        asset.category
-          ?.toLowerCase()
-          .includes(debouncedSearchQuery.toLowerCase());
+        !searchTerm ||
+        asset.name?.toLowerCase().includes(searchTerm) ||
+        asset.assetCode?.toLowerCase().includes(searchTerm) ||
+        asset.brand?.toLowerCase().includes(searchTerm) ||
+        asset.model?.toLowerCase().includes(searchTerm) ||
+        asset.category?.toLowerCase().includes(searchTerm);
 
       // Category filter
       const matchCategory =
@@ -191,7 +181,7 @@ const Inventory: React.FC = () => {
     });
   }, [
     assets,
-    debouncedSearchQuery, // Thay searchQuery thành
+    debouncedSearchQuery,
     selectedCategories,
     selectedDepartments,
     selectedStatuses,
@@ -372,32 +362,6 @@ const Inventory: React.FC = () => {
     }
   };
 
-  // Helper functions to get colors from constants
-  const getStatusColor = (
-    status: string
-  ):
-    | "success"
-    | "primary"
-    | "warning"
-    | "error"
-    | "default"
-    | "info"
-    | "secondary" => {
-    return statusColors[status] || "default";
-  };
-
-  const getConditionColor = (
-    condition: string
-  ):
-    | "success"
-    | "primary"
-    | "warning"
-    | "error"
-    | "default"
-    | "info"
-    | "secondary" => {
-    return conditionColors[condition] || "default";
-  };
 
   const [viewingAsset, setViewingAsset] = useState<any | null>(null);
   const [openDetailDialog, setOpenDetailDialog] = useState(false);
@@ -529,8 +493,8 @@ const Inventory: React.FC = () => {
         categories={categories}
         statusOptions={statusOptions}
         conditionOptions={conditionOptions}
-        departments={departments} // ✅ Thay locations thành departments
-        employees={[]} // Add employees data if needed
+        departments={departments} 
+        employees={[]} 
       />
 
       {/* Delete Confirmation Dialog */}

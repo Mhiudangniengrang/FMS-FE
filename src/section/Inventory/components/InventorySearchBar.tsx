@@ -19,7 +19,7 @@ const InventorySearchBar: React.FC<InventorySearchBarProps> = ({
       fullWidth
       placeholder={t("Search inventory items...")}
       value={searchQuery}
-      onChange={(e) => onSearchChange(e.target.value.trim())}
+      onChange={(e) => onSearchChange(e.target.value)} // Bỏ trim() ở đây
       slotProps={{
         input: {
           startAdornment: (
@@ -27,6 +27,11 @@ const InventorySearchBar: React.FC<InventorySearchBarProps> = ({
               <SearchIcon />
             </InputAdornment>
           ),
+        },
+      }}
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          borderRadius: 2,
         },
       }}
     />

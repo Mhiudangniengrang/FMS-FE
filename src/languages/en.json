@@ -234,6 +234,7 @@
     "assetDeleteSuccess": "Asset deleted successfully.",
     "noEmployeesFound": "No employees found.",
     "noDescription": "No description available.",
-    "noNotes": "No notes available."
+    "noNotes": "No notes available.",
+    "noResultsFound": "No results found."
   }
 }

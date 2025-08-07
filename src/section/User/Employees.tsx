@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import { useEmployees } from "@/hooks/useEmployees";
 import { useDepartments } from "@/hooks/useDepartment";
+import { useDebounce } from "@/hooks/useDebounce"; // Thêm import này
 import type { CreateEmployeeData, Employee } from "@/types/employeeType";
 import {
   EmployeeTable,
@@ -21,6 +22,7 @@ const Employees: React.FC = () => {
 
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 500); // Thêm debounce
   const [filterDepartment, setFilterDepartment] = useState<string>("all");
 
   // Employee hooks
@@ -35,7 +37,6 @@ const Employees: React.FC = () => {
     limit,
     setLimit,
     totalCount,
-    selectedDepartment,
     setSelectedDepartment,
   } = useEmployees();
 
@@ -60,8 +61,8 @@ const Employees: React.FC = () => {
 
     let result = [...employees];
 
-    // Apply search query
-    const trimmedQuery = searchQuery.trim();
+    // Apply search query - sử dụng debouncedSearchQuery
+    const trimmedQuery = debouncedSearchQuery.trim();
     if (trimmedQuery) {
       const query = trimmedQuery.toLowerCase();
       result = result.filter((employee: Employee) => {
@@ -84,12 +85,13 @@ const Employees: React.FC = () => {
     }
 
     return result;
-  }, [employees, searchQuery]);
+  }, [employees, debouncedSearchQuery]); // Thay searchQuery thành debouncedSearchQuery
 
   // Paginated employees
   const paginatedEmployees = useMemo(() => {
     // Nếu đang search, phân trang ở client
-    if (searchQuery) {
+    if (debouncedSearchQuery) {
+      // Sử dụng debouncedSearchQuery
       const startIndex = page * limit;
       const endIndex = startIndex + limit;
 
@@ -105,16 +107,17 @@ const Employees: React.FC = () => {
       // Nếu không search, dùng data từ server (đã được filter và phân trang)
       return employees || [];
     }
-  }, [filteredEmployees, employees, page, limit, searchQuery]);
+  }, [filteredEmployees, employees, page, limit, debouncedSearchQuery]); // Thay searchQuery thành debouncedSearchQuery
 
   // Reset page when filter/search changes
   useEffect(() => {
     setPage(0);
-  }, [searchQuery, filterDepartment, setPage]);
+  }, [debouncedSearchQuery, filterDepartment, setPage]); // Thay searchQuery thành debouncedSearchQuery
 
   // Ensure current page doesn't exceed max page
   useEffect(() => {
-    if (searchQuery) {
+    if (debouncedSearchQuery) {
+      // Sử dụng debouncedSearchQuery
       if (filteredEmployees.length > 0) {
         const maxPage = Math.max(
           0,
@@ -130,7 +133,14 @@ const Employees: React.FC = () => {
         setPage(maxPage);
       }
     }
-  }, [filteredEmployees.length, totalCount, limit, page, setPage, searchQuery]);
+  }, [
+    filteredEmployees.length,
+    totalCount,
+    limit,
+    page,
+    setPage,
+    debouncedSearchQuery,
+  ]); // Thay searchQuery thành debouncedSearchQuery
 
   const handleClose = () => {
     setOpen(false);
@@ -154,8 +164,8 @@ const Employees: React.FC = () => {
     if (formMode === "edit" && editingEmployee) {
       // Update existing employee
       const payload = {
-        id: editingEmployee.id,
         ...data,
+        id: editingEmployee.id,
       };
       updateEmployeeMutation.mutate(payload);
     } else {
@@ -220,7 +230,7 @@ const Employees: React.FC = () => {
 
       {/* Search and Filter */}
       <EmployeeFilters
-        searchQuery={searchQuery}
+        searchQuery={searchQuery} // Giữ nguyên searchQuery để UI realtime
         filterDepartment={filterDepartment}
         departmentStats={departmentStats}
         departments={departments}
@@ -237,7 +247,7 @@ const Employees: React.FC = () => {
         limit={limit}
         totalCount={totalCount}
         filteredEmployees={filteredEmployees}
-        isFiltering={!!(searchQuery || filterDepartment !== "all")}
+        isFiltering={!!(debouncedSearchQuery || filterDepartment !== "all")} // Sử dụng debouncedSearchQuery
         onPageChange={setPage}
         onLimitChange={(newLimit) => {
           setLimit(newLimit);

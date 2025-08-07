@@ -13,7 +13,6 @@ import { useQuery } from "@tanstack/react-query";
 import { assetApi } from "../Asset/services/assets";
 import type { Asset } from "../Asset/types";
 import { useDebounce } from "@/hooks/useDebounce";
-import { de } from "date-fns/locale";
 
 interface DepartmentSummary {
   department: string;
@@ -76,20 +75,16 @@ const Departments: React.FC = () => {
     return Object.values(grouped);
   }, [assets, t]);
 
-  // Filter departments based on search and selected departments
   const filteredDepartments = useMemo(() => {
     let filtered = departmentSummaries;
 
-    // Filter by search query
-    if (debouncedSearchQuery) {
+    const searchTerm = debouncedSearchQuery.trim().toLowerCase();
+    if (searchTerm) {
       filtered = filtered.filter((department) =>
-        department.department
-          .toLowerCase()
-          .includes(debouncedSearchQuery.toLowerCase())
+        department.department.toLowerCase().includes(searchTerm)
       );
     }
 
-    // Filter by selected departments
     if (selectedDepartments.length > 0) {
       filtered = filtered.filter((department) =>
         selectedDepartments.includes(department.department)
@@ -97,7 +92,7 @@ const Departments: React.FC = () => {
     }
 
     return filtered;
-  }, [departmentSummaries, debouncedSearchQuery, selectedDepartments]); // ✅ Dependency đúng
+  }, [departmentSummaries, debouncedSearchQuery, selectedDepartments]); 
 
   // Paginate filtered departments
   const paginatedDepartments = useMemo(() => {

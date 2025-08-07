@@ -28,9 +28,7 @@ import {
 import type { Asset } from "../../Asset/types";
 import {
   useStatusTranslation,
-  useConditionTranslation,
   statusColors,
-  conditionColors,
 } from "../../Asset/utils/constants";
 
 interface DepartmentSummary {

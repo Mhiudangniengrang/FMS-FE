@@ -236,6 +236,7 @@
     "deleteAssetSuccess": "Tài sản đã được xóa thành công.",
     "noEmployeesFound": "Không tìm thấy nhân viên nào.",
     "noDescription": "Không có mô tả nào.",
-    "noNotes": "Không có ghi chú nào."
+    "noNotes": "Không có ghi chú nào.",
+    "noResultsFound": "Không tìm thấy kết quả nào."
   }
 }

@@ -6,7 +6,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Chip,
   OutlinedInput,
 } from "@mui/material";
 import {

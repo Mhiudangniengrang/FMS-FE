@@ -19,13 +19,15 @@ const DepartmentSearchBar: React.FC<DepartmentSearchBarProps> = ({
       fullWidth
       placeholder={t("Search departments...")}
       value={searchQuery}
-      onChange={(e) => onSearchChange(e.target.value.trim())}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        ),
+      onChange={(e) => onSearchChange(e.target.value)}
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        },
       }}
       sx={{
         "& .MuiOutlinedInput-root": {

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import { useUserManagement } from "@/hooks/useUserManagement";
+import { useDebounce } from "@/hooks/useDebounce"; // Thêm import này
 import type { CreateUserForm, User } from "@/types/user.types";
 import {
   UserTable,
@@ -20,6 +21,7 @@ const Internal: React.FC = () => {
 
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 500); // Thêm debounce
   const [filterRole, setFilterRole] = useState<string>("all");
 
   const {
@@ -55,8 +57,8 @@ const Internal: React.FC = () => {
       result = result.filter((user: User) => user.role === filterRole);
     }
 
-    // Apply search query
-    const trimmedQuery = searchQuery.trim();
+    // Apply search query - sử dụng debouncedSearchQuery
+    const trimmedQuery = debouncedSearchQuery.trim();
     if (trimmedQuery) {
       const query = trimmedQuery.toLowerCase();
       result = result.filter((user: User) => {
@@ -72,48 +74,43 @@ const Internal: React.FC = () => {
     }
 
     return result;
-  }, [internalUsers, searchQuery, filterRole]);
+  }, [internalUsers, debouncedSearchQuery, filterRole]); // Thay searchQuery thành debouncedSearchQuery
 
-  // Phân trang dữ liệu đã lọc - đơn giản hóa logic
+  // Phân trang dữ liệu đã lọc
   const paginatedUsers = useMemo(() => {
     // Nếu đang thực hiện lọc (có search query hoặc filter), thì phân trang ở client
-    if (searchQuery || filterRole !== "all") {
+    if (debouncedSearchQuery || filterRole !== "all") { // Sử dụng debouncedSearchQuery
       const startIndex = page * limit;
       const endIndex = startIndex + limit;
 
-      // Nếu không có dữ liệu hoặc vượt quá kích thước, trả về mảng rỗng
       if (filteredUsers.length === 0 || startIndex >= filteredUsers.length) {
         return [];
       }
 
       return filteredUsers.slice(startIndex, endIndex);
     } else {
-      // Nếu không lọc, hiển thị dữ liệu từ server (đã được phân trang)
       return users || [];
     }
-  }, [filteredUsers, users, page, limit, searchQuery, filterRole]);
+  }, [filteredUsers, users, page, limit, debouncedSearchQuery, filterRole]); // Thay searchQuery thành debouncedSearchQuery
 
   // Reset page when filter/search changes
   useEffect(() => {
     setPage(0);
-  }, [searchQuery, filterRole, setPage]);
+  }, [debouncedSearchQuery, filterRole, setPage]); // Thay searchQuery thành debouncedSearchQuery
 
   // Đảm bảo trang hiện tại không vượt quá số trang tối đa
   useEffect(() => {
-    // Nếu đang lọc, kiểm tra trang hiện tại không vượt quá tổng số trang
-    if (searchQuery || filterRole !== "all") {
+    if (debouncedSearchQuery || filterRole !== "all") { // Sử dụng debouncedSearchQuery
       if (filteredUsers.length > 0) {
         const maxPage = Math.max(
           0,
           Math.ceil(filteredUsers.length / limit) - 1
         );
         if (page > maxPage) {
-          // Chuyển về trang cuối cùng nếu trang hiện tại vượt quá
           setPage(maxPage);
         }
       }
     } else if (totalCount > 0) {
-      // Nếu không lọc, dùng totalCount để tính toán trang tối đa
       const maxPage = Math.max(0, Math.ceil(totalCount / limit) - 1);
       if (page > maxPage) {
         setPage(maxPage);
@@ -125,7 +122,7 @@ const Internal: React.FC = () => {
     limit,
     page,
     setPage,
-    searchQuery,
+    debouncedSearchQuery, // Thay searchQuery thành debouncedSearchQuery
     filterRole,
   ]);
 
@@ -238,7 +235,7 @@ const Internal: React.FC = () => {
         limit={limit}
         totalCount={totalCount}
         filteredUsers={filteredUsers}
-        isFiltering={!!(searchQuery || filterRole !== "all")}
+        isFiltering={!!(debouncedSearchQuery || filterRole !== "all")} // Sử dụng debouncedSearchQuery
         onPageChange={setPage}
         onLimitChange={(newLimit) => {
           setLimit(newLimit);

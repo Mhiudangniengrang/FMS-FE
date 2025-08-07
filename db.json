@@ -320,7 +320,22 @@
       "assignedDate": null,
       "expectedReturnDate": null,
       "actualReturnDate": null,
-      "isReturned": true
+      "isReturned": true,
+      "tags": [],
+      "assignments": [
+        {
+          "id": "assign_1754540101105_0.09159475970468445",
+          "departmentId": 2,
+          "departmentName": "Phòng thiết kế",
+          "assignedTo": "Lê Văn D",
+          "assigneeId": "NV004",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ]
     },
     {
       "id": 8,
@@ -452,7 +467,12 @@
       "id": 3,
       "name": "Phòng quản lý dự án",
       "description": "Phòng quản lý dự án và điều hành",
-      "employees": []
+      "employees": [
+        {
+          "id": "NV637",
+          "name": "Michael Bin"
+        }
+      ]
     },
     {
       "id": 4,
@@ -630,6 +650,13 @@
       "department": "Phòng thiết kế",
       "email": "nguyenvano@company.com",
       "id": "NV015"
+    },
+    {
+      "name": "Michael Bin",
+      "position": "Trưởng phòng IT",
+      "department": "Phòng quản lý dự án",
+      "email": "admin@example.com",
+      "id": "NV637"
     }
   ],
   "statusOptions": [
