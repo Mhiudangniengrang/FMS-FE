@@ -399,6 +399,47 @@ server.put("/api/v1/maintenance/draft/:id", (req, res) => {
   res.status(200).json(updatedRequest);
 });
 
+// Update draft maintenance request
+server.put("/api/v1/maintenance/draft/:id", (req, res) => {
+  console.log("Update draft maintenance request endpoint called");
+  console.log("Request body:", req.body);
+  console.log("Request ID:", req.params.id);
+  
+  const requestId = parseInt(req.params.id);
+  const updateData = req.body;
+  
+  const userdb = JSON.parse(fs.readFileSync("./db.json", "UTF-8"));
+  
+  // Find the request (could be draft or converting from draft to submitted)
+  const requestIndex = userdb.maintenance.findIndex(m => m.id === requestId);
+  if (requestIndex === -1) {
+    res.status(404).json({ message: "Request not found" });
+    return;
+  }
+  
+  // Verify it was originally a draft
+  const originalRequest = userdb.maintenance[requestIndex];
+  if (originalRequest.isDraft !== true) {
+    res.status(400).json({ message: "Can only update draft requests" });
+    return;
+  }
+  
+  // Update the request
+  const updatedRequest = {
+    ...userdb.maintenance[requestIndex],
+    ...updateData,
+    updatedAt: new Date().toISOString()
+  };
+  
+  userdb.maintenance[requestIndex] = updatedRequest;
+  
+  console.log("Updated request:", updatedRequest);
+  
+  fs.writeFileSync("./db.json", JSON.stringify(userdb, null, 2));
+  
+  res.status(200).json(updatedRequest);
+});
+
 // Get technicians (users with roles that can handle maintenance)
 server.get("/api/v1/users/technicians", (req, res) => {
   console.log("Get technicians endpoint called");
