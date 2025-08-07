@@ -99,7 +99,7 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
     assignedDate: new Date().toISOString().split("T")[0],
     expectedReturnDate: "",
   });
-  
+
   // Track pending assignments (added in current form but not submitted yet)
   const [pendingAssignments, setPendingAssignments] = useState<any[]>([]);
 
@@ -107,16 +107,19 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
   const stats = asset
     ? getAssetAssignmentStats(asset)
     : { totalQuantity: 0, availableQuantity: 0, activeQuantity: 0 };
-  
+
   // Calculate total pending quantity
   const totalPendingQuantity = pendingAssignments.reduce(
     (sum, assignment) => sum + (parseInt(assignment.quantity) || 0),
     0
   );
-  
+
   // Available quantity = original available - pending assignments
-  const actualAvailableQuantity = Math.max(0, stats.availableQuantity - totalPendingQuantity);
-  
+  const actualAvailableQuantity = Math.max(
+    0,
+    stats.availableQuantity - totalPendingQuantity
+  );
+
   const canAddMore = asset ? actualAvailableQuantity > 0 : false;
 
   // Initialize form when asset changes
@@ -215,15 +218,16 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
 
   const handleRemoveAssignment = (assignmentId: string) => {
     // Check if it's a pending assignment
-    if (assignmentId.startsWith('pending_')) {
-      setPendingAssignments((prev) => 
+    if (assignmentId.startsWith("pending_")) {
+      setPendingAssignments((prev) =>
         prev.filter((a) => a.id !== assignmentId)
       );
     } else {
       // It's an existing assignment
       setForm((prev) => ({
         ...prev,
-        assignments: prev.assignments?.filter((a) => a.id !== assignmentId) || [],
+        assignments:
+          prev.assignments?.filter((a) => a.id !== assignmentId) || [],
       }));
     }
     setHasChanges(true);
@@ -234,13 +238,13 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
       // Merge pending assignments with existing assignments
       const allAssignments = [
         ...(form.assignments || []),
-        ...pendingAssignments.map(assignment => ({
+        ...pendingAssignments.map((assignment) => ({
           ...assignment,
           id: `assign_${Date.now()}_${Math.random()}`, // Generate new ID for submission
-          isPending: undefined // Remove pending flag
-        }))
+          isPending: undefined, // Remove pending flag
+        })),
       ];
-      
+
       const formData = {
         ...form,
         value: parseFloat(form.value) || 0,
@@ -639,8 +643,9 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                     {form.assignments?.filter((a) => a.isReturned).length || 0}{" "}
                     phòng ban
                     {totalPendingQuantity > 0 && (
-                      <span style={{ color: '#1976d2', fontWeight: 'bold' }}>
-                        {" "}| Đang thêm: {totalPendingQuantity} chiếc
+                      <span style={{ color: "#1976d2", fontWeight: "bold" }}>
+                        {" "}
+                        | Đang thêm: {totalPendingQuantity} chiếc
                       </span>
                     )}
                   </Typography>
@@ -655,7 +660,8 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                   )}
                 </Alert>
 
-                {(form.assignments && form.assignments.length > 0) || pendingAssignments.length > 0 ? (
+                {(form.assignments && form.assignments.length > 0) ||
+                pendingAssignments.length > 0 ? (
                   <Box>
                     {/* Active Assignments */}
                     {form.assignments.filter((a) => !a.isReturned).length >
@@ -756,10 +762,10 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                           variant="subtitle2"
                           gutterBottom
                           color="warning.main"
-                          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
                         >
-                          <span style={{ fontSize: '16px' }}>⏳</span>
-                          Đang thêm (chưa lưu):
+                          <span style={{ fontSize: "16px" }}>⏳</span>
+                          Đang thêm :
                         </Typography>
                         <List
                           sx={{
@@ -796,12 +802,6 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                                       color="warning"
                                       variant="outlined"
                                     />
-                                    <Chip
-                                      label="Chưa lưu"
-                                      size="small"
-                                      color="warning"
-                                      variant="filled"
-                                    />
                                   </Box>
                                 }
                                 secondary={
@@ -816,8 +816,8 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                                       variant="caption"
                                       color="text.secondary"
                                     >
-                                      Ngày phân công:{" "}
-                                      {assignment.assignedDate} | Dự kiến trả:{" "}
+                                      Ngày phân công: {assignment.assignedDate}{" "}
+                                      | Dự kiến trả:{" "}
                                       {assignment.expectedReturnDate}
                                     </Typography>
                                   </Box>
@@ -949,10 +949,9 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                         color="text.secondary"
                         align="center"
                       >
-                        {pendingAssignments.length > 0 
+                        {pendingAssignments.length > 0
                           ? "Các phân công đang được thêm sẽ hiển thị ở trên."
-                          : "Chưa có phân công nào. Nhấn \"Thêm phân công\" để bắt đầu."
-                        }
+                          : 'Chưa có phân công nào. Nhấn "Thêm phân công" để bắt đầu.'}
                       </Typography>
                     </CardContent>
                   </Card>
