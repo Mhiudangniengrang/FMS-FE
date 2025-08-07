@@ -759,7 +759,7 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                           sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                         >
                           <span style={{ fontSize: '16px' }}>⏳</span>
-                          Đang thêm (chưa lưu):
+                          Đang thêm :
                         </Typography>
                         <List
                           sx={{
@@ -795,12 +795,6 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                                       size="small"
                                       color="warning"
                                       variant="outlined"
-                                    />
-                                    <Chip
-                                      label="Chưa lưu"
-                                      size="small"
-                                      color="warning"
-                                      variant="filled"
                                     />
                                   </Box>
                                 }
