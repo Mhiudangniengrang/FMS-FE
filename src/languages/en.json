@@ -235,6 +235,8 @@
     "noEmployeesFound": "No employees found.",
     "noDescription": "No description available.",
     "noNotes": "No notes available.",
-    "noResultsFound": "No results found."
+    "staffMaintenance": "Submit Maintenance Request",
+    "maintenanceRequest": "Maintenance Request",
+    "myMaintenanceHistory": "Maintenance History"
   }
 }

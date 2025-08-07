@@ -30,6 +30,7 @@ const maintenanceKeys = {
   detail: (id: number) => [...maintenanceKeys.details(), id] as const,
   myRequests: () => [...maintenanceKeys.all, "my-requests"] as const,
   myDrafts: () => [...maintenanceKeys.all, "my-drafts"] as const,
+  assignedToMe: () => [...maintenanceKeys.all, "assigned-to-me"] as const,
 };
 
 const assetKeys = {
@@ -105,6 +106,24 @@ export const useMyMaintenanceRequests = () => {
       });
       console.log("Filtered my requests:", myRequests);
       return myRequests;
+    },
+    staleTime: 2 * 60 * 1000,
+  });
+};
+
+// Get maintenance requests assigned to current user (for technicians)
+export const useAssignedMaintenanceRequests = () => {
+  return useQuery({
+    queryKey: maintenanceKeys.assignedToMe(),
+    queryFn: async () => {
+      const response = await getMaintenanceRequests();
+      // Get current user info from cookies
+      const userId = Cookies.get("__userId");
+      // Filter requests assigned to current user
+      const assignedRequests = response.data.filter(request => {
+        return request.assignedTo === parseInt(userId || "0");
+      });
+      return assignedRequests;
     },
     staleTime: 2 * 60 * 1000,
   });

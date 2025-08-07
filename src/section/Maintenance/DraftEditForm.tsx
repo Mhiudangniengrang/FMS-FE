@@ -20,7 +20,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { useAssets, useCreateMaintenanceRequest, useUpdateDraftMaintenanceRequest } from "../../hooks/useMaintenance";
 import type { MaintenanceFormData, Asset, MaintenanceRequest } from "../../types";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
 
 interface DraftEditFormProps {
   draft: MaintenanceRequest;

@@ -4,7 +4,7 @@ export interface User {
   email: string;
   phone: string;
   password?: string; 
-  role: "manager" | "staff" | "supervisor" ;
+  role: "admin" | "manager" | "staff" | "supervisor" ;
   createdAt: string;
 }
 
@@ -13,7 +13,7 @@ export interface CreateUserData {
   email: string;
   phone: string;
   password: string;
-  role: "manager" | "staff" | "supervisor";
+  role: "admin" | "manager" | "staff" | "supervisor";
 }
 
 export interface UpdateUserData {
@@ -22,7 +22,7 @@ export interface UpdateUserData {
   email: string;
   phone: string;
   password?: string;
-  role: "manager" | "staff" | "supervisor";
+  role: "admin" | "manager" | "staff" | "supervisor";
 }
 
 export interface CreateUserForm {
@@ -30,5 +30,5 @@ export interface CreateUserForm {
   email: string;
   phone: string;
   password: string;
-  role: "supervisor" | "manager" | "staff";
+  role: "admin" | "supervisor" | "manager" | "staff";
 }
