@@ -14,7 +14,6 @@ export interface AssetFiltersValues {
   categoryFilter: string
   statusFilter: string
   departmentFilter: string
-  viewMode: "table" | "grid"
 }
 
 // Event handlers interface
@@ -23,7 +22,6 @@ export interface AssetFiltersHandlers {
   onCategoryChange: (value: string) => void
   onStatusChange: (value: string) => void
   onDepartmentChange: (value: string) => void
-  onViewModeChange: (mode: "table" | "grid") => void
   onAddAsset: () => void
 }
 

@@ -1,3 +1,16 @@
+export interface AssetAssignment {
+  id: string
+  departmentId: number
+  departmentName: string
+  assignedTo: string
+  assigneeId: string
+  quantity: number
+  assignedDate: string
+  expectedReturnDate: string
+  actualReturnDate: string | null
+  isReturned: boolean
+}
+
 export interface Asset {
   id: number
   assetCode: string
@@ -9,6 +22,7 @@ export interface Asset {
   assignedTo: string
   assigneeId: string
   value: number
+  quantity: number
   purchaseDate: string
   warrantyDate: string
   serialNumber: string
@@ -23,6 +37,7 @@ export interface Asset {
   updatedAt: string
   tags: string[]
   notes: string
+  assignments: AssetAssignment[]
 }
 
 export interface NewAssetForm {
@@ -38,9 +53,11 @@ export interface NewAssetForm {
   status: string
   condition: string
   value: string
+  quantity: string
   purchaseDate: string
   warrantyDate: string
   supplier: string
   notes: string
   tags: string[]
+  assignments: AssetAssignment[]
 } 

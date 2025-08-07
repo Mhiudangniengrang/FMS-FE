@@ -8,15 +8,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Button,
-  ToggleButton,
-  ToggleButtonGroup,
 } from "@mui/material"
 import {
   Search as SearchIcon,
-  ViewList as ViewListIcon,
-  ViewModule as ViewModuleIcon,
-  Add as AddIcon,
 } from "@mui/icons-material"
 
 import type { AssetFiltersProps } from '../../types'
@@ -27,12 +21,10 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
   categoryFilter,
   statusFilter,
   departmentFilter,
-  viewMode,
   onSearchChange,
   onCategoryChange,
   onStatusChange,
   onDepartmentChange,
-  onViewModeChange,
   onAddAsset,
 }) => {
   if (!data) return null
@@ -43,7 +35,7 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
         <Box>
           <TextField
             fullWidth
-            placeholder="Tìm kiếm tài sản..."
+            placeholder="Search..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             sx={{
@@ -81,15 +73,15 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
         </Box> */}
         <Box>
           <FormControl fullWidth>
-            <InputLabel>Danh mục</InputLabel>
+            <InputLabel>Category</InputLabel>
             <Select
               value={categoryFilter}
-              label="Danh mục"
+              label="Category"
               onChange={(e) => onCategoryChange(e.target.value)}
               sx={{ borderRadius: 2 }}
             >
-              <MenuItem value="">Tất cả</MenuItem>
-              {data.categories.map((category) => (
+              <MenuItem value="">All</MenuItem>
+              {(data.categories || []).map((category) => (
                 <MenuItem key={category.id} value={category.name}>
                   {category.name}
                 </MenuItem>
@@ -99,17 +91,17 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
         </Box>
         <Box>
           <FormControl fullWidth>
-            <InputLabel>Trạng thái</InputLabel>
+            <InputLabel>Condition</InputLabel>
             <Select
               value={statusFilter}
-              label="Trạng thái"
+              label="Condition"
               onChange={(e) => onStatusChange(e.target.value)}
               sx={{ borderRadius: 2 }}
             >
-              <MenuItem value="">Tất cả</MenuItem>
-              {data.statusOptions.map((status) => (
+              <MenuItem value="">All</MenuItem>
+              {(data.statusOptions || []).map((status) => (
                 <MenuItem key={status.value} value={status.value}>
-                  {status.label}
+                  {status.value}
                 </MenuItem>
               ))}
             </Select>
@@ -117,15 +109,15 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
         </Box>
         <Box>
           <FormControl fullWidth>
-            <InputLabel>Phòng ban</InputLabel>
+            <InputLabel>Department</InputLabel>
             <Select
               value={departmentFilter}
-              label="Phòng ban"
+              label="Department"
               onChange={(e) => onDepartmentChange(e.target.value)}
               sx={{ borderRadius: 2 }}
             >
-              <MenuItem value="">Tất cả</MenuItem>
-              {data.departments.map((department) => (
+              <MenuItem value="">All</MenuItem>
+              {(data.departments || []).map((department) => (
                 <MenuItem key={department.id} value={department.name}>
                   {department.name}
                 </MenuItem>
@@ -133,22 +125,7 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
             </Select>
           </FormControl>
         </Box>
-        {/* <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
-          <ToggleButtonGroup
-            value={viewMode}
-            exclusive
-            onChange={(_, newMode) => newMode && onViewModeChange(newMode)}
-            size="small"
-            sx={{ borderRadius: 2 }}
-          >
-            <ToggleButton value="table" sx={{ borderRadius: 2 }}>
-              <ViewListIcon />
-            </ToggleButton>
-            <ToggleButton value="grid" sx={{ borderRadius: 2 }}>
-              <ViewModuleIcon />
-            </ToggleButton> 
-          </ToggleButtonGroup>
-        </Box> */}
+
       </Box>
     </Paper>
   )

@@ -10,13 +10,12 @@
       "createdAt": "2024-01-15T08:00:00.000Z"
     },
     {
-      "id": 2,
+      "name": "Robert Taylor",
       "email": "robert.taylor@gmail.com",
       "phone": "+1-555-0006",
-      "password": "user123",
-      "name": "Robert Taylor",
+      "password": "123456",
       "role": "staff",
-      "createdAt": "2024-05-01T14:00:00.000Z"
+      "id": 2
     },
     {
       "id": 3,
@@ -59,8 +58,40 @@
       "email": "hiu@gmail.com",
       "phone": "0989001182",
       "password": "123456",
-      "role": "supervisor",
+      "role": "staff",
       "id": 7
+    },
+    {
+      "name": "Sarah Johnson",
+      "email": "admin@example.com",
+      "phone": "1-770-736-8031 x56442",
+      "password": "123456",
+      "role": "staff",
+      "id": 8
+    },
+    {
+      "name": "Sarah Johnson",
+      "email": "hiu@gmail.com",
+      "phone": "123132313132213",
+      "password": "123456",
+      "role": "staff",
+      "id": 9
+    },
+    {
+      "name": "Michael Bin",
+      "email": "hiu@gmail.com",
+      "phone": "0989001182",
+      "password": "123456",
+      "role": "staff",
+      "id": 10
+    },
+    {
+      "name": "Michael Jacks",
+      "email": "jack@gmail.com",
+      "phone": "0989001182",
+      "password": "123456",
+      "role": "manager",
+      "id": 11
     }
   ],
   "assets": [
@@ -69,12 +100,13 @@
       "assetCode": "TS001",
       "name": "Laptop Dell XPS 13",
       "category": "Máy tính",
-      "status": "Sẵn sàng",
-      "condition": "Tốt",
-      "location": "Phòng hành chính",
-      "assignedTo": "Trần Thị B",
-      "assigneeId": "NV002",
-      "value": 30000,
+      "status": "available",
+      "condition": "good",
+      "department": "Phòng phân tích dữ liệu",
+      "assignedTo": "",
+      "assigneeId": "",
+      "value": 25000000,
+      "quantity": 5,
       "purchaseDate": "2023-01-15",
       "warrantyDate": "2025-01-15",
       "serialNumber": "DXP130123456",
@@ -87,20 +119,75 @@
       "createdById": "NV002",
       "createdAt": "2023-01-15T08:30:00Z",
       "updatedAt": "2024-03-10T14:20:00Z",
+      "notes": "Được cấp cho team phát triển frontend",
+      "assignedDate": "2024-01-01",
+      "expectedReturnDate": "2024-12-31",
+      "actualReturnDate": null,
+      "isReturned": false,
       "tags": [],
-      "notes": "Được cấp cho team phát triển frontend"
+      "assignments": [
+        {
+          "id": "assign_1",
+          "departmentId": 1,
+          "departmentName": "Phòng kỹ thuật",
+          "assignedTo": "Nguyễn Văn A",
+          "assigneeId": "NV001",
+          "quantity": 2,
+          "assignedDate": "2024-01-01",
+          "expectedReturnDate": "2024-12-31",
+          "actualReturnDate": null,
+          "isReturned": false
+        },
+        {
+          "id": "assign_2",
+          "departmentId": 2,
+          "departmentName": "Phòng thiết kế",
+          "assignedTo": "Trần Thị B",
+          "assigneeId": "NV002",
+          "quantity": 1,
+          "assignedDate": "2024-01-15",
+          "expectedReturnDate": "2024-12-31",
+          "actualReturnDate": null,
+          "isReturned": false
+        },
+        {
+          "id": "assign_1754534988184",
+          "departmentId": 2,
+          "departmentName": "Phòng thiết kế",
+          "assignedTo": "Lê Văn J",
+          "assigneeId": "NV010",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        },
+        {
+          "id": "assign_1754535000169",
+          "departmentId": 3,
+          "departmentName": "Phòng quản lý dự án",
+          "assignedTo": "Nguyễn Văn K",
+          "assigneeId": "NV011",
+          "quantity": 1,
+          "assignedDate": "2025-08-07",
+          "expectedReturnDate": "",
+          "actualReturnDate": null,
+          "isReturned": false
+        }
+      ]
     },
     {
       "id": 2,
       "assetCode": "TS002",
       "name": "Máy in Canon LBP2900",
       "category": "Thiết bị văn phòng",
-      "status": "Sẵn sàng",
-      "condition": "Khá tốt",
-      "location": "Phòng hành chính",
+      "status": "in_use",
+      "condition": "good",
+      "department": "Phòng nhân sự",
       "assignedTo": "",
       "assigneeId": "",
       "value": 3500000,
+      "quantity": 2,
       "purchaseDate": "2022-08-20",
       "warrantyDate": "2024-08-20",
       "serialNumber": "CNL290822001",
@@ -113,26 +200,24 @@
       "createdById": "NV003",
       "createdAt": "2022-08-20T10:15:00Z",
       "updatedAt": "2024-01-05T09:30:00Z",
-      "tags": [
-        "printer",
-        "office",
-        "laser",
-        "213 ",
-        "123123"
-      ],
-      "notes": "Dự phòng cho phòng hành chính"
+      "notes": "Dự phòng cho phòng hành chính",
+      "assignedDate": null,
+      "expectedReturnDate": null,
+      "actualReturnDate": null,
+      "isReturned": true
     },
     {
       "id": 3,
       "assetCode": "TS003",
       "name": "Xe Toyota Camry",
       "category": "Phương tiện",
-      "status": "Bảo trì",
-      "condition": "Cần sửa chữa",
-      "location": "Bãi xe",
+      "status": "maintenance",
+      "condition": "fair",
+      "department": "Phòng phân tích dữ liệu",
       "assignedTo": "Trần Thị B",
       "assigneeId": "NV002",
       "value": 800000000,
+      "quantity": 1,
       "purchaseDate": "2021-05-10",
       "warrantyDate": "2024-05-10",
       "serialNumber": "TCRY210510789",
@@ -145,24 +230,24 @@
       "createdById": "NV004",
       "createdAt": "2021-05-10T14:45:00Z",
       "updatedAt": "2024-02-15T11:20:00Z",
-      "tags": [
-        "vehicle",
-        "executive",
-        "transport"
-      ],
-      "notes": "Đang bảo trì định kỳ, dự kiến hoàn thành 25/03/2024"
+      "notes": "Đang bảo trì định kỳ, dự kiến hoàn thành 25/03/2024",
+      "assignedDate": "2024-01-01",
+      "expectedReturnDate": "2024-12-31",
+      "actualReturnDate": null,
+      "isReturned": false
     },
     {
       "id": 4,
       "assetCode": "TS004",
       "name": "iPhone 14 Pro",
       "category": "Thiết bị di động",
-      "status": "Đang sử dụng",
-      "condition": "Tốt",
-      "location": "Phòng Marketing",
+      "status": "available",
+      "condition": "new",
+      "department": "Phòng thiết kế",
       "assignedTo": "Hoàng Thị E",
       "assigneeId": "NV005",
       "value": 32000000,
+      "quantity": 3,
       "purchaseDate": "2023-09-20",
       "warrantyDate": "2024-09-20",
       "serialNumber": "IP14P230920456",
@@ -175,24 +260,24 @@
       "createdById": "NV001",
       "createdAt": "2023-09-20T16:20:00Z",
       "updatedAt": "2023-12-01T10:15:00Z",
-      "tags": [
-        "mobile",
-        "smartphone",
-        "marketing"
-      ],
-      "notes": "Dùng để chụp ảnh sản phẩm và quay video marketing"
+      "notes": "Dùng để chụp ảnh sản phẩm và quay video marketing",
+      "assignedDate": "2024-01-01",
+      "expectedReturnDate": "2024-12-31",
+      "actualReturnDate": null,
+      "isReturned": false
     },
     {
       "id": 5,
       "assetCode": "TS005",
       "name": "Màn hình Dell UltraSharp 27\"",
       "category": "Thiết bị máy tính",
-      "status": "Đang sử dụng",
-      "condition": "Tốt",
-      "location": "Phòng thiết kế",
-      "assignedTo": "Vũ Văn F",
-      "assigneeId": "NV006",
+      "status": "available",
+      "condition": "good",
+      "department": "Phòng quản lý dự án",
+      "assignedTo": "Phạm Văn C",
+      "assigneeId": "NV003",
       "value": 8500000,
+      "quantity": 4,
       "purchaseDate": "2023-03-15",
       "warrantyDate": "2026-03-15",
       "serialNumber": "DUS270315123",
@@ -205,24 +290,26 @@
       "createdById": "NV002",
       "createdAt": "2023-03-15T13:10:00Z",
       "updatedAt": "2023-10-22T15:45:00Z",
-      "tags": [
-        "monitor",
-        "4k",
-        "design"
-      ],
-      "notes": "Màn hình chuyên dụng cho team thiết kế"
+      "notes": "Màn hình chuyên dụng cho team thiết kế",
+      "assignedDate": "2024-01-01",
+      "expectedReturnDate": "2024-12-31",
+      "actualReturnDate": null,
+      "isReturned": false,
+      "tags": [],
+      "assignments": []
     },
     {
       "id": 6,
       "assetCode": "TS006",
       "name": "Bàn làm việc đứng FlexiSpot",
       "category": "Nội thất văn phòng",
-      "status": "Sẵn sàng",
-      "condition": "Tốt",
-      "location": "Kho nội thất",
+      "status": "in_use",
+      "condition": "good",
+      "department": "Phòng quản lý dự án",
       "assignedTo": "",
       "assigneeId": "",
       "value": 12000000,
+      "quantity": 10,
       "purchaseDate": "2023-11-10",
       "warrantyDate": "2028-11-10",
       "serialNumber": "FST231110789",
@@ -235,24 +322,26 @@
       "createdById": "NV003",
       "createdAt": "2023-11-10T09:25:00Z",
       "updatedAt": "2023-11-10T09:25:00Z",
-      "tags": [
-        "furniture",
-        "desk",
-        "ergonomic"
-      ],
-      "notes": "Dự trữ cho văn phòng mới"
+      "notes": "Dự trữ cho văn phòng mới",
+      "tags": [],
+      "assignedDate": null,
+      "expectedReturnDate": null,
+      "actualReturnDate": null,
+      "isReturned": true,
+      "assignments": []
     },
     {
       "id": 7,
       "assetCode": "TS007",
       "name": "Máy pha cà phê Breville",
       "category": "Thiết bị sinh hoạt",
-      "status": "Đang sử dụng",
-      "condition": "Tốt",
-      "location": "Pantry tầng 2",
-      "assignedTo": "Toàn bộ nhân viên",
-      "assigneeId": "ALL",
+      "status": "decommissioned",
+      "condition": "damaged",
+      "department": "Phòng quản lý dự án",
+      "assignedTo": "",
+      "assigneeId": "",
       "value": 15000000,
+      "quantity": 1,
       "purchaseDate": "2022-12-01",
       "warrantyDate": "2024-12-01",
       "serialNumber": "BRV221201456",
@@ -265,24 +354,24 @@
       "createdById": "NV004",
       "createdAt": "2022-12-01T11:40:00Z",
       "updatedAt": "2024-01-20T14:30:00Z",
-      "tags": [
-        "coffee",
-        "pantry",
-        "shared"
-      ],
-      "notes": "Được bảo trì định kỳ hàng tháng"
+      "notes": "Được bảo trì định kỳ hàng tháng",
+      "assignedDate": null,
+      "expectedReturnDate": null,
+      "actualReturnDate": null,
+      "isReturned": true
     },
     {
       "id": 8,
       "assetCode": "TS008",
       "name": "Máy chiếu Epson EB-FH06",
       "category": "Thiết bị trình chiếu",
-      "status": "Sẵn sàng",
-      "condition": "Tốt",
-      "location": "Phòng họp A",
+      "status": "maintenance",
+      "condition": "poor",
+      "department": "Phòng phân tích dữ liệu",
       "assignedTo": "",
       "assigneeId": "",
       "value": 18000000,
+      "quantity": 2,
       "purchaseDate": "2023-06-25",
       "warrantyDate": "2025-06-25",
       "serialNumber": "EPS230625789",
@@ -295,388 +384,412 @@
       "createdById": "NV005",
       "createdAt": "2023-06-25T08:15:00Z",
       "updatedAt": "2023-12-15T16:20:00Z",
-      "tags": [
-        "projector",
-        "meeting",
-        "presentation"
-      ],
-      "notes": "Sử dụng cho các cuộc họp và training"
-    },
-    {
-      "id": 1753867638966,
-      "assetCode": "TS1753867638966",
-      "name": "test",
-      "category": "Máy tính",
-      "status": "Sẵn sàng",
-      "condition": "Mới",
-      "location": "Phòng hành chính",
-      "assignedTo": "Nguyễn Văn A",
-      "assigneeId": "NV001",
-      "value": 1231231,
-      "purchaseDate": "2025-07-02",
-      "warrantyDate": "2025-08-03",
-      "serialNumber": "test12312",
-      "brand": "test",
-      "model": "test",
-      "supplier": "123123123",
-      "description": "test",
-      "thumbnail": "",
-      "createdBy": "system",
-      "createdById": "system",
-      "createdAt": "2025-07-30T09:27:18.966Z",
-      "updatedAt": "2025-07-30T09:27:18.966Z",
-      "tags": [],
-      "notes": "test",
-      "apiId": "v1"
-    },
-    {
-      "id": 1753867811759,
-      "assetCode": "TS1753867811759",
-      "name": "test1",
-      "category": "Máy tính",
-      "status": "Sẵn sàng",
-      "condition": "Mới",
-      "location": "Bãi xe",
-      "assignedTo": "Nguyễn Văn A",
-      "assigneeId": "NV001",
-      "value": 1231231,
-      "purchaseDate": "2025-07-02",
-      "warrantyDate": "2025-07-13",
-      "serialNumber": "t123",
-      "brand": "123",
-      "model": "123",
-      "supplier": "1",
-      "description": "123",
-      "thumbnail": "",
-      "createdBy": "system",
-      "createdById": "system",
-      "createdAt": "2025-07-30T09:30:11.759Z",
-      "updatedAt": "2025-07-30T09:30:11.759Z",
-      "tags": [],
-      "notes": "test"
-    },
-    {
-      "id": 1753871249909,
-      "assetCode": "TS1753871249909",
-      "name": "test3",
-      "category": "Máy tính",
-      "status": "Sẵn sàng",
-      "condition": "Mới",
-      "location": "Phòng hành chính",
-      "assignedTo": "Nguyễn Văn A",
-      "assigneeId": "NV001",
-      "value": 3,
-      "purchaseDate": "2025-07-03",
-      "warrantyDate": "2025-08-10",
-      "serialNumber": "3",
-      "brand": "3",
-      "model": "3",
-      "supplier": "3",
-      "description": "3",
-      "thumbnail": "",
-      "createdBy": "system",
-      "createdById": "system",
-      "createdAt": "2025-07-30T10:27:29.909Z",
-      "updatedAt": "2025-07-30T10:27:29.909Z",
-      "tags": [],
-      "notes": "3"
-    },
-    {
-      "id": 1753928879378,
-      "assetCode": "TS1753928879378",
-      "name": "test",
-      "category": "Máy tính",
-      "status": "",
-      "condition": "",
-      "location": "",
-      "assignedTo": "",
-      "assigneeId": "",
-      "value": 12312312,
-      "purchaseDate": "2025-07-31",
-      "warrantyDate": "2025-08-10",
-      "serialNumber": "123123",
-      "brand": "test",
-      "model": "test",
-      "supplier": "123",
-      "description": "123",
-      "thumbnail": "",
-      "createdBy": "system",
-      "createdById": "system",
-      "createdAt": "2025-07-31T02:27:59.378Z",
-      "updatedAt": "2025-07-31T02:27:59.378Z",
-      "tags": [],
-      "notes": ""
-    },
-    {
-      "id": 1753932676797,
-      "assetCode": "TS1753932676797",
-      "name": "23423",
-      "category": "",
-      "status": "Đang sử dụng",
-      "condition": "Mới",
-      "location": "Bãi xe",
-      "assignedTo": "",
-      "assigneeId": "",
-      "value": 2342342,
-      "purchaseDate": "2025-07-05",
-      "warrantyDate": "2025-08-10",
-      "serialNumber": "",
-      "brand": "",
-      "model": "",
-      "supplier": "",
-      "description": "",
-      "thumbnail": "",
-      "createdBy": "system",
-      "createdById": "system",
-      "createdAt": "2025-07-31T03:31:16.797Z",
-      "updatedAt": "2025-07-31T03:31:16.797Z",
-      "tags": [],
-      "notes": ""
-    },
-    {
-      "id": 1753943129046,
-      "assetCode": "TS1753943129046",
-      "name": "binh nuoc",
-      "category": "Thiết bị sinh hoạt",
-      "status": "Sẵn sàng",
-      "condition": "Mới",
-      "location": "Phòng IT",
-      "assignedTo": "",
-      "assigneeId": "",
-      "value": 100000,
-      "purchaseDate": "2025-07-01",
-      "warrantyDate": "2025-08-09",
-      "serialNumber": "123123",
-      "brand": "abc",
-      "model": "abc",
-      "supplier": "abc",
-      "description": "",
-      "thumbnail": "",
-      "createdBy": "system",
-      "createdById": "system",
-      "createdAt": "2025-07-31T06:25:29.046Z",
-      "updatedAt": "2025-07-31T06:25:29.046Z",
-      "tags": [],
-      "notes": ""
+      "notes": "Sử dụng cho các cuộc họp và training",
+      "assignedDate": null,
+      "expectedReturnDate": null,
+      "actualReturnDate": null,
+      "isReturned": true
     }
   ],
   "categories": [
     {
       "id": 1,
       "name": "Máy tính",
-      "description": "Laptop, desktop, workstation",
-      "icon": "computer"
+      "description": "Laptop, desktop, workstation"
     },
     {
       "id": 2,
       "name": "Thiết bị văn phòng",
-      "description": "Máy in, máy scan, máy photocopy",
-      "icon": "printer"
+      "description": "Máy in, máy scan, máy photocopy"
     },
     {
       "id": 3,
       "name": "Phương tiện",
-      "description": "Xe ô tô, xe máy, xe đạp",
-      "icon": "car"
+      "description": "Xe ô tô, xe máy, xe đạp"
     },
     {
       "id": 4,
       "name": "Thiết bị di động",
-      "description": "Điện thoại, tablet, thiết bị di động",
-      "icon": "smartphone"
+      "description": "Điện thoại, tablet, thiết bị di động"
     },
     {
       "id": 5,
       "name": "Thiết bị máy tính",
-      "description": "Màn hình, bàn phím, chuột, loa",
-      "icon": "monitor"
+      "description": "Màn hình, bàn phím, chuột, loa"
     },
     {
       "id": 6,
       "name": "Nội thất văn phòng",
-      "description": "Bàn, ghế, tủ, kệ",
-      "icon": "desk"
+      "description": "Bàn, ghế, tủ, kệ"
     },
     {
       "id": 7,
       "name": "Thiết bị sinh hoạt",
-      "description": "Máy pha cà phê, tủ lạnh, lò vi sóng",
-      "icon": "appliance"
+      "description": "Máy pha cà phê, tủ lạnh, lò vi sóng"
     },
     {
       "id": 8,
       "name": "Thiết bị trình chiếu",
-      "description": "Máy chiếu, màn hình chiếu, thiết bị AV",
-      "icon": "projector"
+      "description": "Máy chiếu, màn hình chiếu, thiết bị AV"
     }
   ],
-  "department": [
+  "departments": [
     {
       "id": 1,
-      "name": "Phòng IT",
-      "building": "Tòa A",
-      "floor": 3,
-      "description": "Phòng công nghệ thông tin"
+      "name": "Phòng kỹ thuật",
+      "description": "Phòng kỹ thuật và bảo trì",
+      "employees": [
+        {
+          "id": "NV001",
+          "name": "Nguyễn Văn A"
+        },
+        {
+          "id": "NV003",
+          "name": "Phạm Văn C"
+        }
+      ]
     },
     {
       "id": 2,
-      "name": "Phòng hành chính",
-      "building": "Tòa A",
-      "floor": 2,
-      "description": "Phòng hành chính nhân sự"
+      "name": "Phòng thiết kế",
+      "description": "Phòng thiết kế đồ họa",
+      "employees": [
+        {
+          "id": "NV002",
+          "name": "Trần Thị B"
+        }
+      ]
     },
     {
       "id": 3,
-      "name": "Bãi xe",
-      "building": "Ngoài trời",
-      "floor": 0,
-      "description": "Khu vực đỗ xe"
+      "name": "Phòng quản lý dự án",
+      "description": "Phòng quản lý dự án và điều hành",
+      "employees": [
+        {
+          "id": "NV004",
+          "name": "Lê Văn D"
+        },
+        {
+          "id": "NV015",
+          "name": "Nguyễn Văn O"
+        }
+      ]
     },
     {
       "id": 4,
-      "name": "Phòng Marketing",
-      "building": "Tòa B",
-      "floor": 4,
-      "description": "Phòng marketing và truyền thông"
+      "name": "Phòng kinh doanh",
+      "description": "Phòng kinh doanh và sản phẩm",
+      "employees": [
+        {
+          "id": "NV005",
+          "name": "Hoàng Thị E"
+        },
+        {
+          "id": "NV006",
+          "name": "Vũ Văn F"
+        }
+      ]
     },
     {
       "id": 5,
-      "name": "Phòng thiết kế",
-      "building": "Tòa B",
-      "floor": 5,
-      "description": "Phòng thiết kế đồ họa"
+      "name": "Phòng chăm sóc khách hàng",
+      "description": "Phòng chăm sóc khách hàng",
+      "employees": [
+        {
+          "id": "NV007",
+          "name": "Nguyễn Thị G"
+        },
+        {
+          "id": "NV008",
+          "name": "Trần Văn H"
+        }
+      ]
     },
     {
       "id": 6,
-      "name": "Kho nội thất",
-      "building": "Tòa C",
-      "floor": 1,
-      "description": "Kho chứa nội thất và thiết bị"
+      "name": "Phòng phân tích dữ liệu",
+      "description": "Phòng phân tích dữ liệu và báo cáo",
+      "employees": [
+        {
+          "id": "NV009",
+          "name": "Phạm Thị I"
+        },
+        {
+          "id": "NV010",
+          "name": "Lê Văn J"
+        }
+      ]
     },
     {
       "id": 7,
-      "name": "Pantry tầng 2",
-      "building": "Tòa A",
-      "floor": 2,
-      "description": "Khu vực ăn uống tầng 2"
+      "name": "Phòng nhân sự",
+      "description": "Phòng nhân sự và hành chính",
+      "employees": [
+        {
+          "id": "NV011",
+          "name": "Nguyễn Văn K"
+        },
+        {
+          "id": "NV012",
+          "name": "Trần Thị L"
+        }
+      ]
     },
     {
       "id": 8,
-      "name": "Phòng họp A",
-      "building": "Tòa A",
-      "floor": 1,
-      "description": "Phòng họp lớn tầng 1"
+      "name": "Phòng bảo trì",
+      "description": "Phòng bảo trì và sửa chữa",
+      "employees": [
+        {
+          "id": "NV013",
+          "name": "Phạm Văn M"
+        },
+        {
+          "id": "NV014",
+          "name": "Lê Thị N"
+        }
+      ]
     }
   ],
   "employees": [
     {
-      "id": "NV001",
       "name": "Nguyễn Văn A",
       "position": "Trưởng phòng IT",
-      "department": "Công nghệ thông tin",
-      "email": "nguyenvana@company.com"
+      "department": "Phòng kỹ thuật",
+      "email": "nguyenvana@company.com",
+      "locationId": 1,
+      "id": "NV001"
     },
     {
       "id": "NV002",
       "name": "Trần Thị B",
       "position": "Chuyên viên hành chính",
-      "department": "Hành chính nhân sự",
+      "department": "Phòng nhân sự",
       "email": "tranthib@company.com"
     },
     {
       "id": "NV003",
       "name": "Phạm Văn C",
-      "position": "Nhân viên IT",
-      "department": "Công nghệ thông tin",
+      "position": "Nhân viên phân tích dữ liệu",
+      "department": "Phòng phân tích dữ liệu",
       "email": "phamvanc@company.com"
     },
     {
       "id": "NV004",
       "name": "Lê Văn D",
-      "position": "Giám đốc điều hành",
-      "department": "Ban giám đốc",
+      "position": "Nhân viên thiết kế",
+      "department": "Phòng thiết kế",
       "email": "levand@company.com"
     },
     {
       "id": "NV005",
       "name": "Hoàng Thị E",
       "position": "Trưởng phòng Marketing",
-      "department": "Marketing",
+      "department": "Phòng kinh doanh",
       "email": "hoangthie@company.com"
     },
     {
       "id": "NV006",
       "name": "Vũ Văn F",
       "position": "Designer",
-      "department": "Thiết kế",
+      "department": "Phòng thiết kế",
       "email": "vuvanf@company.com"
+    },
+    {
+      "id": "NV007",
+      "name": "Nguyễn Thị G",
+      "position": "Nhân viên Marketing",
+      "department": "Phòng kinh doanh",
+      "email": "nguyenthig@company.com"
+    },
+    {
+      "id": "NV008",
+      "name": "Trần Văn H",
+      "position": "Nhân viên thiết kế",
+      "department": "Phòng thiết kế",
+      "email": "tranvanh@company.com"
+    },
+    {
+      "id": "NV009",
+      "name": "Phạm Thị I",
+      "position": "Quản lý dự án",
+      "department": "Phòng quản lý dự án",
+      "email": "phamthi@company.com"
+    },
+    {
+      "id": "NV010",
+      "name": "Lê Văn J",
+      "position": "Nhân viên phân tích dữ liệu",
+      "department": "Phòng phân tích dữ liệu",
+      "email": "levanj@company.com"
+    },
+    {
+      "id": "NV011",
+      "name": "Nguyễn Văn K",
+      "position": "Nhân viên văn phòng",
+      "department": "Phòng nhân sự",
+      "email": "nguyenvank@company.com"
+    },
+    {
+      "id": "NV012",
+      "name": "Trần Thị L",
+      "position": "Nhân viên văn phòng",
+      "department": "Phòng nhân sự",
+      "email": "tranthil@company.com"
+    },
+    {
+      "id": "NV013",
+      "name": "Phạm Văn M",
+      "position": "Nhân viên bảo trì",
+      "department": "Phòng bảo trì",
+      "email": "phamvanm@company.com"
+    },
+    {
+      "id": "NV014",
+      "name": "Lê Thị N",
+      "position": "Nhân viên bảo trì",
+      "department": "Phòng bảo trì",
+      "email": "lethina@company.com"
+    },
+    {
+      "name": "Nguyễn Văn E",
+      "position": "Nhân viên bảo trì",
+      "department": "Phòng thiết kế",
+      "email": "nguyenvano@company.com",
+      "id": "NV015"
     }
   ],
   "statusOptions": [
     {
-      "value": "Sẵn sàng",
-      "label": "Sẵn sàng",
-      "color": "blue",
+      "value": "available",
+      "label": "available",
+      "color": "success",
       "description": "Tài sản có thể sử dụng ngay"
     },
     {
-      "value": "Đang sử dụng",
-      "label": "Đang sử dụng",
-      "color": "green",
+      "value": "in_use",
+      "label": "in_use",
+      "color": "primary",
       "description": "Tài sản đang được sử dụng"
     },
     {
-      "value": "Bảo trì",
-      "label": "Bảo trì",
-      "color": "orange",
+      "value": "maintenance",
+      "label": "maintenance",
+      "color": "warning",
       "description": "Tài sản đang được bảo trì"
     },
     {
-      "value": "Hỏng",
-      "label": "Hỏng",
-      "color": "red",
+      "value": "broken",
+      "label": "broken",
+      "color": "error",
       "description": "Tài sản bị hỏng, không sử dụng được"
     },
     {
-      "value": "Ngừng sử dụng",
-      "label": "Ngừng sử dụng",
-      "color": "gray",
+      "value": "decommissioned",
+      "label": "decommissioned",
+      "color": "grey",
       "description": "Tài sản không còn sử dụng"
     }
   ],
   "conditionOptions": [
     {
-      "value": "Mới",
-      "label": "Mới",
+      "value": "new",
+      "label": "new",
       "score": 5,
-      "color": "green"
+      "color": "success",
+      "description": "Tài sản hoàn toàn mới, chưa sử dụng"
     },
     {
-      "value": "Tốt",
-      "label": "Tốt",
+      "value": "good",
+      "label": "good",
       "score": 4,
-      "color": "blue"
+      "color": "primary",
+      "description": "Tài sản hoạt động tốt, ít hao mòn"
     },
     {
-      "value": "Khá tốt",
-      "label": "Khá tốt",
+      "value": "fair",
+      "label": "fair",
       "score": 3,
-      "color": "yellow"
+      "color": "warning",
+      "description": "Tài sản còn dùng được, có dấu hiệu hao mòn"
     },
     {
-      "value": "Cần sửa chữa",
-      "label": "Cần sửa chữa",
+      "value": "poor",
+      "label": "poor",
       "score": 2,
-      "color": "orange"
+      "color": "warning",
+      "description": "Tài sản kém, cần sửa chữa"
     },
     {
-      "value": "Hỏng nặng",
-      "label": "Hỏng nặng",
+      "value": "damaged",
+      "label": "damaged",
       "score": 1,
-      "color": "red"
+      "color": "error",
+      "description": "Tài sản hỏng, không sử dụng được"
     }
   ],
-  "sessions": [],
+  "userLogs": [
+    {
+      "id": 1,
+      "userId": 1,
+      "username": "John Smith",
+      "action": "login",
+      "details": "User John Smith logged in",
+      "targetId": null,
+      "targetType": "auth",
+      "timestamp": "2025-07-30T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "username": "John Smith",
+      "action": "login",
+      "details": "User John Smith logged in",
+      "targetId": null,
+      "role": "auth",
+      "timestamp": "2025-08-05T08:18:00.803Z"
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "username": "John Smith",
+      "action": "login",
+      "details": "User John Smith logged in",
+      "targetId": null,
+      "role": "auth",
+      "timestamp": "2025-08-05T11:15:36.662Z"
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "username": "John Smith",
+      "action": "login",
+      "details": "User John Smith logged in",
+      "targetId": null,
+      "role": "auth",
+      "timestamp": "2025-08-05T13:51:36.730Z"
+    },
+    {
+      "id": 5,
+      "userId": 1,
+      "username": "John Smith",
+      "action": "login",
+      "details": "User John Smith logged in",
+      "targetId": null,
+      "role": "auth",
+      "timestamp": "2025-08-05T14:01:44.899Z"
+    },
+    {
+      "id": 6,
+      "userId": 1,
+      "username": "John Smith",
+      "action": "login",
+      "details": "User John Smith logged in",
+      "targetId": null,
+      "role": "auth",
+      "timestamp": "2025-08-05T14:06:06.250Z"
+    }
+  ],
   "maintenance": [
     {
       "id": 1,
@@ -742,6 +855,21 @@
       "updatedAt": "2025-07-29T10:49:39.772Z",
       "assignedTo": 7,
       "assignedToName": "Amanda Garcia"
+    },
+    {
+      "id": 5,
+      "assetId": 1,
+      "assetName": "Laptop Dell XPS 13",
+      "requestedBy": 3,
+      "requestedByName": "Jennifer White",
+      "title": "Máy in lỏ",
+      "description": "tetstststststs\n",
+      "priority": "medium",
+      "status": "approved",
+      "createdAt": "2025-08-02T16:44:11.485Z",
+      "updatedAt": "2025-08-02T17:09:39.340Z",
+      "assignedTo": 7,
+      "assignedToName": "Michael Bin"
     }
   ]
 }

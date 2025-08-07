@@ -18,7 +18,6 @@ export interface AssetLayoutFilters {
   categoryFilter: string
   statusFilter: string
   departmentFilter: string
-  viewMode: "table" | "grid"
 }
 
 // Sorting interface
@@ -59,7 +58,6 @@ export interface AssetLayoutHandlers {
   onCategoryChange: (value: string) => void
   onStatusChange: (value: string) => void
   onDepartmentChange: (value: string) => void
-  onViewModeChange: (mode: "table" | "grid") => void
   onSort: (property: keyof Asset) => void
   onViewDetail: (asset: Asset) => void
   onUpdate: (asset: Asset) => void

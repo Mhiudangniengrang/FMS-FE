@@ -3,18 +3,18 @@ import type { Department } from "../types"
 
 export const departmentApi = {
   getDepartments: () => {
-    return axiosClient.get<Department[]>("/department")
+    return axiosClient.get<Department[]>("/departments")
   },
   getDepartmentById: (id: number) => {
-    return axiosClient.get<Department>(`/department/${id}`)
+    return axiosClient.get<Department>(`/departments/${id}`)
   },
   createDepartment: (departmentData: Omit<Department, 'id'>) => {
-    return axiosClient.post<Department>("/department", departmentData)
+    return axiosClient.post<Department>("/departments", departmentData)
   },
   updateDepartment: (id: number, departmentData: Partial<Department>) => {
-    return axiosClient.patch<Department>(`/department/${id}`, departmentData)
+    return axiosClient.patch<Department>(`/departments/${id}`, departmentData)
   },
   deleteDepartment: (id: number) => {
-    return axiosClient.delete(`/department/${id}`)
+    return axiosClient.delete(`/departments/${id}`)
   },
 } 

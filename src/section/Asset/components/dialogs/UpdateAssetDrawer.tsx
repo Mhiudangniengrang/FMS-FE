@@ -19,16 +19,29 @@ import {
   DialogActions,
   Alert,
   CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  Card,
+  CardContent,
 } from "@mui/material";
 import {
   Close as CloseIcon,
   Save as SaveIcon,
   Edit as EditIcon,
   Cancel as CancelIcon,
+  Add as AddIcon,
+  Delete as DeleteIcon,
 } from "@mui/icons-material";
 
 import type { Asset, NewAssetForm } from "../../types";
-import { getCategoryIcon } from "../../utils";
+import {
+  getCategoryIcon,
+  statusColors,
+  getAssetAssignmentStats,
+  canAssignMore,
+} from "../../utils";
 
 interface UpdateAssetDrawerProps {
   open: boolean;
@@ -66,14 +79,32 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
     status: "",
     condition: "",
     value: "",
+    quantity: "1",
     purchaseDate: "",
     warrantyDate: "",
     supplier: "",
     notes: "",
     tags: [],
+    assignments: [],
   });
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [showNewAssignmentForm, setShowNewAssignmentForm] = useState(false);
+  const [newAssignment, setNewAssignment] = useState({
+    departmentId: "",
+    departmentName: "",
+    assignedTo: "",
+    assigneeId: "",
+    quantity: "1",
+    assignedDate: new Date().toISOString().split("T")[0],
+    expectedReturnDate: "",
+  });
+
+  // Calculate available quantity
+  const stats = asset
+    ? getAssetAssignmentStats(asset)
+    : { totalQuantity: 0, availableQuantity: 0, activeQuantity: 0 };
+  const canAddMore = asset ? canAssignMore(asset) : false;
 
   // Initialize form when asset changes
   useEffect(() => {
@@ -91,11 +122,13 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
         status: asset.status || "",
         condition: asset.condition || "",
         value: asset.value?.toString() || "",
+        quantity: asset.quantity?.toString() || "1",
         purchaseDate: asset.purchaseDate || "",
         warrantyDate: asset.warrantyDate || "",
         supplier: asset.supplier || "",
         notes: asset.notes || "",
         tags: asset.tags || [],
+        assignments: asset.assignments || [],
       });
       setHasChanges(false);
     }
@@ -103,7 +136,7 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
 
   const handleInputChange = (
     field: keyof NewAssetForm,
-    value: string | string[]
+    value: string | string[] | boolean
   ) => {
     setForm((prev) => ({ ...prev, [field]: value }));
     setHasChanges(true);
@@ -118,11 +151,69 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
     setHasChanges(true);
   };
 
+  const handleAddAssignment = () => {
+    const requestedQuantity = parseInt(newAssignment.quantity) || 0;
+
+    if (
+      newAssignment.departmentId &&
+      newAssignment.assignedTo &&
+      requestedQuantity > 0
+    ) {
+      // Double check if we can still assign this quantity
+      if (requestedQuantity > stats.availableQuantity) {
+        alert(
+          `Không thể phân công ${requestedQuantity} chiếc. Chỉ còn ${stats.availableQuantity} chiếc trong kho.`
+        );
+        return;
+      }
+
+      const assignment = {
+        id: `assign_${Date.now()}`,
+        departmentId: parseInt(newAssignment.departmentId),
+        departmentName: newAssignment.departmentName,
+        assignedTo: newAssignment.assignedTo,
+        assigneeId: newAssignment.assigneeId,
+        quantity: requestedQuantity,
+        assignedDate: newAssignment.assignedDate,
+        expectedReturnDate: newAssignment.expectedReturnDate,
+        actualReturnDate: null,
+        isReturned: false,
+      };
+
+      setForm((prev) => ({
+        ...prev,
+        assignments: [...(prev.assignments || []), assignment],
+      }));
+      setHasChanges(true);
+      setShowNewAssignmentForm(false);
+
+      // Reset new assignment form
+      setNewAssignment({
+        departmentId: "",
+        departmentName: "",
+        assignedTo: "",
+        assigneeId: "",
+        quantity: "1",
+        assignedDate: new Date().toISOString().split("T")[0],
+        expectedReturnDate: "",
+      });
+    }
+  };
+
+  const handleRemoveAssignment = (assignmentId: string) => {
+    setForm((prev) => ({
+      ...prev,
+      assignments: prev.assignments?.filter((a) => a.id !== assignmentId) || [],
+    }));
+    setHasChanges(true);
+  };
+
   const handleSubmit = () => {
     if (asset) {
       const formData = {
         ...form,
         value: parseFloat(form.value) || 0,
+        quantity: parseInt(form.quantity) || 1,
       };
       onSubmit(asset.id, formData);
       setConfirmDialogOpen(false);
@@ -216,18 +307,30 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                     fullWidth
                     label="Tên tài sản *"
                     value={form.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#666",
+                      },
+                    }}
                   />
                   <FormControl fullWidth>
-                    <InputLabel>Danh mục *</InputLabel>
+                    <InputLabel sx={{ color: "#666" }}>Danh mục *</InputLabel>
                     <Select
                       value={form.category}
                       label="Danh mục *"
-                      onChange={(e) =>
-                        handleInputChange("category", e.target.value)
-                      }
-                      sx={{ borderRadius: 2 }}
+                      disabled
+                      sx={{
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                        "& .MuiSelect-icon": {
+                          color: "#666",
+                        },
+                      }}
                     >
                       {data.categories.map((category) => (
                         <MenuItem key={category.id} value={category.name}>
@@ -249,31 +352,72 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                     fullWidth
                     label="Thương hiệu"
                     value={form.brand}
-                    onChange={(e) => handleInputChange("brand", e.target.value)}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#666",
+                      },
+                    }}
                   />
                   <TextField
                     fullWidth
                     label="Model"
                     value={form.model}
-                    onChange={(e) => handleInputChange("model", e.target.value)}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#666",
+                      },
+                    }}
                   />
                   <TextField
                     fullWidth
                     label="Số serial"
                     value={form.serialNumber}
-                    onChange={(e) =>
-                      handleInputChange("serialNumber", e.target.value)
-                    }
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#666",
+                      },
+                    }}
                   />
                   <TextField
                     fullWidth
                     label="Giá trị"
                     type="number"
                     value={form.value}
-                    onChange={(e) => handleInputChange("value", e.target.value)}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#666",
+                      },
+                    }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Số lượng"
+                    type="number"
+                    disabled
+                    value={form.quantity}
+                    onChange={(e) =>
+                      handleInputChange("quantity", e.target.value)
+                    }
                     sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                   />
                 </Box>
@@ -362,9 +506,14 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                     <Select
                       value={form.department}
                       label="Phòng ban"
-                      onChange={(e) =>
-                        handleInputChange("department", e.target.value)
-                      }
+                      onChange={(e) => {
+                        const newDepartment = e.target.value;
+                        handleInputChange("department", newDepartment);
+                        // Reset assignee when department changes
+                        if (newDepartment !== form.department) {
+                          handleEmployeeChange("", "");
+                        }
+                      }}
                       sx={{ borderRadius: 2 }}
                     >
                       {data.departments.map((department) => (
@@ -375,12 +524,22 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                     </Select>
                   </FormControl>
                   <Autocomplete
-                    options={data.employees}
+                    options={
+                      form.department
+                        ? data.departments.find(
+                            (dept) => dept.name === form.department
+                          )?.employees || []
+                        : []
+                    }
                     getOptionLabel={(option) => option.name}
                     value={
-                      data.employees.find(
-                        (emp) => emp.id === form.assigneeId
-                      ) || null
+                      form.department
+                        ? data.departments
+                            .find((dept) => dept.name === form.department)
+                            ?.employees.find(
+                              (emp: any) => emp.id === form.assigneeId
+                            ) || null
+                        : null
                     }
                     onChange={(_, newValue) => {
                       if (newValue) {
@@ -389,10 +548,16 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                         handleEmployeeChange("", "");
                       }
                     }}
+                    disabled={!form.department}
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         label="Người quản lý"
+                        placeholder={
+                          form.department
+                            ? "Chọn nhân viên..."
+                            : "Vui lòng chọn phòng ban trước"
+                        }
                         sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                       />
                     )}
@@ -400,9 +565,483 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                 </Box>
               </Box>
 
+              {/* Assignment Management */}
+              <Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    mb: 2,
+                  }}
+                >
+                  <Typography variant="h6" color="primary" gutterBottom>
+                    📋 Quản lý phân công
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<AddIcon />}
+                    onClick={() =>
+                      setShowNewAssignmentForm(!showNewAssignmentForm)
+                    }
+                    disabled={!canAddMore}
+                    sx={{ borderRadius: 2 }}
+                  >
+                    {showNewAssignmentForm
+                      ? "Ẩn form"
+                      : `Thêm phân công${!canAddMore ? " (Hết)" : ""}`}
+                  </Button>
+                </Box>
+                <Divider sx={{ mb: 2 }} />
+
+                <Alert
+                  severity={canAddMore ? "info" : "warning"}
+                  sx={{ mb: 2 }}
+                >
+                  <Typography variant="body2">
+                    Tổng số lượng: {form.quantity} | Đang sử dụng:{" "}
+                    {stats.activeQuantity} | Còn trống:{" "}
+                    {stats.availableQuantity} | Đã trả:{" "}
+                    {form.assignments?.filter((a) => a.isReturned).length || 0}{" "}
+                    phòng ban
+                  </Typography>
+                  {!canAddMore && (
+                    <Typography
+                      variant="body2"
+                      sx={{ mt: 1, fontWeight: "medium" }}
+                    >
+                      ⚠️ Không thể thêm phân công mới vì đã hết số lượng trong
+                      kho.
+                    </Typography>
+                  )}
+                </Alert>
+
+                {form.assignments && form.assignments.length > 0 ? (
+                  <Box>
+                    {/* Active Assignments */}
+                    {form.assignments.filter((a) => !a.isReturned).length >
+                      0 && (
+                      <Box sx={{ mb: 2 }}>
+                        <Typography
+                          variant="subtitle2"
+                          gutterBottom
+                          color="primary"
+                        >
+                          Đang sử dụng:
+                        </Typography>
+                        <List
+                          sx={{
+                            bgcolor: "background.paper",
+                            borderRadius: 2,
+                            border: 1,
+                            borderColor: "divider",
+                          }}
+                        >
+                          {form.assignments
+                            .filter((a) => !a.isReturned)
+                            .map((assignment, index) => (
+                              <ListItem
+                                key={assignment.id}
+                                divider={
+                                  index <
+                                  form.assignments!.filter((a) => !a.isReturned)
+                                    .length -
+                                    1
+                                }
+                              >
+                                <ListItemText
+                                  primary={
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 1,
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="subtitle2"
+                                        fontWeight="medium"
+                                      >
+                                        {assignment.departmentName}
+                                      </Typography>
+                                      <Chip
+                                        label={`${assignment.quantity} chiếc`}
+                                        size="small"
+                                        color="primary"
+                                        variant="outlined"
+                                      />
+                                    </Box>
+                                  }
+                                  secondary={
+                                    <Box>
+                                      <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                      >
+                                        Người sử dụng: {assignment.assignedTo}
+                                      </Typography>
+                                      <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                      >
+                                        Ngày phân công:{" "}
+                                        {assignment.assignedDate} | Dự kiến trả:{" "}
+                                        {assignment.expectedReturnDate}
+                                      </Typography>
+                                    </Box>
+                                  }
+                                />
+                                <ListItemSecondaryAction>
+                                  <IconButton
+                                    edge="end"
+                                    aria-label="delete"
+                                    onClick={() =>
+                                      handleRemoveAssignment(assignment.id)
+                                    }
+                                    color="error"
+                                    size="small"
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </ListItemSecondaryAction>
+                              </ListItem>
+                            ))}
+                        </List>
+                      </Box>
+                    )}
+
+                    {/* Returned Assignments */}
+                    {form.assignments.filter((a) => a.isReturned).length >
+                      0 && (
+                      <Box>
+                        <Typography
+                          variant="subtitle2"
+                          gutterBottom
+                          color="text.secondary"
+                        >
+                          Đã trả:
+                        </Typography>
+                        <List
+                          sx={{
+                            bgcolor: "#f5f5f5",
+                            borderRadius: 2,
+                            border: 1,
+                            borderColor: "divider",
+                          }}
+                        >
+                          {form.assignments
+                            .filter((a) => a.isReturned)
+                            .map((assignment, index) => (
+                              <ListItem
+                                key={assignment.id}
+                                divider={
+                                  index <
+                                  form.assignments!.filter((a) => a.isReturned)
+                                    .length -
+                                    1
+                                }
+                              >
+                                <ListItemText
+                                  primary={
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 1,
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="subtitle2"
+                                        fontWeight="medium"
+                                        color="text.secondary"
+                                      >
+                                        {assignment.departmentName}
+                                      </Typography>
+                                      <Chip
+                                        label={`${assignment.quantity} chiếc`}
+                                        size="small"
+                                        color="default"
+                                        variant="outlined"
+                                      />
+                                      <Chip
+                                        label="Đã trả"
+                                        size="small"
+                                        color="success"
+                                        variant="outlined"
+                                      />
+                                    </Box>
+                                  }
+                                  secondary={
+                                    <Box>
+                                      <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                      >
+                                        Người sử dụng: {assignment.assignedTo}
+                                      </Typography>
+                                      <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                      >
+                                        Ngày phân công:{" "}
+                                        {assignment.assignedDate} | Ngày trả:{" "}
+                                        {assignment.actualReturnDate || "N/A"}
+                                      </Typography>
+                                    </Box>
+                                  }
+                                />
+                                <ListItemSecondaryAction>
+                                  <IconButton
+                                    edge="end"
+                                    aria-label="delete"
+                                    onClick={() =>
+                                      handleRemoveAssignment(assignment.id)
+                                    }
+                                    color="error"
+                                    size="small"
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </ListItemSecondaryAction>
+                              </ListItem>
+                            ))}
+                        </List>
+                      </Box>
+                    )}
+                  </Box>
+                ) : (
+                  <Card sx={{ bgcolor: "#f5f5f5" }}>
+                    <CardContent>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        align="center"
+                      >
+                        Chưa có phân công nào. Nhấn "Thêm phân công" để bắt đầu.
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* New Assignment Form */}
+                {showNewAssignmentForm && (
+                  <Box
+                    sx={{
+                      mt: 3,
+                      p: 3,
+                      border: 1,
+                      borderColor: "primary.main",
+                      borderRadius: 2,
+                      bgcolor: "#f8f9fa",
+                    }}
+                  >
+                    <Typography variant="h6" color="primary" gutterBottom>
+                      📝 Thêm phân công mới
+                    </Typography>
+                    <Divider sx={{ mb: 3 }} />
+
+                    <Box
+                      sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+                    >
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: 3,
+                        }}
+                      >
+                        <FormControl fullWidth>
+                          <InputLabel>Phòng ban *</InputLabel>
+                          <Select
+                            value={newAssignment.departmentId}
+                            label="Phòng ban *"
+                            onChange={(e) => {
+                              const newDeptId = e.target.value;
+                              const dept = data.departments.find(
+                                (d) => d.id === parseInt(newDeptId)
+                              );
+                              setNewAssignment((prev) => ({
+                                ...prev,
+                                departmentId: newDeptId,
+                                departmentName: dept?.name || "",
+                                // Reset assignee when department changes
+                                assignedTo: "",
+                                assigneeId: "",
+                              }));
+                            }}
+                            sx={{ borderRadius: 2 }}
+                          >
+                            {data.departments.map((department) => (
+                              <MenuItem
+                                key={department.id}
+                                value={department.id}
+                              >
+                                {department.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+
+                        <Autocomplete
+                          options={
+                            newAssignment.departmentId
+                              ? data.departments.find(
+                                  (dept) =>
+                                    dept.id ===
+                                    parseInt(newAssignment.departmentId)
+                                )?.employees || []
+                              : []
+                          }
+                          getOptionLabel={(option) => option.name}
+                          value={
+                            newAssignment.departmentId
+                              ? data.departments
+                                  .find(
+                                    (dept) =>
+                                      dept.id ===
+                                      parseInt(newAssignment.departmentId)
+                                  )
+                                  ?.employees.find(
+                                    (emp: any) =>
+                                      emp.id === newAssignment.assigneeId
+                                  ) || null
+                              : null
+                          }
+                          onChange={(_, newValue) => {
+                            setNewAssignment((prev) => ({
+                              ...prev,
+                              assignedTo: newValue?.name || "",
+                              assigneeId: newValue?.id || "",
+                            }));
+                          }}
+                          disabled={!newAssignment.departmentId}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Người sử dụng *"
+                              placeholder={
+                                newAssignment.departmentId
+                                  ? "Chọn nhân viên..."
+                                  : "Vui lòng chọn phòng ban trước"
+                              }
+                              sx={{
+                                "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                              }}
+                            />
+                          )}
+                        />
+                      </Box>
+
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr 1fr",
+                          gap: 3,
+                        }}
+                      >
+                        <TextField
+                          fullWidth
+                          label="Số lượng *"
+                          type="number"
+                          value={newAssignment.quantity}
+                          onChange={(e) => {
+                            const value = parseInt(e.target.value) || 0;
+                            const maxQuantity = Math.min(
+                              stats.availableQuantity,
+                              value
+                            );
+                            setNewAssignment((prev) => ({
+                              ...prev,
+                              quantity: maxQuantity.toString(),
+                            }));
+                          }}
+                          inputProps={{
+                            min: 1,
+                            max: stats.availableQuantity,
+                          }}
+                          helperText={`Tối đa: ${stats.availableQuantity} chiếc còn trống`}
+                          error={
+                            parseInt(newAssignment.quantity) >
+                            stats.availableQuantity
+                          }
+                          sx={{
+                            "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                          }}
+                        />
+
+                        <TextField
+                          fullWidth
+                          label="Ngày phân công"
+                          type="date"
+                          value={newAssignment.assignedDate}
+                          onChange={(e) =>
+                            setNewAssignment((prev) => ({
+                              ...prev,
+                              assignedDate: e.target.value,
+                            }))
+                          }
+                          InputLabelProps={{ shrink: true }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                          }}
+                        />
+
+                        <TextField
+                          fullWidth
+                          label="Ngày dự kiến trả"
+                          type="date"
+                          value={newAssignment.expectedReturnDate}
+                          onChange={(e) =>
+                            setNewAssignment((prev) => ({
+                              ...prev,
+                              expectedReturnDate: e.target.value,
+                            }))
+                          }
+                          InputLabelProps={{ shrink: true }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                          }}
+                        />
+                      </Box>
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 2,
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          onClick={() => setShowNewAssignmentForm(false)}
+                        >
+                          Hủy
+                        </Button>
+                        <Button
+                          onClick={handleAddAssignment}
+                          variant="contained"
+                          color="primary"
+                          disabled={
+                            !newAssignment.departmentId ||
+                            !newAssignment.assignedTo ||
+                            !newAssignment.quantity ||
+                            parseInt(newAssignment.quantity) >
+                              stats.availableQuantity ||
+                            parseInt(newAssignment.quantity) <= 0
+                          }
+                        >
+                          Thêm phân công
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Box>
+                )}
+              </Box>
+
               {/* Dates */}
               <Box>
-                <Typography variant="h6" color="primary" gutterBottom>
+                <Typography variant="h6" sx={{ color: "#666" }} gutterBottom>
                   📅 Thông tin ngày tháng
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -418,29 +1057,41 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                     label="Ngày mua"
                     type="date"
                     value={form.purchaseDate}
-                    onChange={(e) =>
-                      handleInputChange("purchaseDate", e.target.value)
-                    }
+                    disabled
                     InputLabelProps={{ shrink: true }}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#666",
+                      },
+                    }}
                   />
                   <TextField
                     fullWidth
                     label="Ngày bảo hành"
                     type="date"
                     value={form.warrantyDate}
-                    onChange={(e) =>
-                      handleInputChange("warrantyDate", e.target.value)
-                    }
+                    disabled
                     InputLabelProps={{ shrink: true }}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#666",
+                      },
+                    }}
                   />
                 </Box>
               </Box>
 
               {/* Additional Information */}
               <Box>
-                <Typography variant="h6" color="primary" gutterBottom>
+                <Typography variant="h6" sx={{ color: "#666" }} gutterBottom>
                   📝 Thông tin bổ sung
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -449,10 +1100,16 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                     fullWidth
                     label="Nhà cung cấp"
                     value={form.supplier}
-                    onChange={(e) =>
-                      handleInputChange("supplier", e.target.value)
-                    }
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#666",
+                      },
+                    }}
                   />
                   <TextField
                     fullWidth
@@ -460,10 +1117,16 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                     multiline
                     rows={3}
                     value={form.description}
-                    onChange={(e) =>
-                      handleInputChange("description", e.target.value)
-                    }
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#666",
+                      },
+                    }}
                   />
                   <TextField
                     fullWidth
@@ -471,17 +1134,22 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                     multiline
                     rows={3}
                     value={form.notes}
-                    onChange={(e) => handleInputChange("notes", e.target.value)}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                        backgroundColor: "#f5f5f5",
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#666",
+                      },
+                    }}
                   />
-                  <Autocomplete
+                  {/* <Autocomplete
                     multiple
                     freeSolo
                     options={[]}
                     value={form.tags}
-                    onChange={(_, newValue) =>
-                      handleInputChange("tags", newValue)
-                    }
+                    disabled
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
                         <Chip
@@ -497,10 +1165,19 @@ const UpdateAssetDrawer: React.FC<UpdateAssetDrawerProps> = ({
                         {...params}
                         label="Tags"
                         placeholder="Thêm tag..."
-                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                        disabled
+                        sx={{ 
+                          "& .MuiOutlinedInput-root": { 
+                            borderRadius: 2,
+                            backgroundColor: "#f5f5f5"
+                          },
+                          "& .MuiInputLabel-root": {
+                            color: "#666"
+                          }
+                        }}
                       />
                     )}
-                  />
+                  /> */}
                 </Box>
               </Box>
             </Box>

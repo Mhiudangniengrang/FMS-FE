@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import {
   Paper,
   Table,
@@ -15,14 +15,21 @@ import {
   Tooltip,
   Avatar,
   TableSortLabel,
-} from "@mui/material"
-import { 
+} from "@mui/material";
+import {
   Visibility as VisibilityIcon,
   Edit as EditIcon,
-} from "@mui/icons-material"
-import { getCategoryIcon, statusColors, conditionColors, formatCurrency } from "../../utils"
+} from "@mui/icons-material";
+import {
+  getCategoryIcon,
+  statusColors,
+  conditionColors,
+  formatCurrency,
+  getAssetAssignmentStats,
+  getAssetStatusByUsage,
+} from "../../utils";
 
-import type { AssetTableProps } from '../../types'
+import type { AssetTableProps } from "../../types";
 
 const AssetTable: React.FC<AssetTableProps> = ({
   assets,
@@ -39,7 +46,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
   onRowsPerPageChange,
   rowsPerPageOptions,
 }) => {
-  if (!data) return null
+  if (!data) return null;
 
   return (
     <Paper sx={{ borderRadius: 3, boxShadow: 3, overflow: "hidden" }}>
@@ -65,18 +72,23 @@ const AssetTable: React.FC<AssetTableProps> = ({
                   Tên tài sản
                 </TableSortLabel>
               </TableCell>
-              <TableCell>Danh mục</TableCell>
-              <TableCell>Trạng thái</TableCell>
-              <TableCell>Tình trạng</TableCell>
-              <TableCell>Vị trí</TableCell>
-              <TableCell>Người sử dụng</TableCell>
-              <TableCell>Giá trị</TableCell>
-              <TableCell>Thao tác</TableCell>
+              <TableCell>Category</TableCell>
+              {/* <TableCell>Quantity</TableCell> */}
+              <TableCell>Quantity</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Department</TableCell>
+              <TableCell>Value</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {assets.map((asset) => (
-              <TableRow key={asset.id} hover sx={{ "&:hover": { backgroundColor: "#f9f9f9" } }}>
+              <TableRow
+                key={asset.id}
+                hover
+                sx={{ "&:hover": { backgroundColor: "#f9f9f9" } }}
+              >
                 <TableCell>
                   <Typography variant="body2" fontWeight="medium">
                     {asset.assetCode}
@@ -85,7 +97,9 @@ const AssetTable: React.FC<AssetTableProps> = ({
                 <TableCell>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <Avatar
-                      src={asset.thumbnail || "/placeholder.svg?height=40&width=40"}
+                      src={
+                        asset.thumbnail || "/placeholder.svg?height=40&width=40"
+                      }
                       alt={asset.name}
                       sx={{ width: 48, height: 48, borderRadius: 2 }}
                       variant="rounded"
@@ -102,14 +116,83 @@ const AssetTable: React.FC<AssetTableProps> = ({
                 </TableCell>
                 <TableCell>
                   <Chip
-                    icon={
-                      getCategoryIcon(data.categories.find((c) => c.name === asset.category)?.icon || "computer")
-                    }
+                    icon={getCategoryIcon(
+                      data.categories.find((c) => c.name === asset.category)
+                        ?.icon || "computer"
+                    )}
                     label={asset.category}
                     size="small"
                     variant="outlined"
                     sx={{ borderRadius: 2 }}
                   />
+                </TableCell>
+                {/* <TableCell>
+                  <Box sx={{ textAlign: "center" }}>
+                    <Typography variant="body2" fontWeight="medium">
+                      {asset.quantity || 1}
+                    </Typography>
+                  </Box>
+                </TableCell> */}
+                <TableCell>
+                  {(() => {
+                    const stats = getAssetAssignmentStats(asset);
+                    const status = getAssetStatusByUsage(asset);
+
+                    return (
+                      <Box sx={{ minWidth: 50 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            mb: 0.5,
+                          }}
+                        >
+                          <Typography variant="body2" fontWeight="medium">
+                            {stats.activeQuantity}/{stats.totalQuantity}
+                          </Typography>
+                          {/* <Chip
+                            // label={status === "fully_used" ? "Hết" : status === "limited" ? "Gần hết" : "Còn trống"}
+                            size="small"
+                            color={status === "fully_used" ? "error" : status === "limited" ? "warning" : "success"}
+                            sx={{ borderRadius: 1, fontSize: "0.7rem" }}
+                          /> */}
+                        </Box>
+                        <Box
+                          sx={{
+                            width: "100%",
+                            height: 4,
+                            backgroundColor: "#e0e0e0",
+                            borderRadius: 2,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              width: `${stats.usagePercentage}%`,
+                              height: "100%",
+                              backgroundColor:
+                                status === "fully_used"
+                                  ? "#f44336"
+                                  : status === "limited"
+                                  ? "#ff9800"
+                                  : "#4caf50",
+                              transition: "width 0.3s ease",
+                            }}
+                          />
+                        </Box>
+                        {stats.returnedQuantity > 0 && (
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ display: "block", mt: 0.5 }}
+                          >
+                            Đã trả: {stats.returnedQuantity}
+                          </Typography>
+                        )}
+                      </Box>
+                    );
+                  })()}
                 </TableCell>
                 <TableCell>
                   <Chip
@@ -129,9 +212,12 @@ const AssetTable: React.FC<AssetTableProps> = ({
                   />
                 </TableCell>
                 <TableCell>{asset.department}</TableCell>
-                <TableCell>{asset.assignedTo || "Chưa phân công"}</TableCell>
                 <TableCell>
-                  <Typography variant="body2" fontWeight="medium" color="primary">
+                  <Typography
+                    variant="body2"
+                    fontWeight="medium"
+                    color="primary"
+                  >
                     {formatCurrency(asset.value)}
                   </Typography>
                 </TableCell>
@@ -157,7 +243,6 @@ const AssetTable: React.FC<AssetTableProps> = ({
                     </Tooltip>
                   </Box>
                 </TableCell>
-                
               </TableRow>
             ))}
           </TableBody>
@@ -171,13 +256,15 @@ const AssetTable: React.FC<AssetTableProps> = ({
         page={page}
         onPageChange={(_, newPage) => onPageChange(newPage)}
         onRowsPerPageChange={(e) => {
-          onRowsPerPageChange(Number.parseInt(e.target.value, 10))
+          onRowsPerPageChange(Number.parseInt(e.target.value, 10));
         }}
         labelRowsPerPage="Số dòng mỗi trang:"
-        labelDisplayedRows={({ from, to, count }) => `${from}-${to} của ${count}`}
+        labelDisplayedRows={({ from, to, count }) =>
+          `${from}-${to} của ${count}`
+        }
       />
     </Paper>
-  )
-}
+  );
+};
 
-export default AssetTable 
+export default AssetTable;
