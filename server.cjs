@@ -343,6 +343,14 @@ server.put("/api/v1/maintenance/:id", (req, res) => {
   }
   if (notes) userdb.maintenance[requestIndex].notes = notes;
 
+  // Auto-set completedAt when status is changed to completed
+  if (status === "completed") {
+    userdb.maintenance[requestIndex].completedAt = new Date().toISOString();
+  } else if (status && status !== "completed") {
+    // Remove completedAt if status is changed from completed to something else
+    delete userdb.maintenance[requestIndex].completedAt;
+  }
+
   userdb.maintenance[requestIndex].updatedAt = new Date().toISOString();
 
   fs.writeFileSync("./db.json", JSON.stringify(userdb, null, 2));

@@ -6,7 +6,7 @@ const MyMaintenanceHistoryPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>FMS | Lịch Sử Yêu Cầu Bảo Trì</title>
+        <title> FMS | My Maintenance History</title>
       </Helmet>
       <MyMaintenanceHistory />
     </>

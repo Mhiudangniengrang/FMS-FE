@@ -1,5 +1,5 @@
 import DashboardLayout from "../layout/DashboardLayout";
-import React, { type JSX } from "react";
+import React from "react";
 import { Outlet, useRoutes, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { Error404, Loading } from "@/components";
@@ -15,6 +15,7 @@ export const MaintenanceManagementPage = lazy(
 );
 export const DepartmentPage = lazy(() => import("@/page/DepartmentPage"));
 export const InventoryPage = lazy(() => import("@/page/InventoryPage"));
+export const TechnicianMaintenancePage = lazy(() => import("@/page/TechnicianMaintenancePage"));
 interface ProtectedRouteProps {
   children: React.ReactNode;
   allowedRole: string | string[];
@@ -85,12 +86,13 @@ export const Router = (): React.JSX.Element | null => {
         // Staff routes
         {
           element: (
-            <ProtectedRoute allowedRole="staff" userRole={userRole}>
+            <ProtectedRoute allowedRole={["staff", "supervisor"]} userRole={userRole}>
               <Outlet />
             </ProtectedRoute>
           ),
           children: [
             { element: <MaintenancePage />, path: "/staff/maintenance" },
+            { element: <TechnicianMaintenancePage />, path: "/staff/maintenance-tasks" },
             { element: <Error404 />, path: "*" },
           ],
         },

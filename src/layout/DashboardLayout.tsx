@@ -8,9 +8,10 @@ import {
   Menu as MenuIcon,
   MenuOpen as MenuOpenIcon,
   Logout as LogoutIcon,
-  History as HistoryIcon,
+
   LocationOn as LocationOnIcon,
   Inventory as InventoryIcon,
+  Assignment as AssignmentIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import {
@@ -90,6 +91,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <SettingsIcon />,
       "/staff/maintenance"
     ),
+    ...(userRole === "supervisor" ? [
+      createMenuItem(
+        "Công việc bảo trì",
+        "2",
+        <AssignmentIcon />,
+        "/staff/maintenance-tasks"
+      ),
+    ] : []),
   ];
 
   const items: MenuItemType[] =

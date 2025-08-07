@@ -199,6 +199,7 @@ const MyMaintenanceHistory: React.FC = () => {
               <TableCell>Mức độ ưu tiên</TableCell>
               <TableCell>Trạng thái</TableCell>
               <TableCell>Ngày tạo</TableCell>
+              {!isDraftTable && <TableCell>Ngày hoàn thành</TableCell>}
               <TableCell>Thao tác</TableCell>
             </TableRow>
           </TableHead>
@@ -238,6 +239,19 @@ const MyMaintenanceHistory: React.FC = () => {
                     {formatDate(request.createdAt)}
                   </Typography>
                 </TableCell>
+                {!isDraftTable && (
+                  <TableCell>
+                    {request.completedAt ? (
+                      <Typography variant="body2" sx={{ color: "success.main", fontWeight: 600 }}>
+                        {formatDate(request.completedAt)}
+                      </Typography>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        -
+                      </Typography>
+                    )}
+                  </TableCell>
+                )}
                 <TableCell>
                   <IconButton
                     size="small"
@@ -412,6 +426,17 @@ const MyMaintenanceHistory: React.FC = () => {
                   {formatDate(selectedRequest.createdAt)}
                 </Typography>
               </Box>
+
+              {selectedRequest.completedAt && (
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Ngày hoàn thành:
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: "success.main", fontWeight: 600 }}>
+                    {formatDate(selectedRequest.completedAt)}
+                  </Typography>
+                </Box>
+              )}
 
               {selectedRequest.assignedToName && (
                 <Box sx={{ mb: 2 }}>

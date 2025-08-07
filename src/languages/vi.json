@@ -236,6 +236,9 @@
     "deleteAssetSuccess": "Tài sản đã được xóa thành công.",
     "noEmployeesFound": "Không tìm thấy nhân viên nào.",
     "noDescription": "Không có mô tả nào.",
-    "noNotes": "Không có ghi chú nào."
+    "noNotes": "Không có ghi chú nào.",
+    "staffMaintenance": "Gửi Yêu Cầu Bảo Trì",
+    "maintenanceRequest": "Yêu Cầu Bảo Trì",
+    "myMaintenanceHistory": "Lịch Sử Yêu Cầu Bảo Trì"
   }
 }
