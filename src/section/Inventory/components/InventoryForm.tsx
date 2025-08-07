@@ -54,6 +54,8 @@ const validationSchema = yup.object({
   status: yup.string().required("Status is required"),
   condition: yup.string().required("Condition is required"),
   department: yup.string().required("Department is required"),
+  assignedTo: yup.string().optional(), 
+  assigneeId: yup.string().optional(),
   value: yup
     .number()
     .min(0, "Value must be positive")
